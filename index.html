@@ -46,12 +46,6 @@
     </div>
   </div>
 
-  <!-- Top Announcement Bar -->
-  <aside class="top-announcement-bar" role="complementary" aria-label="Announcement">
-    <span>HomeHub Editorial • Volume 01 Available Now</span>
-    <span class="bar-highlight">— White-Glove Installation Across Pakistan</span>
-  </aside>
-
   <!-- Sticky Luxury Header -->
   <header class="site-header" role="banner">
     <div class="header-container">
@@ -68,10 +62,8 @@
         <img src="assets/logo.svg" alt="HomeHub — SHOP • STYLE • SMART" class="header-logo-img" />
       </a>
 
-      <!-- Desktop Magazine Books Navigation -->
+      <!-- Simple Magazine Books Navigation -->
       <nav class="header-nav" role="navigation" aria-label="Digital Books Navigation">
-        <span class="nav-books-label">Digital Books</span>
-        
         <a href="#book-living-edit" class="nav-book-link active" data-target-book="living-edit">
           The Living Edit
         </a>
@@ -84,11 +76,6 @@
         <a href="#book-small-spaces" class="nav-book-link" data-target-book="small-spaces">
           Small Spaces
         </a>
-
-        <span class="nav-divider"></span>
-
-        <a href="#catalogue-section" class="nav-action-link">Catalogue</a>
-        <a href="#video-section" class="nav-action-link">Masterclasses</a>
       </nav>
 
       <!-- Header Utilities -->
@@ -125,11 +112,6 @@
             <path d="M16 10a4 4 0 0 1-8 0"></path>
           </svg>
           <span class="util-badge" id="header-cart-badge" style="display: none;">0</span>
-        </button>
-
-        <!-- Admin Console Trigger -->
-        <button class="admin-nav-trigger admin-open-trigger" title="Open Atelier Management Console">
-          Admin Portal
         </button>
       </div>
 
@@ -314,31 +296,17 @@
       </div>
     </section>
 
-    <!-- SECTION 2: Original Product Catalogue -->
-    <section id="catalogue-section" aria-label="Independent HomeHub Product Catalogue">
-      <div class="container">
-        <div class="section-intro-block">
-          <span class="section-kicker">Original Brand Collection</span>
-          <h2 class="section-title">The Independent Catalogue</h2>
-          <p class="section-subtitle">
-            Every piece is designed with Soft Luxury Modern principles: honest materials, generous negative space, and enduring craftsmanship. Prices listed in PKR.
-          </p>
-        </div>
-
-        <!-- Catalogue Mount Point -->
-        <div id="catalogue-mount-point"></div>
-      </div>
-    </section>
-
-    <!-- SECTION 3: Video Inspiration Masterclasses -->
-    <section id="video-section" aria-label="Interior Styling Video Masterclasses">
-      <div class="container">
-        <!-- Video Gallery Mount Point -->
-        <div id="video-mount-point"></div>
-      </div>
-    </section>
-
   </main>
+
+  <!-- Offscreen Mount Points (Preserves all underlying features and data integrity) -->
+  <div id="catalogue-mount-point" class="offscreen-mount" aria-hidden="true" style="display:none;"></div>
+  <div id="video-mount-point" class="offscreen-mount" aria-hidden="true" style="display:none;"></div>
+
+  <!-- Search Modal Container -->
+  <div class="search-modal" id="search-modal-container" role="dialog" aria-modal="true" aria-hidden="true"></div>
+
+  <!-- Information Modal Container (About, Contact, Privacy, Terms) -->
+  <div class="info-modal" id="info-modal-container" role="dialog" aria-modal="true" aria-hidden="true"></div>
 
   <!-- Product Detail Page (Modal Container) -->
   <div class="pdp-modal" id="pdp-modal-container" role="dialog" aria-modal="true" aria-hidden="true"></div>
@@ -355,73 +323,28 @@
   <!-- Client Atelier Account Modal Container -->
   <div class="account-modal-wrap" id="account-modal-container" role="dialog" aria-modal="true" aria-hidden="true"></div>
 
-  <!-- SITE FOOTER -->
+  <!-- SITE FOOTER (Clean Minimal Luxury Footer) -->
   <footer class="site-footer" role="contentinfo">
-    <div class="container">
-      <div class="footer-top-grid">
-        
-        <!-- Col 1: Brand & Creator Info -->
-        <div class="footer-brand-col">
-          <a href="#" class="footer-logo-link" aria-label="HomeHub Homepage">
-            <img src="assets/logo-light.svg" alt="HomeHub — SHOP • STYLE • SMART" class="footer-logo-img" />
-          </a>
-          <p class="footer-brand-desc">
-            An independent home and lifestyle brand celebrating Soft Luxury Modern aesthetics. Curated collections of furniture, décor, lighting, and small space living.
-          </p>
-
-          <!-- Founder & Creator Attribution -->
-          <div class="footer-creator-badge">
-            <span class="creator-label">Application Architect & Designer</span>
-            <span class="creator-name">Created by Farhana Aamir</span>
-            <a href="mailto:farzunmir@gmail.com" class="creator-email-link" title="Send email to Farhana Aamir">
-              ✉ farzunmir@gmail.com
-            </a>
-          </div>
-        </div>
-
-        <!-- Col 2: The 4 Digital Books -->
-        <div class="footer-col">
-          <h4>Digital Books</h4>
-          <ul class="footer-links">
-            <li><button onclick="window.homeHub.openBook('living-edit')">The Living Edit (Vol 1)</button></li>
-            <li><button onclick="window.homeHub.openBook('objects-of-home')">Objects of Home (Vol 2)</button></li>
-            <li><button onclick="window.homeHub.openBook('light-life')">Light / Life (Vol 3)</button></li>
-            <li><button onclick="window.homeHub.openBook('small-spaces')">Small Spaces (Vol 4)</button></li>
-          </ul>
-        </div>
-
-        <!-- Col 3: Product Categories -->
-        <div class="footer-col">
-          <h4>Categories</h4>
-          <ul class="footer-links">
-            <li><button onclick="window.homeHub.catalogue.setCategory('furniture'); document.getElementById('catalogue-section').scrollIntoView({behavior:'smooth'})">Furniture</button></li>
-            <li><button onclick="window.homeHub.catalogue.setCategory('decor'); document.getElementById('catalogue-section').scrollIntoView({behavior:'smooth'})">Home Décor</button></li>
-            <li><button onclick="window.homeHub.catalogue.setCategory('lighting'); document.getElementById('catalogue-section').scrollIntoView({behavior:'smooth'})">Lighting</button></li>
-            <li><button onclick="window.homeHub.catalogue.setCategory('small-spaces'); document.getElementById('catalogue-section').scrollIntoView({behavior:'smooth'})">Small Space Solutions</button></li>
-          </ul>
-        </div>
-
-        <!-- Col 4: Atelier Care & Guarantees -->
-        <div class="footer-col">
-          <h4>Atelier Care</h4>
-          <div class="footer-contact-info">
-            <p><strong>White-Glove Delivery</strong><br />Complimentary assembly across Karachi, Lahore & Islamabad.</p>
-            <p><strong>Bespoke Inquiries</strong><br />Direct proforma quotes with lead times of 3–4 weeks for custom timber and bouclé upholstery.</p>
-            <p><strong>Founder Contact</strong><br /><a href="mailto:farzunmir@gmail.com" class="creator-email-link">farzunmir@gmail.com</a></p>
-          </div>
-        </div>
-
+    <div class="container footer-simple-container">
+      
+      <div class="footer-simple-brand">
+        <img src="assets/logo-light.svg" alt="HomeHub" class="footer-logo-img" />
+        <p class="footer-simple-tagline">SHOP • STYLE • SMART — Independent Soft Luxury Interior Publications</p>
       </div>
 
-      <!-- Bottom Bar -->
-      <div class="footer-bottom-bar">
-        <span>© 2026 HomeHub Atelier. All rights reserved. Original Independent Brand.</span>
-        
-        <div class="footer-bottom-links">
-          <button class="footer-admin-btn admin-open-trigger">Console Login</button>
-          <span>Soft Ivory • Sage Mist • Warm Beige</span>
-        </div>
+      <nav class="footer-simple-nav" aria-label="Footer Navigation">
+        <button class="footer-nav-link" id="footer-about-btn">About</button>
+        <button class="footer-nav-link" id="footer-contact-btn">Contact</button>
+        <button class="footer-nav-link" id="footer-privacy-btn">Privacy</button>
+        <button class="footer-nav-link" id="footer-terms-btn">Terms</button>
+      </nav>
+
+      <div class="footer-simple-bottom">
+        <p class="footer-creator-credit">Created by Farhana Aamir <a href="mailto:farzunmir@gmail.com" class="creator-email-link">farzunmir@gmail.com</a></p>
+        <p class="footer-copyright">© 2026 HomeHub Atelier. All rights reserved.</p>
+        <button class="footer-admin-link admin-open-trigger" title="Atelier Console">Console</button>
       </div>
+
     </div>
   </footer>
 

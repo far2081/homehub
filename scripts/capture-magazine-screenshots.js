@@ -93,13 +93,14 @@ async function capture() {
   const captures = [
     {
       name: 'preview-desktop.png',
-      url: 'http://localhost:3000/?nopreloader=1#book-living-edit-page-1',
+      url: 'http://localhost:3000/?nopreloader=1',
       bookId: 'living-edit',
       pageIndex: 0,
       width: 1440,
       height: 960,
       mobile: false,
-      waitMs: 4000
+      waitMs: 4000,
+      scrollToTop: true
     },
     {
       name: 'preview-double-spread.png',
@@ -109,7 +110,8 @@ async function capture() {
       width: 1440,
       height: 960,
       mobile: false,
-      waitMs: 4000
+      waitMs: 4000,
+      scrollToFlipbook: true
     },
     {
       name: 'preview-layout-e.png',
@@ -119,17 +121,19 @@ async function capture() {
       width: 1440,
       height: 960,
       mobile: false,
-      waitMs: 4000
+      waitMs: 4000,
+      scrollToFlipbook: true
     },
     {
       name: 'preview-mobile.png',
-      url: 'http://localhost:3000/?nopreloader=1#book-living-edit-page-4',
+      url: 'http://localhost:3000/?nopreloader=1',
       bookId: 'living-edit',
-      pageIndex: 3,
+      pageIndex: 0,
       width: 390,
       height: 844,
       mobile: true,
-      waitMs: 4000
+      waitMs: 4000,
+      scrollToTop: true
     }
   ];
 
@@ -160,7 +164,7 @@ async function capture() {
     console.log(`Waiting ${item.waitMs}ms for network & image loading...`);
     await sleep(item.waitMs);
 
-    // Scroll magazine viewport into view and make sure target book & page are active
+    // Scroll to appropriate view
     await client.send('Runtime.evaluate', {
       expression: `
         (() => {
@@ -168,13 +172,16 @@ async function capture() {
           if (pre) pre.remove();
           document.documentElement.classList.add('nopreloader');
 
-          if (window.homeHub && window.homeHub.flipbook) {
-            window.homeHub.flipbook.loadBook('${item.bookId}', ${item.pageIndex});
-          }
-
-          const viewport = document.getElementById('flipbook-viewport') || document.querySelector('.flipbook-stage');
-          if (viewport) {
-            viewport.scrollIntoView({ block: 'center', inline: 'center' });
+          if (${item.scrollToTop ? 'true' : 'false'}) {
+            window.scrollTo(0, 0);
+          } else if (${item.scrollToFlipbook ? 'true' : 'false'}) {
+            if (window.homeHub && window.homeHub.flipbook) {
+              window.homeHub.flipbook.loadBook('${item.bookId}', ${item.pageIndex});
+            }
+            const viewport = document.getElementById('flipbook-viewport') || document.querySelector('.flipbook-stage');
+            if (viewport) {
+              viewport.scrollIntoView({ block: 'center', inline: 'center' });
+            }
           }
           window.dispatchEvent(new Event('resize'));
         })()

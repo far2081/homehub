@@ -6,6 +6,7 @@
 
 import { INITIAL_PRODUCTS, CATEGORIES } from './data/products.js';
 import { storage } from './utils/storage.js';
+import { formatPKR } from './utils/helpers.js';
 import { Flipbook } from './components/flipbook.js';
 import { Catalogue } from './components/catalogue.js';
 import { ProductDetail } from './components/productDetail.js';
@@ -223,16 +224,26 @@ class HomeHubApp {
     if (mobileClose) mobileClose.addEventListener('click', closeDrawer);
     this.closeMobileDrawer = closeDrawer;
 
-    // Header Quick Search Button
+    // Header Quick Search Button (Opens dedicated luxury search modal)
     const searchBtn = document.getElementById('header-search-btn');
     if (searchBtn) {
       searchBtn.addEventListener('click', () => {
-        const catSection = document.getElementById('catalogue-section');
-        const searchInput = document.getElementById('catalogue-search-input');
-        if (catSection) catSection.scrollIntoView({ behavior: 'smooth' });
-        setTimeout(() => { if (searchInput) searchInput.focus(); }, 350);
+        this.openSearchModal();
       });
     }
+
+    // Footer Information Links (About, Contact, Privacy, Terms)
+    const aboutBtn = document.getElementById('footer-about-btn');
+    if (aboutBtn) aboutBtn.addEventListener('click', () => this.openInfoModal('about'));
+
+    const contactBtn = document.getElementById('footer-contact-btn');
+    if (contactBtn) contactBtn.addEventListener('click', () => this.openInfoModal('contact'));
+
+    const privacyBtn = document.getElementById('footer-privacy-btn');
+    if (privacyBtn) privacyBtn.addEventListener('click', () => this.openInfoModal('privacy'));
+
+    const termsBtn = document.getElementById('footer-terms-btn');
+    if (termsBtn) termsBtn.addEventListener('click', () => this.openInfoModal('terms'));
 
     // Header Client Account Button
     const accountBtn = document.getElementById('header-account-btn');
@@ -359,6 +370,169 @@ class HomeHubApp {
         if (this.adminPortal) this.adminPortal.open();
       });
     }
+  }
+
+  openSearchModal() {
+    const modal = document.getElementById('search-modal-container');
+    if (!modal) return;
+
+    modal.innerHTML = `
+      <div class="search-backdrop" id="search-backdrop"></div>
+      <div class="search-dialog" role="dialog" aria-modal="true" aria-labelledby="search-dialog-title">
+        <div class="search-header">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:#7D746A;">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input 
+            type="search" 
+            class="search-input-field" 
+            id="modal-search-input" 
+            placeholder="Search architectural pieces, materials (e.g. travertine, bouclé)..." 
+            aria-label="Search Collection" 
+          />
+          <button class="search-close-btn" id="close-search-modal-btn" aria-label="Close search">✕</button>
+        </div>
+        <div class="search-results-list" id="search-results-container">
+          <p style="color:var(--color-muted-earth); font-size:0.85rem; padding:1.2rem 0; margin:0; text-align:center;">
+            Type a query to search the HomeHub collection and find corresponding pieces.
+          </p>
+        </div>
+      </div>
+    `;
+
+    modal.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+
+    const input = modal.querySelector('#modal-search-input');
+    const resultsContainer = modal.querySelector('#search-results-container');
+    
+    const close = () => {
+      modal.classList.remove('is-open');
+      document.body.style.overflow = '';
+      modal.innerHTML = '';
+    };
+
+    modal.querySelector('#search-backdrop').addEventListener('click', close);
+    modal.querySelector('#close-search-modal-btn').addEventListener('click', close);
+
+    if (input) {
+      setTimeout(() => input.focus(), 150);
+      input.addEventListener('input', (e) => {
+        const query = e.target.value.trim().toLowerCase();
+        if (!query) {
+          resultsContainer.innerHTML = `
+            <p style="color:var(--color-muted-earth); font-size:0.85rem; padding:1.2rem 0; margin:0; text-align:center;">
+              Type a query to search the HomeHub collection and find corresponding pieces.
+            </p>
+          `;
+          return;
+        }
+
+        const matches = this.products.filter(p => 
+          p.name.toLowerCase().includes(query) ||
+          p.category.toLowerCase().includes(query) ||
+          (p.material && p.material.toLowerCase().includes(query)) ||
+          (p.description && p.description.toLowerCase().includes(query))
+        );
+
+        if (matches.length === 0) {
+          resultsContainer.innerHTML = `
+            <p style="color:var(--color-muted-earth); font-size:0.88rem; padding:1.5rem 0; text-align:center;">
+              No matching pieces found for "${e.target.value}".
+            </p>
+          `;
+          return;
+        }
+
+        resultsContainer.innerHTML = matches.map(p => `
+          <div class="search-result-item" data-sku="${p.id}">
+            <img src="${p.images ? p.images[0] : ''}" alt="${p.name}" class="search-result-media" />
+            <div class="search-result-meta">
+              <h4 class="search-result-title">${p.name}</h4>
+              <p class="search-result-details">${p.material || p.category} • ${p.dimensions || ''}</p>
+            </div>
+            <span class="search-result-price">${formatPKR ? formatPKR(p.price) : `₨ ${p.price.toLocaleString()}`}</span>
+          </div>
+        `).join('');
+
+        resultsContainer.querySelectorAll('.search-result-item').forEach(item => {
+          item.addEventListener('click', () => {
+            const sku = item.dataset.sku;
+            close();
+            this.openProduct(sku);
+          });
+        });
+      });
+    }
+  }
+
+  openInfoModal(type) {
+    const modal = document.getElementById('info-modal-container');
+    if (!modal) return;
+
+    let title = '';
+    let body = '';
+
+    if (type === 'about') {
+      title = 'About HomeHub Atelier';
+      body = `
+        <p><strong>Soft Luxury Modernism</strong></p>
+        <p>HomeHub is an independent home and lifestyle publication brand based in Pakistan. We curate four digital volumes exploring fluid contours, geological permanence, natural light, and space intelligence.</p>
+        <p>Every piece in our collection is handcrafted by skilled local artisans using solid FSC-certified hardwoods, Italian bouclé wools, honed travertine marble, and precision brass joinery.</p>
+        <p>Designed and built with pride by <strong>Farhana Aamir</strong>.</p>
+      `;
+    } else if (type === 'contact') {
+      title = 'Contact & Atelier Care';
+      body = `
+        <p><strong>Founder & Designer Inquiries</strong><br />
+        Farhana Aamir — <a href="mailto:farzunmir@gmail.com" style="color:var(--color-terracotta); text-decoration:underline;">farzunmir@gmail.com</a></p>
+        <p><strong>White-Glove Delivery Across Pakistan</strong><br />
+        Complimentary delivery and private assembly service across Karachi, Lahore, and Islamabad.</p>
+        <p><strong>Bespoke Commissioning</strong><br />
+        Custom timber finishes and upholstery swatches are available upon request with a production lead time of 3–4 weeks.</p>
+      `;
+    } else if (type === 'privacy') {
+      title = 'Client Privacy Policy';
+      body = `
+        <p><strong>Client Confidentiality</strong><br />
+        HomeHub respects the privacy of our atelier clients. We do not sell or distribute personal information to third parties.</p>
+        <p>All client preferences, shopping bags, and saved wishlist pieces are stored locally on your device using secure client-side storage.</p>
+      `;
+    } else if (type === 'terms') {
+      title = 'Terms & Bespoke Commissioning';
+      body = `
+        <p><strong>Original Brand Guarantee</strong><br />
+        All furniture, lighting, and décor pieces featured in HomeHub digital publications are covered by our 5-year structural warranty.</p>
+        <p><strong>Returns & Exchanges</strong><br />
+        14-day inspection window upon white-glove delivery. Bespoke commissions are crafted to order.</p>
+      `;
+    }
+
+    modal.innerHTML = `
+      <div class="info-backdrop" id="info-backdrop"></div>
+      <div class="info-dialog" role="dialog" aria-modal="true" aria-labelledby="info-dialog-title">
+        <div class="info-header">
+          <h3 id="info-dialog-title">${title}</h3>
+          <button class="cart-close-btn" id="close-info-modal-btn" aria-label="Close">✕</button>
+        </div>
+        <div class="info-body">
+          ${body}
+        </div>
+      </div>
+    `;
+
+    modal.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+
+    const close = () => {
+      modal.classList.remove('is-open');
+      document.body.style.overflow = '';
+      modal.innerHTML = '';
+    };
+
+    modal.querySelector('#info-backdrop').addEventListener('click', close);
+    modal.querySelector('#close-info-modal-btn').addEventListener('click', close);
   }
 
   handleInitialRouting() {
