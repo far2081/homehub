@@ -2,12 +2,14 @@
 const P = {
   // Living Room & Furniture
   livingCover: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1400&q=85',
+  livingBackcover: 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?auto=format&fit=crop&w=1400&q=85',
   cloudcurveSofa: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1200&q=85',
   livingDouble1: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1600&q=85',
   auraArmchair: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=1200&q=85',
   nomaTable: 'https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&w=1200&q=85',
   cloudsoftCushions: 'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&w=1200&q=85',
   travertineRoom: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1400&q=85',
+  sunlightTravertine: 'https://images.unsplash.com/photo-1600210491892-03d54c0aaf87?auto=format&fit=crop&w=1400&q=85',
   livingDouble2: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1600&q=85',
   diningVignette: 'https://images.unsplash.com/photo-1616046229478-9901c5536a45?auto=format&fit=crop&w=1200&q=85',
   modernVilla: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1400&q=85',
@@ -22,6 +24,7 @@ const P = {
 
   // Objects & Décor
   objectsCover: 'https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?auto=format&fit=crop&w=1400&q=85',
+  objectsBackcover: 'https://images.unsplash.com/photo-1594026112284-02bb6f3352fe?auto=format&fit=crop&w=1400&q=85',
   solisVase: 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=1200&q=85',
   objectsDouble1: 'https://images.unsplash.com/photo-1600566752355-35792bedcfea?auto=format&fit=crop&w=1600&q=85',
   shelfStyling: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=1200&q=85',
@@ -34,21 +37,32 @@ const P = {
   artPlinth: 'https://images.unsplash.com/photo-1544457070-4cd773b4d71e?auto=format&fit=crop&w=1200&q=85',
   stoneSculpt: 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=85',
   plasterRelief: 'https://images.unsplash.com/photo-1600210492493-0946911123ea?auto=format&fit=crop&w=1200&q=85',
-  tactileWood: 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1200&q=85',
+  curatedCredenza: 'https://images.unsplash.com/photo-1577083552431-6e5fd01aa342?auto=format&fit=crop&w=1200&q=85',
+  unlacqueredBrass: 'https://images.unsplash.com/photo-1615529182904-14819c35db37?auto=format&fit=crop&w=1200&q=85',
+  atelierShowcase: 'https://images.unsplash.com/photo-1615529328331-f8917597711f?auto=format&fit=crop&w=1400&q=85',
 
   // Lighting & Atmosphere
   lightingCover: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=1400&q=85',
+  lightingBackcover: 'https://images.unsplash.com/photo-1541123437800-1bb1317badc2?auto=format&fit=crop&w=1400&q=85',
   lunaPendant: 'https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=1200&q=85',
+  floatingMoon: 'https://images.unsplash.com/photo-1517991104123-1d56a6e81ed9?auto=format&fit=crop&w=1200&q=85',
   lightDouble1: 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1600&q=85',
   arcLampGlow: 'https://images.unsplash.com/photo-1540932239986-30128078f3c5?auto=format&fit=crop&w=1200&q=85',
   glowTableLamp: 'https://images.unsplash.com/photo-1565814329452-e1efa11c5b89?auto=format&fit=crop&w=1200&q=85',
   tableLampBrass: 'https://images.unsplash.com/photo-1543198126-a8ad8e47fb22?auto=format&fit=crop&w=1200&q=85',
+  travertineGlassLamp: 'https://images.unsplash.com/photo-1524484485831-a92ffc0de03f?auto=format&fit=crop&w=1200&q=85',
   eveningRoom: 'https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=1400&q=85',
   lightDouble2: 'https://images.unsplash.com/photo-1600585154363-67eb9e2e2099?auto=format&fit=crop&w=1600&q=85',
   auraWallSconce: 'https://images.unsplash.com/photo-1600585152220-90363fe7e115?auto=format&fit=crop&w=1400&q=85',
+  illuminationZones: 'https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1400&q=85',
+  readingSanctum: 'https://images.unsplash.com/photo-1540574163026-643ea20ade25?auto=format&fit=crop&w=1200&q=85',
+  triplexGlass: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=85',
+  spunArmature: 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?auto=format&fit=crop&w=1200&q=85',
+  twilightSuite: 'https://images.unsplash.com/photo-1554995207-c18c203602cb?auto=format&fit=crop&w=1400&q=85',
 
   // Small Spaces & Modular Solutions
   smallSpacesCover: 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&w=1400&q=85',
+  smallSpacesBackcover: 'https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=1400&q=85',
   compactLoft: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1200&q=85',
   smallDouble1: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1600&q=85',
   modulaDesk: 'https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&w=1200&q=85',
@@ -58,7 +72,13 @@ const P = {
   smallDouble2: 'https://images.unsplash.com/photo-1486304873000-235643847519?auto=format&fit=crop&w=1600&q=85',
   neutralMasterBed: 'https://images.unsplash.com/photo-1615873968403-89e068629265?auto=format&fit=crop&w=1200&q=85',
   havenBedDetail: 'https://images.unsplash.com/photo-1615874959474-d609969a20ed?auto=format&fit=crop&w=1200&q=85',
-  cozyBedroomHaven: 'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&w=1200&q=85'
+  cozyBedroomHaven: 'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&w=1200&q=85',
+  nestedWorktop: 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=1200&q=85',
+  wallHungEntry: 'https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=1200&q=85',
+  tambourSlats: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=85',
+  diningNook: 'https://images.unsplash.com/photo-1592078615290-033ee584e267?auto=format&fit=crop&w=1200&q=85',
+  boucleHeadboard: 'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&w=1200&q=85',
+  studioPenthouse: 'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&w=1400&q=85'
 };
 
 export const MAGAZINE_BOOKS = {
@@ -232,7 +252,7 @@ export const MAGAZINE_BOOKS = {
         headline: "Sunlight on Travertine",
         kicker: "LIGHTING STUDY • 14:00 PM",
         deck: "Morning light rakes across the honed bullnose edge, highlighting micro-crystalline veins.",
-        heroImage: P.travertineRoom,
+        heroImage: P.sunlightTravertine,
         products: [
           { sku: "HH-FUR-002", label: "Noma Coffee Table", price: "₨ 125,000", badge: "Noma Stone", hotspot: { x: 52, y: 62 } }
         ]
@@ -408,7 +428,7 @@ export const MAGAZINE_BOOKS = {
         kicker: "THE LIVING EDIT • VOLUME 01 COMPLETED",
         deck: "Created with reverence for architectural negative space, authentic natural stone, and honest upholstery.",
         colophon: "Published by HomeHub Atelier • Created by Farhana Aamir • farzunmir@gmail.com",
-        heroImage: P.livingCover,
+        heroImage: P.livingBackcover,
         products: []
       }
     ]
@@ -692,7 +712,7 @@ export const MAGAZINE_BOOKS = {
         headline: "The Curated Credenza",
         kicker: "STYLING IN ACTION",
         deck: "A low oak sideboard styled with Solis ceramics, dried branches, and stacked art books.",
-        heroImage: P.tactileWood,
+        heroImage: P.curatedCredenza,
         products: [
           { sku: "HH-DEC-001", label: "Solis Ceramic Vases", price: "₨ 18,500", badge: "Ceramics", hotspot: { x: 52, y: 65 } }
         ]
@@ -717,7 +737,7 @@ export const MAGAZINE_BOOKS = {
         headline: "Unlacquered Living Finish",
         deck: "The Halo Mirror's solid brass frame develops a noble natural patina over time.",
         note: "Crafted by hand using traditional brazing and precision mirror-grade polishing.",
-        heroImage: P.haloMirror,
+        heroImage: P.unlacqueredBrass,
         products: [
           { sku: "HH-DEC-004", label: "Halo Mirror", price: "₨ 38,000", badge: "Brass Frame", hotspot: { x: 52, y: 50 } }
         ]
@@ -729,7 +749,7 @@ export const MAGAZINE_BOOKS = {
         headline: "The Atelier Showcase",
         kicker: "CURATED RETROSPECTIVE",
         deck: "A holistic composition demonstrating the serenity of Soft Luxury Modern décor.",
-        heroImage: P.objectsCover,
+        heroImage: P.atelierShowcase,
         products: [
           { sku: "HH-DEC-001", label: "Solis Ceramic Vases", price: "₨ 18,500", badge: "Vase Set", hotspot: { x: 45, y: 65 } },
           { sku: "HH-DEC-004", label: "Halo Mirror", price: "₨ 38,000", badge: "Halo Mirror", hotspot: { x: 65, y: 40 } }
@@ -758,7 +778,7 @@ export const MAGAZINE_BOOKS = {
         kicker: "OBJECTS OF HOME • VOLUME 02 COMPLETED",
         deck: "Crafted in celebration of earth, mineral, and the meditative quietude of handmade forms.",
         colophon: "Published by HomeHub Atelier • Created by Farhana Aamir • farzunmir@gmail.com",
-        heroImage: P.objectsCover,
+        heroImage: P.objectsBackcover,
         products: []
       }
     ]
@@ -820,7 +840,7 @@ export const MAGAZINE_BOOKS = {
         headline: "The Floating Moon",
         kicker: "DINING ROOM ILLUMINATION",
         deck: "Luna Pendant suspended 75cm above a solid travertine table, casting zero glare onto faces.",
-        heroImage: P.lunaPendant,
+        heroImage: P.floatingMoon,
         products: [
           { sku: "HH-LGT-001", label: "Luna Pendant", price: "₨ 42,000", badge: "Luna Pendant", hotspot: { x: 48, y: 40 } }
         ]
@@ -955,7 +975,7 @@ export const MAGAZINE_BOOKS = {
         headline: "Turned Travertine & Glass",
         deck: "The heavy cylindrical stone base provides stability and thermal mass.",
         note: "Opal glass sphere twists off smoothly with a precision bayonet mount for cleaning.",
-        heroImage: P.glowTableLamp,
+        heroImage: P.travertineGlassLamp,
         products: [
           { sku: "HH-LGT-003", label: "Glow Table Lamp", price: "₨ 24,500", badge: "Travertine", hotspot: { x: 50, y: 50 } }
         ]
@@ -1031,7 +1051,7 @@ export const MAGAZINE_BOOKS = {
           "Layer Three: Intimate Sparkle. Small low-level table lights (Glow Lamp) that sit on credenzas and side tables, creating comforting visual anchors."
         ],
         materialNote: "Triplex opal glass, solid turned stone, brass armatures.",
-        heroImage: P.lightingCover,
+        heroImage: P.illuminationZones,
         products: [
           { sku: "HH-LGT-001", label: "Luna Pendant", price: "₨ 42,000", badge: "Pendant", hotspot: { x: 45, y: 60 } }
         ]
@@ -1042,7 +1062,7 @@ export const MAGAZINE_BOOKS = {
         headline: "The Reading Sanctum",
         kicker: "INTIMATE STUDY",
         deck: "The Arc Lamp gracefully framing an armchair without blocking architectural sightlines.",
-        heroImage: P.arcLampGlow,
+        heroImage: P.readingSanctum,
         products: [
           { sku: "HH-LGT-002", label: "Arc Floor Lamp", price: "₨ 78,500", badge: "Reading Light", hotspot: { x: 55, y: 45 } }
         ]
@@ -1055,7 +1075,7 @@ export const MAGAZINE_BOOKS = {
         headline: "Mouth-Blown Triplex Glass",
         deck: "Three distinct layers of molten glass fused together to eliminate filament hot-spots.",
         note: "Produces an unblemished, velvety satin globe that feels like natural moonlight.",
-        heroImage: P.lunaPendant,
+        heroImage: P.triplexGlass,
         products: [
           { sku: "HH-LGT-001", label: "Luna Pendant", price: "₨ 42,000", badge: "Triplex Glass", hotspot: { x: 50, y: 48 } }
         ]
@@ -1067,7 +1087,7 @@ export const MAGAZINE_BOOKS = {
         headline: "Precision Spun Armatures",
         deck: "Solid brushed brass components sealed with an invisible micro-crystalline wax.",
         note: "Resists fingerprints and oxidation while preserving authentic metallic depth.",
-        heroImage: P.auraWallSconce,
+        heroImage: P.spunArmature,
         products: [
           { sku: "HH-LGT-004", label: "Aura Wall Light", price: "₨ 19,500", badge: "Solid Brass", hotspot: { x: 52, y: 45 } }
         ]
@@ -1079,7 +1099,7 @@ export const MAGAZINE_BOOKS = {
         headline: "The Twilight Living Suite",
         kicker: "NIGHT ARCHITECTURE",
         deck: "All four HomeHub lighting fixtures working in silent, calibrated harmony.",
-        heroImage: P.eveningRoom,
+        heroImage: P.twilightSuite,
         products: [
           { sku: "HH-LGT-001", label: "Luna Pendant", price: "₨ 42,000", badge: "Luna Glass", hotspot: { x: 35, y: 35 } },
           { sku: "HH-LGT-002", label: "Arc Floor Lamp", price: "₨ 78,500", badge: "Marble Arc", hotspot: { x: 65, y: 55 } }
@@ -1108,7 +1128,7 @@ export const MAGAZINE_BOOKS = {
         kicker: "LIGHT / LIFE • VOLUME 03 COMPLETED",
         deck: "Engineered in celebration of the 2700K circadian spectrum and the architecture of night.",
         colophon: "Published by HomeHub Atelier • Created by Farhana Aamir • farzunmir@gmail.com",
-        heroImage: P.lightingCover,
+        heroImage: P.lightingBackcover,
         products: []
       }
     ]
@@ -1208,7 +1228,7 @@ export const MAGAZINE_BOOKS = {
         headline: "Concealed Nested Worktop",
         deck: "Dual-height nesting desk equipped with cable pass-through channels and magnetic dock.",
         note: "Transitions from a 40cm depth console to a full 80cm deep work desk in two seconds.",
-        heroImage: P.modulaDesk,
+        heroImage: P.nestedWorktop,
         products: [
           { sku: "HH-SSS-001", label: "Modula Nested Desk", price: "₨ 88,500", badge: "Nested Desk", hotspot: { x: 50, y: 58 } }
         ]
@@ -1293,7 +1313,7 @@ export const MAGAZINE_BOOKS = {
         headline: "The Wall-Hung Entryway",
         kicker: "ZERO FLOOR FOOTPRINT",
         deck: "The Flute Floating Console paired with the Halo Mirror, turning a 1-meter hallway into a gallery.",
-        heroImage: P.fluteConsole,
+        heroImage: P.wallHungEntry,
         products: [
           { sku: "HH-SSS-002", label: "Flute Floating Console", price: "₨ 64,000", badge: "Flute Console", hotspot: { x: 50, y: 58 } },
           { sku: "HH-DEC-004", label: "Halo Mirror", price: "₨ 38,000", badge: "Halo Mirror", hotspot: { x: 50, y: 35 } }
@@ -1306,7 +1326,7 @@ export const MAGAZINE_BOOKS = {
         headline: "Solid Oak Tambour Slats",
         deck: "Precision-milled fluted battens glued to heavy canvas for frictionless sliding action.",
         note: "Allows open access to interior shelving without doors swinging out into tight walking paths.",
-        heroImage: P.tactileWood,
+        heroImage: P.tambourSlats,
         products: [
           { sku: "HH-SSS-002", label: "Flute Floating Console", price: "₨ 64,000", badge: "Oak Tambour", hotspot: { x: 48, y: 55 } }
         ]
@@ -1393,7 +1413,7 @@ export const MAGAZINE_BOOKS = {
         headline: "The Compact Dining Nook",
         kicker: "MULTI-PURPOSE LIVING",
         deck: "A dining table that doubles as a communal gathering and creative workspace.",
-        heroImage: P.compactDining,
+        heroImage: P.diningNook,
         products: [
           { sku: "HH-LGT-001", label: "Luna Pendant", price: "₨ 42,000", badge: "Luna Light", hotspot: { x: 50, y: 38 } }
         ]
@@ -1418,7 +1438,7 @@ export const MAGAZINE_BOOKS = {
         headline: "Bouclé Headboard Wall",
         deck: "The upholstered headboard absorbs room reverberation for deeper, uninterrupted sleep.",
         note: "Treated with eco-friendly stain resistance suitable for everyday urban living.",
-        heroImage: P.neutralMasterBed,
+        heroImage: P.boucleHeadboard,
         products: [
           { sku: "HH-FUR-004", label: "Haven Bed", price: "₨ 285,000", badge: "Haven Boucle", hotspot: { x: 52, y: 50 } }
         ]
@@ -1430,7 +1450,7 @@ export const MAGAZINE_BOOKS = {
         headline: "The Complete Studio Penthouse",
         kicker: "ARCHITECTURAL MASTERY",
         deck: "Proof that 40 square meters can feel as noble and luxurious as a countryside villa.",
-        heroImage: P.smallSpacesCover,
+        heroImage: P.studioPenthouse,
         products: [
           { sku: "HH-SSS-001", label: "Modula Nested Desk", price: "₨ 88,500", badge: "Studio Desk", hotspot: { x: 40, y: 65 } },
           { sku: "HH-SSS-002", label: "Flute Floating Console", price: "₨ 64,000", badge: "Floating Console", hotspot: { x: 65, y: 55 } }
@@ -1459,7 +1479,7 @@ export const MAGAZINE_BOOKS = {
         kicker: "SMALL SPACES • VOLUME 04 COMPLETED",
         deck: "Engineered in celebration of urban agility, spatial intelligence, and honest craft.",
         colophon: "Published by HomeHub Atelier • Created by Farhana Aamir • farzunmir@gmail.com",
-        heroImage: P.smallSpacesCover,
+        heroImage: P.smallSpacesBackcover,
         products: []
       }
     ]
