@@ -1048,18 +1048,19 @@
   color: var(--color-noir);
 }
 
-/* Floating Hotspot Mini Card */
+/* Floating Hotspot Mini Card - Discreet Editorial Publication Styling */
 .hotspot-card {
   position: absolute;
   bottom: calc(100% + 10px);
   left: 50%;
   transform: translateX(-50%) translateY(6px);
-  width: 200px;
-  background-color: #FFFFFF;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  padding: 0.75rem;
-  box-shadow: 0 10px 25px -5px rgba(24, 21, 18, 0.25);
+  width: 190px;
+  background-color: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(24, 21, 18, 0.1);
+  border-radius: var(--radius-xs);
+  padding: 0.65rem 0.8rem;
+  box-shadow: 0 10px 25px -5px rgba(24, 21, 18, 0.18);
+  backdrop-filter: blur(8px);
   z-index: 40;
   opacity: 0;
   visibility: hidden;
@@ -1077,8 +1078,8 @@
 
 .hotspot-card-badge {
   display: block;
-  font-size: 0.58rem;
-  letter-spacing: 0.15em;
+  font-size: 0.55rem;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--color-terracotta);
   font-weight: 700;
@@ -1087,54 +1088,19 @@
 
 .hotspot-card-title {
   display: block;
-  font-size: 0.8rem;
+  font-family: var(--font-serif);
+  font-size: 0.92rem;
+  font-weight: 500;
   color: var(--color-noir);
   line-height: 1.25;
-  margin-bottom: 3px;
+  margin-bottom: 2px;
 }
 
-.hotspot-card-price {
+.hotspot-card-tap {
   display: block;
-  font-size: 0.75rem;
-  color: var(--color-charcoal);
-  font-weight: 600;
-  margin-bottom: 8px;
-}
-
-.hotspot-card-actions {
-  display: flex;
-  gap: 6px;
-}
-
-.hotspot-btn-view,
-.hotspot-btn-add {
-  flex: 1;
-  padding: 4px 6px;
-  font-size: 0.68rem;
-  font-weight: 600;
-  border-radius: var(--radius-pill);
-  cursor: pointer;
-  border: none;
-  transition: all var(--transition-fast);
-}
-
-.hotspot-btn-view {
-  background-color: var(--color-surface-subtle);
-  color: var(--color-charcoal);
-  border: 1px solid var(--color-border);
-}
-
-.hotspot-btn-view:hover {
-  background-color: var(--color-border);
-}
-
-.hotspot-btn-add {
-  background-color: var(--color-noir);
-  color: var(--color-soft-ivory);
-}
-
-.hotspot-btn-add:hover {
-  background-color: #383431;
+  font-size: 0.65rem;
+  font-style: italic;
+  color: var(--color-muted-earth);
 }
 
 .page-pullquote {
@@ -1182,93 +1148,63 @@
   color: var(--color-charcoal);
 }
 
-/* Shop Strip with Direct "Inspect" and "+ Bag" Actions */
-.page-shop-strip {
-  background-color: var(--color-surface-subtle);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  padding: 0.65rem 0.85rem;
-  margin-top: 0.5rem;
+/* Editorial Story Citations (Discreet Publications Index - No Shopping Buttons or Prices) */
+.layout-d-provenance {
+  border-top: 1px solid rgba(231, 224, 211, 0.8);
+  padding-top: 0.65rem;
+  margin-top: 0.75rem;
 }
 
-.shop-strip-label {
+.provenance-label {
   display: block;
-  font-size: 0.6rem;
+  font-size: 0.58rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--color-muted-earth);
   font-weight: 700;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.45rem;
 }
 
-.shop-chips {
+.provenance-items {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
 }
 
-.shop-chip-group {
+.provenance-chip {
   display: inline-flex;
   align-items: center;
-  background-color: var(--color-surface-pure);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-pill);
-  overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
-}
-
-.shop-chip-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
+  gap: 6px;
   background: transparent;
-  border: none;
-  padding: 5px 8px 5px 10px;
-  font-size: 0.74rem;
+  border: 1px solid rgba(24, 21, 18, 0.15);
+  border-radius: var(--radius-pill);
+  padding: 4px 10px;
+  font-size: 0.72rem;
+  font-family: inherit;
   color: var(--color-noir);
   cursor: pointer;
-  transition: background-color var(--transition-fast);
+  transition: all 0.2s ease;
 }
 
-.shop-chip-btn:hover {
-  background-color: var(--color-soft-ivory);
+.provenance-chip:hover {
+  background-color: var(--color-noir);
+  color: #FFFFFF;
+  border-color: var(--color-noir);
 }
 
-.chip-dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background-color: var(--color-terracotta);
-}
-
-.chip-name {
+.provenance-num {
+  font-size: 0.62rem;
+  color: var(--color-terracotta);
   font-weight: 600;
 }
 
-.chip-price {
-  color: var(--color-muted-earth);
+.provenance-chip:hover .provenance-num {
+  color: var(--color-soft-champagne);
+}
+
+.provenance-arrow {
   font-size: 0.7rem;
-}
-
-.chip-arrow {
-  color: var(--color-terracotta);
-  font-weight: bold;
-}
-
-.shop-chip-add-btn {
-  background-color: var(--color-noir);
-  color: var(--color-soft-ivory);
-  border: none;
-  padding: 5px 10px;
-  font-size: 0.68rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background-color var(--transition-fast);
-  border-left: 1px solid var(--color-border);
-}
-
-.shop-chip-add-btn:hover {
-  background-color: #383431;
+  opacity: 0.6;
 }
 
 .page-footer-strip {
@@ -1785,136 +1721,163 @@
 /* --------------------------------------------------------------------------
    LAYOUT E — PRODUCT COLLECTION
    -------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------------
+   LAYOUT E — CURATED COLLECTION EDIT
+   Fine architectural publication presentation of curated pieces:
+   Generous negative space, warm ivory tone, fine typography, and discreet
+   tap-to-inspect cues (NO shopping buttons or price labels on page).
+   -------------------------------------------------------------------------- */
 .page-layout-e {
   position: relative;
   display: flex;
   flex-direction: column;
   height: 100%;
   background-color: #FAF8F5;
-  padding: 2.2rem 2rem 1.8rem;
+  padding: 2rem 2.2rem 1.6rem;
   box-sizing: border-box;
   overflow-y: auto;
 }
 
 .layout-e-header {
   border-bottom: 1px solid #E7E0D3;
-  padding-bottom: 0.8rem;
-  margin-bottom: 1.2rem;
+  padding-bottom: 0.6rem;
+  margin-bottom: 1.1rem;
 }
 
 .layout-e-title {
-  font-size: 1.45rem;
-  font-weight: 500;
+  font-family: var(--font-serif);
+  font-size: 1.6rem;
+  font-weight: 400;
+  font-style: italic;
   color: var(--color-noir);
-  margin: 0.2rem 0;
-  line-height: 1.3;
+  margin: 0.15rem 0;
+  line-height: 1.25;
 }
 
 .layout-e-deck {
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   color: var(--color-muted-earth);
   line-height: 1.4;
+  margin: 0;
 }
 
-.layout-e-grid {
+.layout-e-gallery {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.25rem;
   flex: 1;
 }
 
-.layout-e-card {
+.layout-e-piece {
   display: flex;
-  gap: 1.2rem;
-  background-color: #FFFFFF;
-  border: 1px solid #EBE4D8;
-  border-radius: 4px;
-  padding: 0.9rem;
+  gap: 1.4rem;
   align-items: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
-  transition: all 0.2s ease;
+  cursor: pointer;
+  padding: 0.5rem 0.6rem;
+  border-radius: var(--radius-xs);
+  transition: all 0.25s ease;
 }
 
-.layout-e-card:hover {
-  border-color: var(--color-noir);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+.layout-e-piece:hover {
+  background-color: rgba(24, 21, 18, 0.03);
+  transform: translateY(-1px);
 }
 
-.layout-e-card-media {
-  width: 110px;
-  height: 100px;
-  border-radius: 3px;
+.layout-e-piece-media {
+  position: relative;
+  width: 140px;
+  height: 110px;
+  border-radius: 2px;
   overflow: hidden;
   flex-shrink: 0;
-  background-color: #F5F2EB;
+  background-color: #F0EDE6;
+  box-shadow: 0 4px 14px rgba(24, 21, 18, 0.07);
 }
 
-.layout-e-card-media img {
+.layout-e-piece-media img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: transform 0.4s ease;
 }
 
-.layout-e-card-body {
+.layout-e-piece:hover .layout-e-piece-media img {
+  transform: scale(1.04);
+}
+
+.layout-e-piece-num {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  background-color: rgba(20, 18, 16, 0.72);
+  color: #FFFFFF;
+  font-size: 0.55rem;
+  font-weight: 600;
+  padding: 2px 5px;
+  border-radius: 2px;
+  letter-spacing: 0.06em;
+  backdrop-filter: blur(4px);
+}
+
+.layout-e-piece-hotspot {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.92);
+  color: var(--color-noir);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+}
+
+.layout-e-piece:hover .layout-e-piece-hotspot {
+  background-color: var(--color-noir);
+  color: #FFFFFF;
+  transform: scale(1.1);
+}
+
+.layout-e-piece-meta {
   flex: 1;
   min-width: 0;
 }
 
-.layout-e-card-name {
-  font-size: 0.98rem;
-  font-weight: 600;
+.layout-e-piece-title {
+  font-family: var(--font-serif);
+  font-size: 1.18rem;
+  font-weight: 500;
   color: var(--color-noir);
-  margin: 0 0 0.2rem;
+  margin: 0 0 0.25rem;
+  line-height: 1.25;
 }
 
-.layout-e-card-specs {
-  font-size: 0.76rem;
+.layout-e-piece-specs {
+  font-size: 0.75rem;
   color: var(--color-muted-earth);
-  margin-bottom: 0.5rem;
-  line-height: 1.35;
+  margin: 0 0 0.55rem;
+  line-height: 1.4;
 }
 
-.layout-e-card-price {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--color-noir);
-  display: block;
-}
-
-.layout-e-card-actions {
-  display: flex;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-}
-
-.layout-e-btn-inspect,
-.layout-e-btn-add {
-  padding: 6px 12px;
-  border-radius: var(--radius-pill);
-  font-size: 0.74rem;
+.layout-e-piece-explore {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.68rem;
   font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.layout-e-btn-inspect {
-  background: transparent;
-  border: 1px solid var(--color-border);
-  color: var(--color-charcoal);
-}
-
-.layout-e-btn-inspect:hover {
-  border-color: var(--color-noir);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   color: var(--color-noir);
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 1px;
+  transition: color 0.2s ease;
 }
 
-.layout-e-btn-add {
-  background-color: var(--color-noir);
-  border: 1px solid var(--color-noir);
-  color: var(--color-soft-ivory);
-}
-
-.layout-e-btn-add:hover {
-  background-color: #2D2926;
+.layout-e-piece:hover .layout-e-piece-explore {
+  color: var(--color-terracotta);
 }

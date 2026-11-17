@@ -823,21 +823,18 @@ export class Flipbook {
   }
 
   attachProductTriggers(slot) {
-    // 1. Hotspot pin clicks & direct action buttons
+    // 1. Hotspot pin clicks open Product Detail Modal directly
     slot.querySelectorAll('.magazine-hotspot-pin').forEach(pin => {
       pin.addEventListener('click', (e) => {
         e.stopPropagation();
-        const sku = pin.dataset.productSku;
-        const card = pin.querySelector('.hotspot-card');
-        if (card) {
-          card.classList.toggle('active');
-        } else if (typeof this.onProductSelect === 'function') {
+        const sku = pin.dataset.productSku || pin.dataset.viewProduct;
+        if (typeof this.onProductSelect === 'function') {
           this.onProductSelect(sku);
         }
       });
     });
 
-    // 2. View details buttons inside hotspot card, chips, and product collections
+    // 2. View details triggers inside curated collection plates and editorial citations
     slot.querySelectorAll('[data-view-product]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -848,7 +845,7 @@ export class Flipbook {
       });
     });
 
-    // 3. Quick Add To Bag buttons inside hotspot card, chips, and product collections
+    // 3. Quick Add To Bag handlers (preserved for backward compatibility, not on magazine pages)
     slot.querySelectorAll('[data-quick-add]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -859,19 +856,6 @@ export class Flipbook {
         }
       });
     });
-
-    // 4. Shop chips trigger PDP
-    slot.querySelectorAll('[data-product-sku]').forEach(pill => {
-      if (pill.classList.contains('shop-chip-btn') || pill.classList.contains('layout-e-btn-inspect')) {
-        pill.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const sku = e.currentTarget.dataset.productSku;
-          if (typeof this.onProductSelect === 'function') {
-            this.onProductSelect(sku);
-          }
-        });
-      }
-    });
   }
 
   renderHotspots(products) {
@@ -880,17 +864,13 @@ export class Flipbook {
       const x = p.hotspot ? p.hotspot.x : (35 + idx * 30);
       const y = p.hotspot ? p.hotspot.y : (50 + idx * 12);
       return `
-        <div class="magazine-hotspot-pin" style="left:${x}%; top:${y}%;" data-product-sku="${p.sku}" title="Inspect ${p.label}">
+        <div class="magazine-hotspot-pin" style="left:${x}%; top:${y}%;" data-product-sku="${p.sku}" data-view-product="${p.sku}" title="${p.label}">
           <div class="hotspot-pulse"></div>
           <div class="hotspot-dot">✦</div>
           <div class="hotspot-card">
-            <span class="hotspot-card-badge">${p.badge || 'Featured Piece'}</span>
+            <span class="hotspot-card-badge">${p.badge || 'ATELIER PIECE'}</span>
             <strong class="hotspot-card-title">${p.label}</strong>
-            <span class="hotspot-card-price">${p.price}</span>
-            <div class="hotspot-card-actions">
-              <button class="hotspot-btn-view" data-view-product="${p.sku}">Inspect</button>
-              <button class="hotspot-btn-add" data-quick-add="${p.sku}">+ Add to Bag</button>
-            </div>
+            <span class="hotspot-card-tap">Tap to view editorial details ↗</span>
           </div>
         </div>
       `;
@@ -1108,21 +1088,15 @@ export class Flipbook {
           ` : ''}
 
           ${hasProducts ? `
-            <div class="page-shop-strip">
-              <span class="shop-strip-label">INSPECT FEATURED PIECES:</span>
-              <div class="shop-chips">
-                ${page.products.map(p => `
-                  <div class="shop-chip-group">
-                    <button class="shop-chip-btn" data-product-sku="${p.sku}" title="Inspect ${p.label}">
-                      <span class="chip-dot"></span>
-                      <span class="chip-name">${p.label}</span>
-                      <span class="chip-price">${p.price}</span>
-                      <span class="chip-arrow">↗</span>
-                    </button>
-                    <button class="shop-chip-add-btn" data-quick-add="${p.sku}" title="Add ${p.label} to bag">
-                      + Bag
-                    </button>
-                  </div>
+            <div class="layout-d-provenance">
+              <span class="provenance-label">PIECES IN SITU</span>
+              <div class="provenance-items">
+                ${page.products.map((p, idx) => `
+                  <button class="provenance-chip" data-view-product="${p.sku}" title="Explore ${p.label}">
+                    <span class="provenance-num">0${idx + 1}</span>
+                    <span class="provenance-name">${p.label}</span>
+                    <span class="provenance-arrow">↗</span>
+                  </button>
                 `).join('')}
               </div>
             </div>
@@ -1137,9 +1111,10 @@ export class Flipbook {
     }
 
     // =========================================================================
-    // LAYOUT E: PRODUCT COLLECTION
-    // Catalogue collection with product photography, names, specs, PKR prices,
-    // Inspect triggers, and Add to Bag buttons.
+    // LAYOUT E: CURATED COLLECTION EDIT
+    // Fine art architectural gallery of curated objects with elegant typography,
+    // generous negative space, refined dimensions & materials, and discreet
+    // tap triggers (NO shopping buttons or price tags on magazine pages).
     // =========================================================================
     if (page.type === 'layout-e') {
       const items = page.collectionItems || [];
@@ -1152,23 +1127,21 @@ export class Flipbook {
 
           <div class="layout-e-header">
             <h2 class="layout-e-title">${page.headline}</h2>
-            <p class="layout-e-deck">${page.deck || 'Architectural pieces with complete specifications.'}</p>
+            <p class="layout-e-deck">${page.deck || 'Architectural pieces designed in tonal and material harmony.'}</p>
           </div>
 
-          <div class="layout-e-grid">
-            ${items.map(item => `
-              <div class="layout-e-card">
-                <div class="layout-e-card-media">
+          <div class="layout-e-gallery">
+            ${items.map((item, idx) => `
+              <div class="layout-e-piece" data-view-product="${item.sku}" role="button" tabindex="0" title="Explore ${item.label}">
+                <div class="layout-e-piece-media">
                   <img src="${item.image}" alt="${item.label}" loading="lazy" />
+                  <span class="layout-e-piece-num">0${idx + 1}</span>
+                  <div class="layout-e-piece-hotspot">✦</div>
                 </div>
-                <div class="layout-e-card-body">
-                  <h4 class="layout-e-card-name">${item.label}</h4>
-                  <p class="layout-e-card-specs">${item.specs}</p>
-                  <span class="layout-e-card-price">${item.price}</span>
-                  <div class="layout-e-card-actions">
-                    <button class="layout-e-btn-inspect" data-view-product="${item.sku}">Inspect</button>
-                    <button class="layout-e-btn-add" data-quick-add="${item.sku}">+ Add to Bag</button>
-                  </div>
+                <div class="layout-e-piece-meta">
+                  <h4 class="layout-e-piece-title">${item.label}</h4>
+                  <p class="layout-e-piece-specs">${item.specs}</p>
+                  <span class="layout-e-piece-explore">View Editorial Plate ↗</span>
                 </div>
               </div>
             `).join('')}
