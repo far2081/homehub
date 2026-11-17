@@ -122,7 +122,7 @@ export class Flipbook {
     this.animateCurvedTurn('forward', () => {
       this.currentPageIndex = targetIndex;
       this.renderSpreadContent();
-    });
+    }, targetIndex);
   }
 
   prevPage() {
@@ -141,7 +141,7 @@ export class Flipbook {
     this.animateCurvedTurn('backward', () => {
       this.currentPageIndex = targetIndex;
       this.renderSpreadContent();
-    });
+    }, targetIndex);
   }
 
   goToPage(pageIdx) {
@@ -156,31 +156,106 @@ export class Flipbook {
         this.animateCurvedTurn('forward', () => {
           this.currentPageIndex = target;
           this.renderSpreadContent();
-        });
+        }, target);
       } else if (target < this.currentPageIndex) {
         this.animateCurvedTurn('backward', () => {
           this.currentPageIndex = target;
           this.renderSpreadContent();
-        });
+        }, target);
       }
     }
   }
 
   /**
-   * Natural Curved Page-Turn Engine
-   * Slices the turning leaf into 10 connected vertical strips with cylindrical curvature,
-   * specular highlights, dynamic under-leaf drop shadows, and progressive bending.
+   * Pre-renders the underlying background spread in #magazine-pages-slot.
+   * During the page-turn animation, the revealed destination page is ALREADY
+   * resting in place beneath the turning leaf from frame 0, completely
+   * eliminating visual pops, jumps, and flash-of-white at start and finish.
    */
-  animateCurvedTurn(direction, callback) {
+  renderUnderlyingSpread(direction, curPages, targetPages) {
+    const slot = this.container ? this.container.querySelector('#magazine-pages-slot') : null;
+    if (!slot) return;
+
+    let leftPage = null;
+    let rightPage = null;
+
+    if (this.isDesktopSpread) {
+      if (direction === 'forward') {
+        // Left page stays current; Right page already displays the incoming target right page
+        leftPage = curPages.leftPage;
+        rightPage = targetPages.rightPage;
+      } else {
+        // Left page already displays incoming target left page; Right page stays current
+        leftPage = targetPages.leftPage;
+        rightPage = curPages.rightPage;
+      }
+
+      slot.innerHTML = `
+        <div class="magazine-page page-left" data-page="${leftPage ? leftPage.pageNumber : ''}">
+          ${this.buildPageHTML(leftPage, 'left')}
+        </div>
+        <div class="magazine-page page-right" data-page="${rightPage ? rightPage.pageNumber : ''}">
+          ${this.buildPageHTML(rightPage, 'right')}
+        </div>
+      `;
+    } else {
+      // Single-page mobile view
+      rightPage = direction === 'forward' ? targetPages.rightPage : curPages.rightPage;
+      slot.innerHTML = `
+        <div class="magazine-page page-single" data-page="${rightPage ? rightPage.pageNumber : ''}">
+          ${this.buildPageHTML(rightPage, 'single')}
+        </div>
+      `;
+    }
+  }
+
+  /**
+   * Natural Curved Page-Turn Engine (Continuous 60 FPS GPU-Composited)
+   * Slices the turning leaf into 8 connected vertical strips with progressive cylindrical curvature,
+   * specular highlights, dynamic under-leaf drop shadows, and zero forced synchronous reflows.
+   */
+  animateCurvedTurn(direction, callback, explicitTargetIndex = null) {
+    if (this.isFlipping) return;
     this.isFlipping = true;
-    const viewport = this.container ? this.container.querySelector('.flipbook-viewport') : null;
-    if (!viewport) {
+
+    // Respect user's accessibility reduced-motion preference
+    const prefersReducedMotion = typeof window !== 'undefined' &&
+      window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (prefersReducedMotion) {
       callback();
       this.isFlipping = false;
       return;
     }
 
-    const { turningLeaf, strips, underShadow, pageWidth } = this.createCurvedTurningLeaf(direction);
+    const viewport = this.container ? this.container.querySelector('.flipbook-viewport') : null;
+    const slot = this.container ? this.container.querySelector('#magazine-pages-slot') : null;
+    if (!viewport || !slot) {
+      callback();
+      this.isFlipping = false;
+      return;
+    }
+
+    const total = this.getTotalPages();
+    const curPages = this.getSpreadPages(this.currentPageIndex);
+
+    let targetIndex = explicitTargetIndex !== null ? explicitTargetIndex : this.currentPageIndex;
+    if (explicitTargetIndex === null) {
+      if (direction === 'forward') {
+        const step = this.isDesktopSpread ? (this.currentPageIndex === 0 ? 1 : 2) : 1;
+        targetIndex = Math.min(total - 1, this.currentPageIndex + step);
+      } else {
+        const step = this.isDesktopSpread ? (this.currentPageIndex <= 2 ? this.currentPageIndex : 2) : 1;
+        targetIndex = Math.max(0, this.currentPageIndex - step);
+      }
+    }
+    const targetPages = this.getSpreadPages(targetIndex);
+
+    // Pre-mount underlying background spread so revealed page is visible immediately
+    this.renderUnderlyingSpread(direction, curPages, targetPages);
+
+    const { turningLeaf, strips, underShadow, pageWidth } = this.createCurvedTurningLeaf(direction, curPages, targetPages);
     if (!turningLeaf) {
       callback();
       this.isFlipping = false;
@@ -189,14 +264,19 @@ export class Flipbook {
 
     viewport.appendChild(turningLeaf);
 
-    const duration = 520; // Natural physical duration in ms
+    // Play tactile sound if audio is enabled
+    if (this.audioEnabled && sound && typeof sound.playPageTurn === 'function') {
+      sound.playPageTurn();
+    }
+
+    const duration = this.isDesktopSpread ? 480 : 420; // Natural hand-turn speed (ms)
     const startTime = performance.now();
 
     const frame = (now) => {
       const elapsed = now - startTime;
       const t = Math.min(1, elapsed / duration);
-      // Smooth natural cubic ease-in-out
-      const p = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+      // Continuous C2-smooth cosine ease-in-out (no sharp piecewise midpoint jerk)
+      const p = 0.5 - 0.5 * Math.cos(Math.PI * t);
 
       this.updateCurl(p, direction, strips, underShadow, pageWidth);
 
@@ -214,40 +294,48 @@ export class Flipbook {
     requestAnimationFrame(frame);
   }
 
-  createCurvedTurningLeaf(direction) {
+  createCurvedTurningLeaf(direction, curPages = null, targetPages = null) {
     const viewport = this.container.querySelector('.flipbook-viewport');
     if (!viewport) return { turningLeaf: null };
 
     const vpRect = viewport.getBoundingClientRect();
     const pageWidth = this.isDesktopSpread ? vpRect.width / 2 : vpRect.width;
-    const N = 10;
+    const N = 8; // 8 strips delivers seamless cylindrical curve with 20% lower GPU overhead
     const stripWidth = pageWidth / N;
 
-    // Determine current and target pages
-    const curPages = this.getSpreadPages(this.currentPageIndex);
+    // Resolve current and target pages if not provided
+    if (!curPages) curPages = this.getSpreadPages(this.currentPageIndex);
+    if (!targetPages) {
+      const total = this.getTotalPages();
+      let tIdx = this.currentPageIndex;
+      if (direction === 'forward') {
+        const step = this.isDesktopSpread ? (this.currentPageIndex === 0 ? 1 : 2) : 1;
+        tIdx = Math.min(total - 1, this.currentPageIndex + step);
+      } else {
+        const step = this.isDesktopSpread ? (this.currentPageIndex <= 2 ? this.currentPageIndex : 2) : 1;
+        tIdx = Math.max(0, this.currentPageIndex - step);
+      }
+      targetPages = this.getSpreadPages(tIdx);
+    }
+
+    // Determine correct front and back faces for the turning leaf:
+    // Forward: starts on right (front = cur right), turns to left (back = target left)
+    // Backward: starts on left (back = cur left), turns to right (front = target right)
     let frontPage = null;
     let backPage = null;
 
     if (direction === 'forward') {
       frontPage = curPages.rightPage;
-      const nextIdx = this.currentPageIndex === 0 && this.isDesktopSpread
-        ? 1
-        : (this.currentPageIndex + (this.isDesktopSpread ? 2 : 1));
-      const nextPages = this.getSpreadPages(nextIdx);
-      backPage = this.isDesktopSpread ? nextPages.leftPage : nextPages.rightPage;
+      backPage = this.isDesktopSpread ? targetPages.leftPage : targetPages.rightPage;
     } else {
-      frontPage = curPages.leftPage;
-      const prevIdx = this.currentPageIndex <= 2
-        ? 0
-        : (this.currentPageIndex - (this.isDesktopSpread ? 2 : 1));
-      const prevPages = this.getSpreadPages(prevIdx);
-      backPage = this.isDesktopSpread ? prevPages.rightPage : prevPages.leftPage;
+      frontPage = targetPages.rightPage;
+      backPage = curPages.leftPage;
     }
 
     const turningLeaf = document.createElement('div');
     turningLeaf.className = `flipbook-curved-leaf flip-${direction}`;
 
-    // Dynamic curved under-leaf drop shadow
+    // Dynamic curved under-leaf drop shadow (pre-blurred in CSS, zero layout recalculation)
     const underShadow = document.createElement('div');
     underShadow.className = 'flip-under-shadow';
     turningLeaf.appendChild(underShadow);
@@ -257,25 +345,33 @@ export class Flipbook {
     stripsTrack.className = 'flip-curved-strips-track';
     turningLeaf.appendChild(stripsTrack);
 
-    const frontHTML = this.buildPageHTML(frontPage, direction === 'forward' ? 'right' : 'left');
-    const backHTML = this.buildPageHTML(backPage, direction === 'forward' ? 'left' : 'right');
+    const frontHTML = this.buildPageHTML(frontPage, 'right');
+    const backHTML = this.buildPageHTML(backPage, 'left');
+
+    // Create template DOM nodes once and clone them for strips (avoiding 16x innerHTML HTML parsing)
+    const frontTemplate = document.createElement('div');
+    frontTemplate.className = 'strip-content-wrap';
+    frontTemplate.style.width = `${pageWidth}px`;
+    frontTemplate.innerHTML = frontHTML;
+
+    const backTemplate = document.createElement('div');
+    backTemplate.className = 'strip-content-wrap';
+    backTemplate.style.width = `${pageWidth}px`;
+    backTemplate.innerHTML = backHTML;
 
     const strips = [];
 
     for (let k = 0; k < N; k++) {
       const strip = document.createElement('div');
       strip.className = 'curved-strip';
-      strip.style.width = `${stripWidth + 0.9}px`; // 0.9px subpixel overlap ensures continuous sheet
+      strip.style.width = `${stripWidth + 0.8}px`; // Subpixel overlap ensures continuous sheet
       strip.style.left = '0px';
 
       // Front Face
       const frontFace = document.createElement('div');
       frontFace.className = 'strip-face strip-front';
-      const frontWrap = document.createElement('div');
-      frontWrap.className = 'strip-content-wrap';
-      frontWrap.style.width = `${pageWidth}px`;
+      const frontWrap = frontTemplate.cloneNode(true);
       frontWrap.style.transform = `translateX(-${k * stripWidth}px)`;
-      frontWrap.innerHTML = frontHTML;
       frontFace.appendChild(frontWrap);
 
       const frontGloss = document.createElement('div');
@@ -291,12 +387,9 @@ export class Flipbook {
       // Back Face
       const backFace = document.createElement('div');
       backFace.className = 'strip-face strip-back';
-      const backWrap = document.createElement('div');
-      backWrap.className = 'strip-content-wrap';
-      backWrap.style.width = `${pageWidth}px`;
       const backOffsetK = (N - 1 - k);
+      const backWrap = backTemplate.cloneNode(true);
       backWrap.style.transform = `translateX(-${backOffsetK * stripWidth}px)`;
-      backWrap.innerHTML = backHTML;
       backFace.appendChild(backWrap);
 
       const backGloss = document.createElement('div');
@@ -326,6 +419,7 @@ export class Flipbook {
   /**
    * Physically calculates 3D coordinates, progressive cylindrical bending angles,
    * specular glossy sheen, and curved drop shadows along the paper surface.
+   * Optimized for zero layout thrashing and steady 60 FPS compositor execution.
    */
   updateCurl(p, direction, strips, underShadow, pageWidth) {
     if (!strips || strips.length === 0) return;
@@ -333,84 +427,91 @@ export class Flipbook {
     const ds = pageWidth / N;
     const isForward = direction === 'forward';
 
-    // 1. Root angle progression (from 0 to -180 for forward, -180 to 0 for backward)
-    let rootAngle = 0;
-    let totalBend = 0;
-    let u_peak = 0.5;
+    // Linear root angle progression matching cosine-eased p:
+    // Forward: 0 deg -> -180 deg
+    // Backward: -180 deg -> 0 deg
+    const rootAngle = isForward ? -180 * p : -180 * (1 - p);
 
-    if (isForward) {
-      rootAngle = -180 * Math.pow(p, 1.35);
-      totalBend = -115 * Math.sin(Math.PI * p);
-      u_peak = 0.85 - 0.7 * p;
-    } else {
-      rootAngle = -180 + 180 * Math.pow(p, 1.35);
-      totalBend = 115 * Math.sin(Math.PI * p);
-      u_peak = 0.85 - 0.7 * p;
-    }
+    // Natural elastic paper curvature:
+    // Peaks gracefully at mid-turn (p = 0.5) with -65 deg natural cylinder bend
+    const sinP = Math.sin(Math.PI * p);
+    const totalBend = (isForward ? -65 : 65) * sinP;
 
-    const sigma = 0.28;
-    const weights = [];
+    // Peak of the curve moves smoothly across the leaf
+    const u_peak = 0.72 - 0.44 * p;
+    const sigma = 0.32;
+
+    // Distribute progressive curvature across strips using fast gaussian distribution
+    const angles = new Float32Array(N);
+    let curAngle = rootAngle;
+    angles[0] = curAngle;
+
+    let sumW = 0;
+    const weights = new Float32Array(N - 1);
     for (let i = 0; i < N - 1; i++) {
       const u = (i + 0.5) / (N - 1);
       const d = (u - u_peak) / sigma;
-      weights.push(Math.exp(-0.5 * d * d));
+      const w = Math.exp(-0.5 * d * d);
+      weights[i] = w;
+      sumW += w;
     }
-    const sumW = weights.reduce((a, b) => a + b, 0);
-    const deltaAngles = weights.map(w => (w / sumW) * totalBend);
+    const invSumW = totalBend / (sumW || 1);
 
-    // Compute strip angles
-    const angles = [rootAngle];
-    let curAngle = rootAngle;
-    for (const da of deltaAngles) {
-      curAngle += da;
-      angles.push(curAngle);
+    for (let i = 0; i < N - 1; i++) {
+      curAngle += weights[i] * invSumW;
+      angles[i + 1] = curAngle;
     }
 
     // Natural 3D paper arch lift towards viewer (Z axis)
-    const maxZ = 120 * Math.sin(Math.PI * p);
-    // Subtle diagonal corner curl tilt
-    const tiltZ = (isForward ? 1 : -1) * 4.5 * Math.sin(Math.PI * p);
+    // Moderate arch height: 65px avoids viewport clipping & jerky drops
+    const maxZ = 65 * sinP;
+    const tiltZ = (isForward ? 1 : -1) * 3.2 * sinP;
 
     let curX = 0;
     let curZ = 0;
+    const degToRad = Math.PI / 180;
 
     for (let k = 0; k < N; k++) {
       const seg = strips[k];
-      const rad = angles[k] * Math.PI / 180;
+      const ang = angles[k];
+      const rad = ang * degToRad;
       const startX = curX;
-      // Arch lift component along paper curve
       const archLift = maxZ * Math.sin(Math.PI * (k + 0.5) / N);
       const startZ = curZ + archLift;
 
-      // Advance to next strip position
       curX += Math.cos(rad) * ds;
       curZ += Math.sin(rad) * ds;
 
       const segTilt = tiltZ * (k / N);
 
       // Hardware-accelerated 3D transform for current strip
-      seg.el.style.transform = `translate3d(${startX.toFixed(1)}px, 0, ${startZ.toFixed(1)}px) rotateY(${angles[k].toFixed(2)}deg) rotateZ(${segTilt.toFixed(2)}deg)`;
+      seg.el.style.transform = `translate3d(${startX.toFixed(1)}px,0,${startZ.toFixed(1)}px) rotateY(${ang.toFixed(2)}deg) rotateZ(${segTilt.toFixed(2)}deg)`;
 
       // Dynamic Specular Gloss Shading (highlights the apex of the curved paper)
-      const lightFacing = Math.abs(angles[k] - (isForward ? -50 : -130));
-      const specularIntensity = Math.max(0, 1 - lightFacing / 35);
-      seg.frontGloss.style.opacity = (specularIntensity * 0.75).toFixed(2);
-      seg.backGloss.style.opacity = (Math.max(0, 1 - Math.abs(angles[k] - (isForward ? -130 : -50)) / 35) * 0.75).toFixed(2);
+      const lightFacingFront = Math.abs(ang - (isForward ? -50 : -130));
+      const frontSpec = Math.max(0, 1 - lightFacingFront / 38) * 0.7;
+      const lightFacingBack = Math.abs(ang - (isForward ? -130 : -50));
+      const backSpec = Math.max(0, 1 - lightFacingBack / 38) * 0.7;
 
-      // Ambient Concave Shadows
-      const shadowFactor = Math.sin(Math.PI * p) * (1 - k / N);
-      seg.frontShadow.style.opacity = (shadowFactor * 0.42).toFixed(2);
-      seg.backShadow.style.opacity = (shadowFactor * 0.35).toFixed(2);
+      seg.frontGloss.style.opacity = frontSpec > 0.02 ? frontSpec.toFixed(2) : '0';
+      seg.backGloss.style.opacity = backSpec > 0.02 ? backSpec.toFixed(2) : '0';
+
+      // Soft ambient self-shadowing
+      const shadowFactor = sinP * (1 - k / N);
+      const frontShadow = shadowFactor * 0.35;
+      const backShadow = shadowFactor * 0.28;
+
+      seg.frontShadow.style.opacity = frontShadow > 0.02 ? frontShadow.toFixed(2) : '0';
+      seg.backShadow.style.opacity = backShadow > 0.02 ? backShadow.toFixed(2) : '0';
     }
 
-    // Under-Leaf Curved Drop Shadow
+    // Under-Leaf Curved Drop Shadow (animate transform and opacity only, NO inline filter blur)
     if (underShadow) {
-      const shadowX = curX * 0.55;
-      const shadowOpacity = Math.sin(Math.PI * p) * 0.62;
-      const blurRadius = 12 + 16 * Math.sin(Math.PI * p);
-      underShadow.style.opacity = shadowOpacity.toFixed(2);
-      underShadow.style.filter = `blur(${blurRadius.toFixed(1)}px)`;
-      underShadow.style.transform = `translate3d(${shadowX.toFixed(1)}px, 0, 0) scaleX(${(0.6 + 0.5 * Math.sin(Math.PI * p)).toFixed(2)})`;
+      const shadowX = curX * 0.52;
+      const shadowOpacity = (sinP * 0.55).toFixed(2);
+      const scaleX = (0.65 + 0.45 * sinP).toFixed(2);
+      underShadow.style.opacity = shadowOpacity;
+      underShadow.style.transform = `translate3d(${shadowX.toFixed(1)}px,0,0) scaleX(${scaleX})`;
     }
   }
 
@@ -592,9 +693,25 @@ export class Flipbook {
       startTime = performance.now();
       this.isDragging = true;
 
+      // Determine target spread and pre-render underlying slot
+      const total = this.getTotalPages();
+      let targetIndex = this.currentPageIndex;
+      if (direction === 'forward') {
+        const step = this.isDesktopSpread ? (this.currentPageIndex === 0 ? 1 : 2) : 1;
+        targetIndex = Math.min(total - 1, this.currentPageIndex + step);
+      } else {
+        const step = this.isDesktopSpread ? (this.currentPageIndex <= 2 ? this.currentPageIndex : 2) : 1;
+        targetIndex = Math.max(0, this.currentPageIndex - step);
+      }
+      const curPages = this.getSpreadPages(this.currentPageIndex);
+      const targetPages = this.getSpreadPages(targetIndex);
+
+      this.renderUnderlyingSpread(direction, curPages, targetPages);
+
       // Create live turning leaf
-      activeDrag = this.createCurvedTurningLeaf(direction);
+      activeDrag = this.createCurvedTurningLeaf(direction, curPages, targetPages);
       if (activeDrag && activeDrag.turningLeaf) {
+        activeDrag.targetIndex = targetIndex;
         viewport.appendChild(activeDrag.turningLeaf);
         this.updateCurl(0, direction, activeDrag.strips, activeDrag.underShadow, activeDrag.pageWidth);
       }
@@ -631,31 +748,25 @@ export class Flipbook {
       const underShadow = activeDrag.underShadow;
       const pageWidth = activeDrag.pageWidth;
       const dir = direction;
+      const targetIndex = activeDrag.targetIndex;
 
       this.isFlipping = true;
 
       if (shouldFlip) {
-        // Complete the flip smoothly to 1.0
-        const animDuration = Math.max(180, (1 - p) * 420);
+        // Complete the flip smoothly to 1.0 with cosine ease
+        const animDuration = Math.max(160, (1 - p) * 380);
         const animStart = performance.now();
         const startP = p;
 
         const animateComplete = (now) => {
           const t = Math.min(1, (now - animStart) / animDuration);
-          const currentP = startP + (1 - startP) * (t * t * (3 - 2 * t));
+          const currentP = startP + (1 - startP) * (0.5 - 0.5 * Math.cos(Math.PI * t));
           this.updateCurl(currentP, dir, strips, underShadow, pageWidth);
 
           if (t < 1) {
             requestAnimationFrame(animateComplete);
           } else {
-            // Commit page turn
-            if (dir === 'forward') {
-              const step = this.isDesktopSpread ? (this.currentPageIndex === 0 ? 1 : 2) : 1;
-              this.currentPageIndex += step;
-            } else {
-              const step = this.isDesktopSpread ? (this.currentPageIndex <= 2 ? this.currentPageIndex : 2) : 1;
-              this.currentPageIndex = Math.max(0, this.currentPageIndex - step);
-            }
+            this.currentPageIndex = targetIndex;
             this.renderSpreadContent();
             if (leaf.parentNode) leaf.parentNode.removeChild(leaf);
             this.isFlipping = false;
@@ -664,19 +775,20 @@ export class Flipbook {
         };
         requestAnimationFrame(animateComplete);
       } else {
-        // Snap back to 0.0
-        const animDuration = Math.max(150, p * 320);
+        // Snap back to 0.0 with cosine ease
+        const animDuration = Math.max(140, p * 280);
         const animStart = performance.now();
         const startP = p;
 
         const animateSnap = (now) => {
           const t = Math.min(1, (now - animStart) / animDuration);
-          const currentP = startP * (1 - t * t);
+          const currentP = startP * (0.5 + 0.5 * Math.cos(Math.PI * t));
           this.updateCurl(currentP, dir, strips, underShadow, pageWidth);
 
           if (t < 1) {
             requestAnimationFrame(animateSnap);
           } else {
+            this.renderSpreadContent();
             if (leaf.parentNode) leaf.parentNode.removeChild(leaf);
             this.isFlipping = false;
             activeDrag = null;
