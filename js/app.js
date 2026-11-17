@@ -15,6 +15,7 @@ import { Wishlist } from './components/wishlist.js';
 import { VideoGallery } from './components/videoGallery.js';
 import { AdminPortal } from './components/admin.js';
 import { BookNavigation, BOOK_NAV_DATA } from './components/bookNavigation.js';
+import { CATEGORY_INSPIRATION_DATA } from './data/categoryInspiration.js';
 
 // Curated Collection and Category Definitions for Full-Page Webpage Views
 const COLLECTIONS = {
@@ -304,33 +305,95 @@ class HomeHubApp {
   }
 
   bindGlobalNavigation() {
-    // Dedicated HOME Buttons (Header, Drawer, Brand Logo)
-    const headerHomeBtn = document.getElementById('header-home-btn');
-    if (headerHomeBtn) {
-      headerHomeBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        this.showHomepage();
-      });
-    }
+    // Dedicated HOME Buttons (Header, Drawer, Brand Logo, Inner Pages)
+    const homeTriggers = [
+      document.getElementById('header-home-btn'),
+      document.getElementById('header-brand-logo'),
+      document.querySelector('.header-brand-mark'),
+      document.getElementById('mobile-drawer-home-btn'),
+      document.getElementById('header-nav-home'),
+      document.getElementById('shop-page-home-btn'),
+      document.getElementById('ideas-page-home-btn')
+    ];
 
-    const brandLogoLink = document.querySelector('.header-brand-mark');
-    if (brandLogoLink) {
-      brandLogoLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        this.showHomepage();
-      });
-    }
+    homeTriggers.forEach(btn => {
+      if (btn) {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          this.showHomepage();
+        });
+      }
+    });
 
-    const mobileDrawerHomeBtn = document.getElementById('mobile-drawer-home-btn');
-    if (mobileDrawerHomeBtn) {
-      mobileDrawerHomeBtn.addEventListener('click', (e) => {
+    // Primary Header Navigation Links: Shop, Interior Ideas, Magazines
+    const shopNavBtn = document.getElementById('header-nav-shop');
+    if (shopNavBtn) shopNavBtn.addEventListener('click', (e) => { e.preventDefault(); this.showShopView(); });
+
+    const ideasNavBtn = document.getElementById('header-nav-ideas');
+    if (ideasNavBtn) ideasNavBtn.addEventListener('click', (e) => { e.preventDefault(); this.showIdeasView(); });
+
+    const magazinesNavBtn = document.getElementById('header-nav-magazines');
+    if (magazinesNavBtn) magazinesNavBtn.addEventListener('click', (e) => { e.preventDefault(); this.showMagazinesView(); });
+
+    // Homepage Action Buttons
+    const heroShopBtn = document.getElementById('hero-btn-shop');
+    if (heroShopBtn) heroShopBtn.addEventListener('click', (e) => { e.preventDefault(); this.showShopView(); });
+
+    const heroIdeasBtn = document.getElementById('hero-btn-ideas');
+    if (heroIdeasBtn) heroIdeasBtn.addEventListener('click', (e) => { e.preventDefault(); this.showIdeasView(); });
+
+    const heroMagazinesBtn = document.getElementById('hero-btn-magazines');
+    if (heroMagazinesBtn) heroMagazinesBtn.addEventListener('click', (e) => { e.preventDefault(); this.showMagazinesView(); });
+
+    // Categories Dropdown Links (All 9 Categories)
+    document.querySelectorAll('.category-dropdown-item').forEach(item => {
+      item.addEventListener('click', (e) => {
         e.preventDefault();
+        const catId = item.dataset.cat;
+        if (catId) this.showCategoryView(catId);
+      });
+    });
+
+    // Homepage Category Rail Cards (All 9 Categories)
+    document.querySelectorAll('.home-cat-card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        e.preventDefault();
+        const catId = card.dataset.cat;
+        if (catId) this.showCategoryView(catId);
+      });
+    });
+
+    // Mobile Drawer Primary Links
+    const mobShop = document.getElementById('mobile-link-shop');
+    if (mobShop) mobShop.addEventListener('click', (e) => { e.preventDefault(); this.closeMobileDrawer(); this.showShopView(); });
+
+    const mobIdeas = document.getElementById('mobile-link-ideas');
+    if (mobIdeas) mobIdeas.addEventListener('click', (e) => { e.preventDefault(); this.closeMobileDrawer(); this.showIdeasView(); });
+
+    const mobMagazines = document.getElementById('mobile-link-magazines');
+    if (mobMagazines) mobMagazines.addEventListener('click', (e) => { e.preventDefault(); this.closeMobileDrawer(); this.showMagazinesView(); });
+
+    // Mobile Drawer 9 Room Category Links
+    document.querySelectorAll('.cat-mobile-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const catId = link.dataset.cat;
         this.closeMobileDrawer();
-        this.showHomepage();
+        if (catId) this.showCategoryView(catId);
       });
-    }
+    });
 
-    // Header Book Navigation Triggers (Furniture, Décor, Lighting, Living Room, Bedroom, Magazines)
+    // Mobile Drawer Utilities
+    const mobAccount = document.getElementById('mobile-link-account');
+    if (mobAccount) mobAccount.addEventListener('click', (e) => { e.preventDefault(); this.closeMobileDrawer(); this.openAccountModal(); });
+
+    const mobWishlist = document.getElementById('mobile-link-wishlist');
+    if (mobWishlist) mobWishlist.addEventListener('click', (e) => { e.preventDefault(); this.closeMobileDrawer(); this.wishlist.open(); });
+
+    const mobCart = document.getElementById('mobile-link-cart');
+    if (mobCart) mobCart.addEventListener('click', (e) => { e.preventDefault(); this.closeMobileDrawer(); this.cart.open(); });
+
+    // Header Book Navigation Triggers (Preserved for compatibility)
     document.querySelectorAll('.nav-book-trigger').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
@@ -705,88 +768,142 @@ class HomeHubApp {
     if (this.bookNav) this.bookNav.close();
     if (this.closeMobileDrawer) this.closeMobileDrawer();
 
+    const homeView = document.getElementById('home-view');
+    const shopView = document.getElementById('shop-view');
+    const ideasView = document.getElementById('ideas-view');
     const catPage = document.getElementById('category-page-view');
-    const magSection = document.getElementById('magazine-section');
 
+    if (homeView) homeView.style.display = 'block';
+    if (shopView) shopView.style.display = 'none';
+    if (ideasView) ideasView.style.display = 'none';
     if (catPage) catPage.style.display = 'none';
-    if (magSection) magSection.style.display = '';
 
-    // Deactivate any active book nav triggers
-    document.querySelectorAll('.nav-book-trigger').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.nav-item-link').forEach(l => l.classList.remove('active'));
+    const homeNav = document.getElementById('header-nav-home');
+    if (homeNav) homeNav.classList.add('active');
 
     window.history.pushState(null, '', '#home');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  openCollection(collectionKey) {
+  showShopView() {
     if (this.bookNav) this.bookNav.close();
     if (this.closeMobileDrawer) this.closeMobileDrawer();
 
-    const config = COLLECTIONS[collectionKey] || {
-      title: collectionKey.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
-      deck: 'Discover architectural pieces crafted for quiet luxury living.',
-      filter: (p) => p.category.toLowerCase().includes(collectionKey.toLowerCase())
-    };
+    const homeView = document.getElementById('home-view');
+    const shopView = document.getElementById('shop-view');
+    const ideasView = document.getElementById('ideas-view');
+    const catPage = document.getElementById('category-page-view');
 
-    this.showCategoryPageView({
-      id: collectionKey,
-      type: 'collection',
-      title: config.title,
-      deck: config.deck,
-      filter: config.filter
-    });
+    if (homeView) homeView.style.display = 'none';
+    if (shopView) shopView.style.display = 'block';
+    if (ideasView) ideasView.style.display = 'none';
+    if (catPage) catPage.style.display = 'none';
 
-    window.history.pushState(null, '', `#collection-${collectionKey}`);
+    document.querySelectorAll('.nav-item-link').forEach(l => l.classList.remove('active'));
+    const shopNav = document.getElementById('header-nav-shop');
+    if (shopNav) shopNav.classList.add('active');
+
+    if (this.catalogue) {
+      this.catalogue.setCategory('all');
+    }
+
+    window.history.pushState(null, '', '#shop');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  showIdeasView() {
+    if (this.bookNav) this.bookNav.close();
+    if (this.closeMobileDrawer) this.closeMobileDrawer();
+
+    const homeView = document.getElementById('home-view');
+    const shopView = document.getElementById('shop-view');
+    const ideasView = document.getElementById('ideas-view');
+    const catPage = document.getElementById('category-page-view');
+
+    if (homeView) homeView.style.display = 'none';
+    if (shopView) shopView.style.display = 'none';
+    if (ideasView) ideasView.style.display = 'block';
+    if (catPage) catPage.style.display = 'none';
+
+    document.querySelectorAll('.nav-item-link').forEach(l => l.classList.remove('active'));
+    const ideasNav = document.getElementById('header-nav-ideas');
+    if (ideasNav) ideasNav.classList.add('active');
+
+    if (this.videoGallery) {
+      this.videoGallery.setCategory('all');
+    }
+
+    window.history.pushState(null, '', '#ideas');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  showMagazinesView() {
+    if (this.bookNav) this.bookNav.close();
+    if (this.closeMobileDrawer) this.closeMobileDrawer();
+
+    const homeView = document.getElementById('home-view');
+    const shopView = document.getElementById('shop-view');
+    const ideasView = document.getElementById('ideas-view');
+    const catPage = document.getElementById('category-page-view');
+
+    if (homeView) homeView.style.display = 'block';
+    if (shopView) shopView.style.display = 'none';
+    if (ideasView) ideasView.style.display = 'none';
+    if (catPage) catPage.style.display = 'none';
+
+    document.querySelectorAll('.nav-item-link').forEach(l => l.classList.remove('active'));
+    const magNav = document.getElementById('header-nav-magazines');
+    if (magNav) magNav.classList.add('active');
+
+    window.history.pushState(null, '', '#magazines');
+    const magSection = document.getElementById('magazine-section');
+    if (magSection) {
+      magSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  openCollection(collectionKey) {
+    this.showCategoryView(collectionKey);
   }
 
   openCategory(categoryKey) {
-    if (this.bookNav) this.bookNav.close();
-    if (this.closeMobileDrawer) this.closeMobileDrawer();
-
-    const config = COLLECTIONS[categoryKey] || {
-      title: categoryKey.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
-      deck: 'Curated architectural furniture, décor, and lighting collections.',
-      filter: (p) => p.category === categoryKey
-    };
-
-    this.showCategoryPageView({
-      id: categoryKey,
-      type: 'category',
-      title: config.title,
-      deck: config.deck,
-      filter: config.filter
-    });
-
-    window.history.pushState(null, '', `#category-${categoryKey}`);
+    this.showCategoryView(categoryKey);
   }
 
-  showCategoryPageView(config) {
+  showCategoryView(categoryKey) {
     if (this.bookNav) this.bookNav.close();
     if (this.closeMobileDrawer) this.closeMobileDrawer();
 
-    const magSection = document.getElementById('magazine-section');
+    const homeView = document.getElementById('home-view');
+    const shopView = document.getElementById('shop-view');
+    const ideasView = document.getElementById('ideas-view');
     const catPage = document.getElementById('category-page-view');
     const container = document.getElementById('category-page-container');
 
-    if (magSection) magSection.style.display = 'none';
+    if (homeView) homeView.style.display = 'none';
+    if (shopView) shopView.style.display = 'none';
+    if (ideasView) ideasView.style.display = 'none';
     if (catPage) catPage.style.display = 'block';
 
     if (!container) return;
 
-    const filtered = this.products.filter(config.filter || (() => true));
-    const items = filtered.length > 0 ? filtered : this.products.slice(0, 6);
+    // Resolve category data from CATEGORY_INSPIRATION_DATA or fallback
+    const catData = CATEGORY_INSPIRATION_DATA[categoryKey] || CATEGORY_INSPIRATION_DATA['furniture'];
+    const items = this.products.filter(catData.productFilter || (() => true));
 
     container.innerHTML = `
       <div class="category-page-nav-bar">
-        <div class="page-breadcrumb">
-          <a href="#home" class="breadcrumb-link" id="cat-crumb-home">HomeHub</a>
+        <div class="category-breadcrumb">
+          <a href="#home" class="breadcrumb-home-link">HomeHub</a>
           <span class="breadcrumb-sep">/</span>
-          <span class="breadcrumb-current">${config.title}</span>
+          <span>Categories</span>
+          <span class="breadcrumb-sep">/</span>
+          <span class="breadcrumb-current">${catData.name}</span>
         </div>
-        <div class="category-page-nav-actions">
-          <button class="page-home-btn" id="cat-page-home-btn" aria-label="Return to Magazine Home">
-            <span class="home-icon">🏠</span>
-            <span>HOME</span>
+        <div class="category-nav-actions">
+          <button class="page-home-btn" id="cat-page-home-btn" aria-label="Return to Homepage">
+            <span>🏠 HOME</span>
           </button>
           <button class="page-back-btn" id="cat-page-back-btn" aria-label="Go Back">
             <span>← Back</span>
@@ -794,74 +911,147 @@ class HomeHubApp {
         </div>
       </div>
 
-      <header class="category-page-hero">
-        <div class="page-hero-eyebrow">
-          <span class="eyebrow-bullet">✦</span>
-          <span>HOMEHUB ATELIER ${config.type ? config.type.toUpperCase() : 'COLLECTION'}</span>
+      <!-- Category Hero Banner with Genuine Interior Photography -->
+      <section class="cat-hero-banner">
+        <div class="cat-hero-media" style="background-image: url('${catData.heroImage}');">
+          <div class="cat-hero-overlay">
+            <span class="cat-hero-eyebrow">✦ HOMEHUB ATELIER • ${catData.name.toUpperCase()}</span>
+            <h1 class="cat-hero-title">${catData.title}</h1>
+            <p class="cat-hero-deck">${catData.deck}</p>
+            <div class="cat-hero-meta-row">
+              <span class="cat-hero-badge">${items.length} Curated In-Stock Pieces</span>
+              <span>•</span>
+              <span>White-Glove Staged Delivery in Pakistan</span>
+              <span>•</span>
+              <span>5-Year Structural Warranty</span>
+            </div>
+          </div>
         </div>
-        <h1 class="page-hero-title">${config.title}</h1>
-        <p class="page-hero-deck">${config.deck || 'Architectural pieces handcrafted for quiet luxury living.'}</p>
-        <div class="page-hero-meta">
-          <span class="piece-count-badge">${items.length} Architectural Pieces</span>
-          <span class="hero-meta-divider">•</span>
-          <span class="hero-meta-note">Handcrafted with Solid Hardwoods & Natural Stone</span>
-        </div>
-      </header>
+      </section>
 
-      <div class="category-products-grid">
-        ${items.map(p => `
-          <article class="category-product-card" data-sku="${p.id}">
-            <div class="cat-card-media" style="background-image: url('${p.images && p.images[0] ? p.images[0] : ''}');">
-              <span class="cat-card-tag">${p.category.toUpperCase()}</span>
+      <!-- Section: Interior Design Inspiration & Room Styling Guides -->
+      <section class="cat-editorial-section">
+        <div class="cat-section-header">
+          <span class="cat-section-kicker">INTERIOR DESIGN INSPIRATION & STYLING GUIDANCE</span>
+          <h2 class="cat-section-title">Architectural Placement & Principles</h2>
+          <p class="cat-section-subhead">
+            Expert room styling strategies to balance proportions, optimize flow, and compose a tranquil atmosphere.
+          </p>
+        </div>
+
+        <!-- 3 Principles Grid -->
+        <div class="cat-principles-grid">
+          ${catData.stylingPrinciples.map(sp => `
+            <article class="cat-principle-card">
+              <span class="cat-principle-tag">${sp.tag}</span>
+              <h3 class="cat-principle-title">${sp.title}</h3>
+              <p class="cat-principle-text">${sp.text}</p>
+            </article>
+          `).join('')}
+        </div>
+
+        <!-- Video Masterclass Card -->
+        <div class="cat-video-showcase">
+          <div class="cat-video-preview-col" data-video-id="${catData.makeoverVideo.id}">
+            <img src="${catData.makeoverVideo.thumbnail}" alt="${catData.makeoverVideo.title}" class="cat-video-preview-thumb" />
+            <div class="cat-video-play-overlay">
+              <div class="cat-video-play-icon">▶</div>
             </div>
-            <div class="cat-card-body">
-              <div class="cat-card-meta">
-                <span class="cat-card-material">${p.material || 'Architectural Object'}</span>
-                <h3 class="cat-card-title">${p.name}</h3>
-                <p class="cat-card-desc">${p.description || ''}</p>
+          </div>
+          <div class="cat-video-info-col">
+            <span class="cat-video-badge">ROOM MAKEOVER VIDEO • ${catData.makeoverVideo.duration}</span>
+            <h3 class="cat-video-title">${catData.makeoverVideo.title}</h3>
+            <p class="cat-video-desc">${catData.makeoverVideo.description}</p>
+            <h4 class="cat-video-takeaways-title">Key Architectural Principles:</h4>
+            <ul class="cat-video-takeaways-list">
+              ${catData.makeoverVideo.takeaways.map(t => `<li>${t}</li>`).join('')}
+            </ul>
+            <button class="cat-watch-video-btn" data-video-id="${catData.makeoverVideo.id}">
+              <span>Watch Masterclass</span>
+              <span>▶</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Before & After Transformation Study -->
+        <div class="cat-ba-card">
+          <span class="cat-ba-tag">${catData.beforeAfter.tag}</span>
+          <div class="cat-ba-item">
+            <h5>Before Makeover</h5>
+            <p>${catData.beforeAfter.before}</p>
+          </div>
+          <div class="cat-ba-item">
+            <h5>After Architectural Styling</h5>
+            <p>${catData.beforeAfter.after}</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Product Listing & Shopping Grid -->
+      <section class="cat-products-section">
+        <div class="cat-section-header">
+          <span class="cat-section-kicker">ATELIER CATALOGUE</span>
+          <h2 class="cat-section-title">${catData.name} Furniture & Décor Collection</h2>
+          <p class="cat-section-subhead">
+            Handcrafted with solid FSC-certified hardwoods, honed travertine stone, and Italian textured bouclé.
+          </p>
+        </div>
+
+        <div class="category-products-grid">
+          ${items.map(p => `
+            <article class="category-product-card" data-sku="${p.id}">
+              <div class="cat-card-media" style="background-image: url('${p.images && p.images[0] ? (p.images[0].url || p.images[0]) : ''}');">
+                <span class="cat-card-tag">${p.categoryLabel ? p.categoryLabel.toUpperCase() : p.category.toUpperCase()}</span>
               </div>
-              <div class="cat-card-footer">
-                <div class="cat-card-price-wrap">
-                  <span class="cat-card-price-label">Price</span>
-                  <span class="cat-card-price">${formatPKR ? formatPKR(p.price) : `₨ ${p.price.toLocaleString()}`}</span>
+              <div class="cat-card-body">
+                <div class="cat-card-meta">
+                  <span class="cat-card-material">${p.material || 'Architectural Object'}</span>
+                  <h3 class="cat-card-title">${p.name}</h3>
+                  <p class="cat-card-desc">${p.shortDesc || p.description || ''}</p>
                 </div>
-                <button class="cat-card-add-btn" data-sku="${p.id}" aria-label="Add ${p.name} to Shopping Bag">
-                  <span>Add to Bag</span>
-                  <span>+</span>
-                </button>
+                <div class="cat-card-footer">
+                  <div class="cat-card-price-wrap">
+                    <span class="cat-card-price-label">Price in PKR</span>
+                    <span class="cat-card-price">${formatPKR ? formatPKR(p.price) : `₨ ${p.price.toLocaleString()}`}</span>
+                  </div>
+                  <button class="cat-card-add-btn" data-sku="${p.id}" aria-label="Add ${p.name} to Shopping Bag">
+                    <span>Add to Bag</span>
+                    <span>+</span>
+                  </button>
+                </div>
               </div>
-            </div>
-          </article>
-        `).join('')}
-      </div>
+            </article>
+          `).join('')}
+        </div>
+      </section>
     `;
 
-    // Bind Category Page buttons
+    // Event listeners
     const homeBtn = container.querySelector('#cat-page-home-btn');
-    if (homeBtn) {
-      homeBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        this.showHomepage();
-      });
-    }
+    if (homeBtn) homeBtn.addEventListener('click', (e) => { e.preventDefault(); this.showHomepage(); });
 
-    const crumbHome = container.querySelector('#cat-crumb-home');
-    if (crumbHome) {
-      crumbHome.addEventListener('click', (e) => {
-        e.preventDefault();
-        this.showHomepage();
-      });
-    }
+    const crumbHome = container.querySelector('.breadcrumb-home-link');
+    if (crumbHome) crumbHome.addEventListener('click', (e) => { e.preventDefault(); this.showHomepage(); });
 
     const backBtn = container.querySelector('#cat-page-back-btn');
-    if (backBtn) {
-      backBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        window.history.back();
+    if (backBtn) backBtn.addEventListener('click', (e) => { e.preventDefault(); window.history.back(); });
+
+    // Video play triggers
+    const videoTrigger = container.querySelector('.cat-video-preview-col');
+    if (videoTrigger && this.videoGallery) {
+      videoTrigger.addEventListener('click', () => {
+        this.videoGallery.openVideoModal(catData.makeoverVideo.id);
       });
     }
 
-    // Product card click opens PDP modal
+    const watchBtn = container.querySelector('.cat-watch-video-btn');
+    if (watchBtn && this.videoGallery) {
+      watchBtn.addEventListener('click', () => {
+        this.videoGallery.openVideoModal(catData.makeoverVideo.id);
+      });
+    }
+
+    // Product card PDP triggers
     container.querySelectorAll('.category-product-card').forEach(card => {
       card.addEventListener('click', (e) => {
         if (e.target.closest('.cat-card-add-btn')) return;
@@ -888,6 +1078,7 @@ class HomeHubApp {
       });
     });
 
+    window.history.pushState(null, '', `#category-${categoryKey}`);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -902,10 +1093,10 @@ class HomeHubApp {
       this.openProduct(sku);
     } else if (target.startsWith('collection:')) {
       const col = target.replace('collection:', '');
-      this.openCollection(col);
+      this.showCategoryView(col);
     } else if (target.startsWith('category:')) {
       const cat = target.replace('category:', '');
-      this.openCategory(cat);
+      this.showCategoryView(cat);
     }
   }
 
@@ -913,15 +1104,21 @@ class HomeHubApp {
     const hash = window.location.hash;
     if (hash === '#home' || hash === '' || hash === '#') {
       this.showHomepage();
+    } else if (hash === '#shop') {
+      this.showShopView();
+    } else if (hash === '#ideas' || hash === '#inspiration') {
+      this.showIdeasView();
+    } else if (hash === '#magazines') {
+      this.showMagazinesView();
+    } else if (hash.startsWith('#category-')) {
+      const catKey = hash.replace('#category-', '');
+      this.showCategoryView(catKey);
+    } else if (hash.startsWith('#collection-')) {
+      const colKey = hash.replace('#collection-', '');
+      this.showCategoryView(colKey);
     } else if (hash.startsWith('#book-nav-')) {
       const bookKey = hash.replace('#book-nav-', '');
       if (this.bookNav) this.bookNav.open(bookKey);
-    } else if (hash.startsWith('#collection-')) {
-      const colKey = hash.replace('#collection-', '');
-      this.openCollection(colKey);
-    } else if (hash.startsWith('#category-')) {
-      const catKey = hash.replace('#category-', '');
-      this.openCategory(catKey);
     } else if (hash.startsWith('#book-')) {
       const match = hash.match(/^#book-(living-edit|objects-of-home|light-life|small-spaces)(?:-page-(\d+))?$/);
       if (match) {

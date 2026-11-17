@@ -70,14 +70,72 @@
         </button>
       </div>
 
-      <!-- Book-Style Header Navigation: Every button opens its own book-like window -->
-      <nav class="header-nav" role="navigation" aria-label="Book Navigation">
-        <button class="nav-book-trigger" data-nav-book="furniture" title="Open Furniture Book">Furniture</button>
-        <button class="nav-book-trigger" data-nav-book="decor" title="Open Décor Book">Décor</button>
-        <button class="nav-book-trigger" data-nav-book="lighting" title="Open Lighting Book">Lighting</button>
-        <button class="nav-book-trigger" data-nav-book="living-room" title="Open Living Room Book">Living Room</button>
-        <button class="nav-book-trigger" data-nav-book="bedroom" title="Open Bedroom Book">Bedroom</button>
-        <button class="nav-book-trigger" data-nav-book="magazines" title="Open Magazines Book">Magazines</button>
+      <!-- Professional Shopping Header Navigation: Home • Shop • Categories • Interior Ideas • Magazines -->
+      <nav class="header-nav" role="navigation" aria-label="Main Navigation">
+        <ul class="header-nav-list">
+          <li>
+            <a href="#home" class="nav-item-link" id="header-nav-home">Home</a>
+          </li>
+          <li>
+            <a href="#shop" class="nav-item-link" id="header-nav-shop">Shop</a>
+          </li>
+          <li class="categories-nav-wrapper" id="header-categories-wrapper">
+            <button class="nav-item-link" id="header-nav-categories" aria-haspopup="true" aria-expanded="false">
+              <span>Categories</span>
+              <span class="nav-dropdown-chevron">▼</span>
+            </button>
+            <div class="categories-dropdown-menu" role="menu" aria-label="Room Categories">
+              <div class="categories-dropdown-header">
+                <span class="label">Explore 9 Room Categories</span>
+                <a href="#shop" class="view-all-link">Browse Full Catalogue →</a>
+              </div>
+              <div class="categories-dropdown-grid">
+                <a href="#category-bedroom" class="category-dropdown-item" data-cat="bedroom">
+                  <span class="cat-drop-title">🛏️ Bedroom</span>
+                  <span class="cat-drop-desc">Platform beds & circadian rest</span>
+                </a>
+                <a href="#category-living-room" class="category-dropdown-item" data-cat="living-room">
+                  <span class="cat-drop-title">🛋️ Living Room</span>
+                  <span class="cat-drop-desc">Curved bouclé & travertine</span>
+                </a>
+                <a href="#category-dining-room" class="category-dropdown-item" data-cat="dining-room">
+                  <span class="cat-drop-title">🍽️ Dining Room</span>
+                  <span class="cat-drop-desc">Monolithic stone & seating</span>
+                </a>
+                <a href="#category-furniture" class="category-dropdown-item" data-cat="furniture">
+                  <span class="cat-drop-title">🪑 Furniture</span>
+                  <span class="cat-drop-desc">Heirloom FSC hardwoods</span>
+                </a>
+                <a href="#category-small-spaces" class="category-dropdown-item" data-cat="small-spaces">
+                  <span class="cat-drop-title">📐 Small Spaces</span>
+                  <span class="cat-drop-desc">Nested consoles & micro-living</span>
+                </a>
+                <a href="#category-kitchen" class="category-dropdown-item" data-cat="kitchen">
+                  <span class="cat-drop-title">🍳 Kitchen</span>
+                  <span class="cat-drop-desc">Stone counters & pendant glow</span>
+                </a>
+                <a href="#category-lighting" class="category-dropdown-item" data-cat="lighting">
+                  <span class="cat-drop-title">💡 Lighting</span>
+                  <span class="cat-drop-desc">2700K ambient illumination</span>
+                </a>
+                <a href="#category-decor" class="category-dropdown-item" data-cat="decor">
+                  <span class="cat-drop-title">🏺 Home Décor</span>
+                  <span class="cat-drop-desc">Ceramic vessels & plaster art</span>
+                </a>
+                <a href="#category-storage" class="category-dropdown-item" data-cat="storage">
+                  <span class="cat-drop-title">🗄️ Storage Solutions</span>
+                  <span class="cat-drop-desc">Floating credenzas & cables</span>
+                </a>
+              </div>
+            </div>
+          </li>
+          <li>
+            <a href="#ideas" class="nav-item-link" id="header-nav-ideas">Interior Ideas</a>
+          </li>
+          <li>
+            <a href="#magazines" class="nav-item-link" id="header-nav-magazines">Magazines</a>
+          </li>
+        </ul>
       </nav>
 
       <!-- Header Utilities -->
@@ -131,45 +189,84 @@
 
     <div class="mobile-nav-body">
       <!-- Prominent Mobile HOME Button -->
-      <div class="mobile-nav-home-wrap">
-        <button class="mobile-nav-home-btn" id="mobile-drawer-home-btn">
+      <div class="mobile-nav-home-wrap" style="margin-bottom: 1.5rem;">
+        <button class="page-home-btn" id="mobile-drawer-home-btn" style="width: 100%; justify-content: center; padding: 12px;">
           <span>🏠 HOME (Library Homepage)</span>
-          <span class="arrow">→</span>
         </button>
       </div>
 
-      <div class="mobile-nav-group-title">Book-Style Navigation Windows</div>
+      <div class="mobile-nav-group-title">Primary Navigation</div>
       <div class="mobile-nav-links">
-        <button class="mobile-nav-link nav-book-trigger" data-nav-book="furniture">
-          <span>📖 Furniture Atelier Book</span>
+        <a href="#shop" class="mobile-nav-link" id="mobile-link-shop">
+          <span>🛍️ Shop All Products</span>
           <span class="arrow">→</span>
-        </button>
-        <button class="mobile-nav-link nav-book-trigger" data-nav-book="decor">
-          <span>📖 Décor Objects Book</span>
+        </a>
+        <a href="#ideas" class="mobile-nav-link" id="mobile-link-ideas">
+          <span>🎬 Interior Ideas & Masterclasses</span>
           <span class="arrow">→</span>
-        </button>
-        <button class="mobile-nav-link nav-book-trigger" data-nav-book="lighting">
-          <span>📖 Lighting & Life Book</span>
+        </a>
+        <a href="#magazines" class="mobile-nav-link" id="mobile-link-magazines">
+          <span>📖 3D Digital Magazines (4 Volumes)</span>
           <span class="arrow">→</span>
-        </button>
-        <button class="mobile-nav-link nav-book-trigger" data-nav-book="living-room">
-          <span>📖 Living Room Salon Book</span>
+        </a>
+      </div>
+
+      <div class="mobile-nav-group-title">9 Room Categories</div>
+      <div class="mobile-nav-links" style="gap: 0.75rem;">
+        <a href="#category-bedroom" class="mobile-nav-link cat-mobile-link" data-cat="bedroom">
+          <span style="font-size: 1.15rem;">🛏️ Bedroom</span>
           <span class="arrow">→</span>
-        </button>
-        <button class="mobile-nav-link nav-book-trigger" data-nav-book="bedroom">
-          <span>📖 Bedroom Sanctuary Book</span>
+        </a>
+        <a href="#category-living-room" class="mobile-nav-link cat-mobile-link" data-cat="living-room">
+          <span style="font-size: 1.15rem;">🛋️ Living Room</span>
           <span class="arrow">→</span>
-        </button>
-        <button class="mobile-nav-link nav-book-trigger" data-nav-book="magazines">
-          <span>📖 3D Magazines Book</span>
+        </a>
+        <a href="#category-dining-room" class="mobile-nav-link cat-mobile-link" data-cat="dining-room">
+          <span style="font-size: 1.15rem;">🍽️ Dining Room</span>
           <span class="arrow">→</span>
-        </button>
+        </a>
+        <a href="#category-furniture" class="mobile-nav-link cat-mobile-link" data-cat="furniture">
+          <span style="font-size: 1.15rem;">🪑 Furniture</span>
+          <span class="arrow">→</span>
+        </a>
+        <a href="#category-small-spaces" class="mobile-nav-link cat-mobile-link" data-cat="small-spaces">
+          <span style="font-size: 1.15rem;">📐 Small Spaces</span>
+          <span class="arrow">→</span>
+        </a>
+        <a href="#category-kitchen" class="mobile-nav-link cat-mobile-link" data-cat="kitchen">
+          <span style="font-size: 1.15rem;">🍳 Kitchen</span>
+          <span class="arrow">→</span>
+        </a>
+        <a href="#category-lighting" class="mobile-nav-link cat-mobile-link" data-cat="lighting">
+          <span style="font-size: 1.15rem;">💡 Lighting</span>
+          <span class="arrow">→</span>
+        </a>
+        <a href="#category-decor" class="mobile-nav-link cat-mobile-link" data-cat="decor">
+          <span style="font-size: 1.15rem;">🏺 Home Décor</span>
+          <span class="arrow">→</span>
+        </a>
+        <a href="#category-storage" class="mobile-nav-link cat-mobile-link" data-cat="storage">
+          <span style="font-size: 1.15rem;">🗄️ Storage Solutions</span>
+          <span class="arrow">→</span>
+        </a>
       </div>
 
       <div class="mobile-nav-group-title">Atelier & Utilities</div>
       <div class="mobile-nav-links">
-        <a href="#admin" class="mobile-nav-link admin-open-trigger" onclick="document.getElementById('mobile-nav-close').click()">
-          <span>🔑 Admin Portal</span>
+        <button class="mobile-nav-link" id="mobile-link-account" style="background:none;border:none;width:100%;cursor:pointer;">
+          <span style="font-size: 1.15rem;">👤 Client Atelier Profile</span>
+          <span class="arrow">→</span>
+        </button>
+        <button class="mobile-nav-link" id="mobile-link-wishlist" style="background:none;border:none;width:100%;cursor:pointer;">
+          <span style="font-size: 1.15rem;">❤️ Saved Wishlist</span>
+          <span class="arrow">→</span>
+        </button>
+        <button class="mobile-nav-link" id="mobile-link-cart" style="background:none;border:none;width:100%;cursor:pointer;">
+          <span style="font-size: 1.15rem;">🛍️ Shopping Bag</span>
+          <span class="arrow">→</span>
+        </button>
+        <a href="#admin" class="mobile-nav-link admin-open-trigger">
+          <span style="font-size: 1.15rem;">🔑 Admin Console</span>
           <span class="arrow">→</span>
         </a>
       </div>
@@ -185,137 +282,382 @@
   <!-- Main Content Landmark -->
   <main id="main-content" role="main">
 
-    <!-- SECTION 1: 3D Flipbook Magazine Experience (Primary HomeHub Visual Experience) -->
-    <section class="magazine-section-wrapper" id="magazine-section" aria-label="Interactive 3D Interior Magazine">
-      <div class="container">
-        <div class="section-intro-block">
-          <span class="section-kicker">Interactive 3D Editorial</span>
-          <h2 class="section-title">The Four Digital Books</h2>
-          <p class="section-subtitle">
-            Experience realistic physical page-turning with natural spine binding, paper shadows, and audio. Tap any piece inside the magazine spreads to open its specifications.
+    <!-- VIEW 1: HOME VIEW (Hero, Category Rail, Featured Ideas, 4 Digital Magazines) -->
+    <div class="home-view-wrapper" id="home-view">
+      
+      <!-- Brand Hero Section -->
+      <section class="home-hero-section">
+        <div class="container home-hero-content">
+          <span class="home-hero-eyebrow">✦ SHOP • STYLE • SMART — SOFT LUXURY MODERN</span>
+          <h1 class="home-hero-title">Interior Inspiration, Room Makeovers & Architectural Living</h1>
+          <p class="home-hero-deck">
+            Welcome to HomeHub — an independent interior design publication and architectural home collection based in Pakistan. Explore room makeover masterclasses, small-space solutions, and handcrafted heirloom furniture.
           </p>
+          <div class="home-hero-actions">
+            <a href="#shop" class="home-action-btn-primary" id="hero-btn-shop">
+              <span>🛍️ Explore Shop Collection</span>
+              <span>→</span>
+            </a>
+            <a href="#ideas" class="home-action-btn-secondary" id="hero-btn-ideas">
+              <span>🎬 Interior Ideas & Masterclasses</span>
+            </a>
+            <a href="#magazines" class="home-action-btn-secondary" id="hero-btn-magazines">
+              <span>📖 The 4 Digital Magazines</span>
+            </a>
+          </div>
         </div>
+      </section>
 
-        <!-- Four Digital Books Editorial Shelf Showcase -->
-        <div class="magazine-shelf-showcase" aria-label="Editorial Editions Library">
-          <div class="magazine-shelf-grid">
-            <!-- Book 1: The Living Edit -->
-            <article class="magazine-shelf-card" onclick="window.homeHub.openBook('living-edit')">
-              <div class="shelf-card-media" style="background-image: url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=85');">
-                <div class="shelf-card-top">
-                  <img src="assets/logo-mark.svg" alt="HomeHub" class="shelf-card-brand-mark" />
-                  <span class="shelf-card-vol">Vol. 01</span>
-                </div>
-                <div class="shelf-card-meta">
-                  <h3 class="shelf-card-title">The Living Edit</h3>
-                  <p class="shelf-card-subtitle">Fluid Forms & Monolithic Travertine</p>
-                </div>
+      <!-- 9 Room Categories Exploration Rail -->
+      <section class="home-categories-rail-section" id="home-categories-section">
+        <div class="container">
+          <div class="home-section-head-wrap">
+            <div>
+              <span class="home-section-kicker">CURATED ROOM TYPOLOGIES</span>
+              <h2 class="home-section-heading">Explore by Room & Collection</h2>
+            </div>
+            <a href="#shop" class="home-action-btn-secondary" style="padding: 8px 18px; font-size: 0.8rem;">
+              <span>View All 14 Pieces →</span>
+            </a>
+          </div>
+
+          <div class="home-categories-grid">
+            <!-- 1. Bedroom -->
+            <a href="#category-bedroom" class="home-cat-card" data-cat="bedroom">
+              <div class="home-cat-card-media" style="background-image: url('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1000&q=85');"></div>
+              <div class="home-cat-card-overlay">
+                <span class="home-cat-arrow">→</span>
+                <h3 class="home-cat-title">🛏️ Bedroom</h3>
+                <p class="home-cat-subtitle">Platform joinery & circadian rest</p>
               </div>
-              <div class="shelf-card-body">
-                <ul class="shelf-card-lines">
-                  <li><span class="bullet">✦</span> The Architecture of Rest: CloudCurve</li>
-                  <li><span class="bullet">✦</span> Geological Permanence: Noma Table</li>
-                  <li><span class="bullet">✦</span> 42cm Low Horizons in Situ</li>
-                </ul>
-                <button class="shelf-card-btn" aria-label="Open The Living Edit">
-                  <span>Open Magazine</span>
+            </a>
+
+            <!-- 2. Living Room -->
+            <a href="#category-living-room" class="home-cat-card" data-cat="living-room">
+              <div class="home-cat-card-media" style="background-image: url('https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1000&q=85');"></div>
+              <div class="home-cat-card-overlay">
+                <span class="home-cat-arrow">→</span>
+                <h3 class="home-cat-title">🛋️ Living Room</h3>
+                <p class="home-cat-subtitle">Fluid bouclé & monolithic travertine</p>
+              </div>
+            </a>
+
+            <!-- 3. Dining Room -->
+            <a href="#category-dining-room" class="home-cat-card" data-cat="dining-room">
+              <div class="home-cat-card-media" style="background-image: url('https://images.unsplash.com/photo-1617806118233-18e1de247200?auto=format&fit=crop&w=1000&q=85');"></div>
+              <div class="home-cat-card-overlay">
+                <span class="home-cat-arrow">→</span>
+                <h3 class="home-cat-title">🍽️ Dining Room</h3>
+                <p class="home-cat-subtitle">Solid stone tables & sculpted seating</p>
+              </div>
+            </a>
+
+            <!-- 4. Furniture -->
+            <a href="#category-furniture" class="home-cat-card" data-cat="furniture">
+              <div class="home-cat-card-media" style="background-image: url('https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1000&q=85');"></div>
+              <div class="home-cat-card-overlay">
+                <span class="home-cat-arrow">→</span>
+                <h3 class="home-cat-title">🪑 Furniture</h3>
+                <p class="home-cat-subtitle">Heirloom FSC hardwoods & joinery</p>
+              </div>
+            </a>
+
+            <!-- 5. Small Spaces -->
+            <a href="#category-small-spaces" class="home-cat-card" data-cat="small-spaces">
+              <div class="home-cat-card-media" style="background-image: url('https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1000&q=85');"></div>
+              <div class="home-cat-card-overlay">
+                <span class="home-cat-arrow">→</span>
+                <h3 class="home-cat-title">📐 Small Spaces</h3>
+                <p class="home-cat-subtitle">Nested desks & space intelligence</p>
+              </div>
+            </a>
+
+            <!-- 6. Kitchen -->
+            <a href="#category-kitchen" class="home-cat-card" data-cat="kitchen">
+              <div class="home-cat-card-media" style="background-image: url('https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=1000&q=85');"></div>
+              <div class="home-cat-card-overlay">
+                <span class="home-cat-arrow">→</span>
+                <h3 class="home-cat-title">🍳 Kitchen</h3>
+                <p class="home-cat-subtitle">Stone worktops & pendant islands</p>
+              </div>
+            </a>
+
+            <!-- 7. Lighting -->
+            <a href="#category-lighting" class="home-cat-card" data-cat="lighting">
+              <div class="home-cat-card-media" style="background-image: url('https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=1000&q=85');"></div>
+              <div class="home-cat-card-overlay">
+                <span class="home-cat-arrow">→</span>
+                <h3 class="home-cat-title">💡 Lighting</h3>
+                <p class="home-cat-subtitle">2700K ambient warmth & brass</p>
+              </div>
+            </a>
+
+            <!-- 8. Home Décor -->
+            <a href="#category-decor" class="home-cat-card" data-cat="decor">
+              <div class="home-cat-card-media" style="background-image: url('https://images.unsplash.com/photo-1581783342308-f792dbdd27c5?auto=format&fit=crop&w=1000&q=85');"></div>
+              <div class="home-cat-card-overlay">
+                <span class="home-cat-arrow">→</span>
+                <h3 class="home-cat-title">🏺 Home Décor</h3>
+                <p class="home-cat-subtitle">Ceramic vessels & mineral plaster</p>
+              </div>
+            </a>
+
+            <!-- 9. Storage Solutions -->
+            <a href="#category-storage" class="home-cat-card" data-cat="storage">
+              <div class="home-cat-card-media" style="background-image: url('https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=1000&q=85');"></div>
+              <div class="home-cat-card-overlay">
+                <span class="home-cat-arrow">→</span>
+                <h3 class="home-cat-title">🗄️ Storage Solutions</h3>
+                <p class="home-cat-subtitle">Floating credenzas & cable order</p>
+              </div>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Featured Room Ideas & Makeovers -->
+      <section class="home-featured-ideas-section" id="home-featured-ideas">
+        <div class="container">
+          <div class="home-section-head-wrap">
+            <div>
+              <span class="home-section-kicker">EDITORIAL IN MOTION</span>
+              <h2 class="home-section-heading">Featured Interior Ideas & Room Makeovers</h2>
+            </div>
+            <a href="#ideas" class="home-action-btn-secondary" style="padding: 8px 18px; font-size: 0.8rem;">
+              <span>All Masterclasses →</span>
+            </a>
+          </div>
+
+          <div class="home-ideas-grid">
+            <!-- Idea 1 -->
+            <article class="home-idea-card">
+              <div class="home-idea-thumb">
+                <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=800&q=85" alt="Living Room Makeover" loading="lazy" />
+                <span class="home-idea-badge">Video Masterclass • 4:12</span>
+              </div>
+              <div class="home-idea-body">
+                <span class="home-idea-category">Living Room Styling</span>
+                <h3 class="home-idea-title">Sculpting the Modern Organic Living Room</h3>
+                <p class="home-idea-desc">
+                  Discover how low-slung bouclé seating, monolithic travertine tables, and linen drapery compose a tranquil sanctuary.
+                </p>
+                <a href="#category-living-room" class="home-idea-link">
+                  <span>Explore Living Room Makeover & Pieces</span>
                   <span>→</span>
-                </button>
+                </a>
               </div>
             </article>
 
-            <!-- Book 2: Objects of Home -->
-            <article class="magazine-shelf-card" onclick="window.homeHub.openBook('objects-of-home')">
-              <div class="shelf-card-media" style="background-image: url('https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?auto=format&fit=crop&w=1200&q=85');">
-                <div class="shelf-card-top">
-                  <img src="assets/logo-mark.svg" alt="HomeHub" class="shelf-card-brand-mark" />
-                  <span class="shelf-card-vol">Vol. 02</span>
-                </div>
-                <div class="shelf-card-meta">
-                  <h3 class="shelf-card-title">Objects of Home</h3>
-                  <p class="shelf-card-subtitle">Tactile Ceramics & Bas-Relief Art</p>
-                </div>
+            <!-- Idea 2 -->
+            <article class="home-idea-card">
+              <div class="home-idea-thumb">
+                <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=800&q=85" alt="Small Bedroom Sanctuary" loading="lazy" />
+                <span class="home-idea-badge">Video Masterclass • 3:45</span>
               </div>
-              <div class="shelf-card-body">
-                <ul class="shelf-card-lines">
-                  <li><span class="bullet">✦</span> Wheel-Thrown Solis Ceramic Vases</li>
-                  <li><span class="bullet">✦</span> Forma Mineral Plaster Shadows</li>
-                  <li><span class="bullet">✦</span> Pebble Asymmetry: Halo Mirror</li>
-                </ul>
-                <button class="shelf-card-btn" aria-label="Open Objects of Home">
-                  <span>Open Magazine</span>
+              <div class="home-idea-body">
+                <span class="home-idea-category">Small Bedroom Ideas</span>
+                <h3 class="home-idea-title">Sanctuary in 12 Square Meters</h3>
+                <p class="home-idea-desc">
+                  Clever spatial layout strategies for compact bedrooms: floating nightstands, recessed platform beds, and diffuse bedside illumination.
+                </p>
+                <a href="#category-bedroom" class="home-idea-link">
+                  <span>Explore Bedroom Makeover & Pieces</span>
                   <span>→</span>
-                </button>
+                </a>
               </div>
             </article>
 
-            <!-- Book 3: Light / Life -->
-            <article class="magazine-shelf-card" onclick="window.homeHub.openBook('light-life')">
-              <div class="shelf-card-media" style="background-image: url('https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=1200&q=85');">
-                <div class="shelf-card-top">
-                  <img src="assets/logo-mark.svg" alt="HomeHub" class="shelf-card-brand-mark" />
-                  <span class="shelf-card-vol">Vol. 03</span>
-                </div>
-                <div class="shelf-card-meta">
-                  <h3 class="shelf-card-title">Light / Life</h3>
-                  <p class="shelf-card-subtitle">Circadian Glow & Dimmable Ambiance</p>
-                </div>
+            <!-- Idea 3 -->
+            <article class="home-idea-card">
+              <div class="home-idea-thumb">
+                <img src="https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&w=800&q=85" alt="Multi-Functional Micro-Living" loading="lazy" />
+                <span class="home-idea-badge">Video Masterclass • 4:40</span>
               </div>
-              <div class="shelf-card-body">
-                <ul class="shelf-card-lines">
-                  <li><span class="bullet">✦</span> Triplex Opal Glass: Luna Pendant</li>
-                  <li><span class="bullet">✦</span> Honed Brescia Marble Arc Lamp</li>
-                  <li><span class="bullet">✦</span> Solar Halos & 2700K Sanctuaries</li>
-                </ul>
-                <button class="shelf-card-btn" aria-label="Open Light / Life">
-                  <span>Open Magazine</span>
+              <div class="home-idea-body">
+                <span class="home-idea-category">Space-Saving Furniture</span>
+                <h3 class="home-idea-title">Multi-Functional Micro-Living Engineering</h3>
+                <p class="home-idea-desc">
+                  Watch how compact telescoping desks and floating storage adapt seamlessly between work hours and evening relaxation.
+                </p>
+                <a href="#category-small-spaces" class="home-idea-link">
+                  <span>Explore Small Spaces & Pieces</span>
                   <span>→</span>
-                </button>
-              </div>
-            </article>
-
-            <!-- Book 4: Small Spaces -->
-            <article class="magazine-shelf-card" onclick="window.homeHub.openBook('small-spaces')">
-              <div class="shelf-card-media" style="background-image: url('https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&w=1200&q=85');">
-                <div class="shelf-card-top">
-                  <img src="assets/logo-mark.svg" alt="HomeHub" class="shelf-card-brand-mark" />
-                  <span class="shelf-card-vol">Vol. 04</span>
-                </div>
-                <div class="shelf-card-meta">
-                  <h3 class="shelf-card-title">Small Spaces</h3>
-                  <p class="shelf-card-subtitle">Compact Living & Space Intelligence</p>
-                </div>
-              </div>
-              <div class="shelf-card-body">
-                <ul class="shelf-card-lines">
-                  <li><span class="bullet">✦</span> Modula Nested Console & Desk</li>
-                  <li><span class="bullet">✦</span> Wall-Hung Flute Tambour Console</li>
-                  <li><span class="bullet">✦</span> Haven Low-Profile Platform Bed</li>
-                </ul>
-                <button class="shelf-card-btn" aria-label="Open Small Spaces">
-                  <span>Open Magazine</span>
-                  <span>→</span>
-                </button>
+                </a>
               </div>
             </article>
           </div>
         </div>
+      </section>
 
-        <!-- 3D Flipbook Mount Point -->
-        <div id="flipbook-mount-point"></div>
+      <!-- SECTION: 3D Flipbook Magazine Experience (Preserved completely) -->
+      <section class="magazine-section-wrapper" id="magazine-section" aria-label="Interactive 3D Interior Magazine">
+        <div class="container">
+          <div class="section-intro-block">
+            <span class="section-kicker">Interactive 3D Editorial Publications</span>
+            <h2 class="section-title">The Four Digital Books</h2>
+            <p class="section-subtitle">
+              Experience realistic physical page-turning with natural spine binding, paper shadows, and audio. Tap any piece inside the magazine spreads to open its specifications.
+            </p>
+          </div>
+
+          <!-- Four Digital Books Editorial Shelf Showcase -->
+          <div class="magazine-shelf-showcase" aria-label="Editorial Editions Library">
+            <div class="magazine-shelf-grid">
+              <!-- Book 1: The Living Edit -->
+              <article class="magazine-shelf-card" onclick="window.homeHub.openBook('living-edit')">
+                <div class="shelf-card-media" style="background-image: url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=85');">
+                  <div class="shelf-card-top">
+                    <img src="assets/logo-mark.svg" alt="HomeHub" class="shelf-card-brand-mark" />
+                    <span class="shelf-card-vol">Vol. 01</span>
+                  </div>
+                  <div class="shelf-card-meta">
+                    <h3 class="shelf-card-title">The Living Edit</h3>
+                    <p class="shelf-card-subtitle">Fluid Forms & Monolithic Travertine</p>
+                  </div>
+                </div>
+                <div class="shelf-card-body">
+                  <ul class="shelf-card-lines">
+                    <li><span class="bullet">✦</span> The Architecture of Rest: CloudCurve</li>
+                    <li><span class="bullet">✦</span> Geological Permanence: Noma Table</li>
+                    <li><span class="bullet">✦</span> 42cm Low Horizons in Situ</li>
+                  </ul>
+                  <button class="shelf-card-btn" aria-label="Open The Living Edit">
+                    <span>Open Magazine</span>
+                    <span>→</span>
+                  </button>
+                </div>
+              </article>
+
+              <!-- Book 2: Objects of Home -->
+              <article class="magazine-shelf-card" onclick="window.homeHub.openBook('objects-of-home')">
+                <div class="shelf-card-media" style="background-image: url('https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?auto=format&fit=crop&w=1200&q=85');">
+                  <div class="shelf-card-top">
+                    <img src="assets/logo-mark.svg" alt="HomeHub" class="shelf-card-brand-mark" />
+                    <span class="shelf-card-vol">Vol. 02</span>
+                  </div>
+                  <div class="shelf-card-meta">
+                    <h3 class="shelf-card-title">Objects of Home</h3>
+                    <p class="shelf-card-subtitle">Tactile Ceramics & Bas-Relief Art</p>
+                  </div>
+                </div>
+                <div class="shelf-card-body">
+                  <ul class="shelf-card-lines">
+                    <li><span class="bullet">✦</span> Wheel-Thrown Solis Ceramic Vases</li>
+                    <li><span class="bullet">✦</span> Forma Mineral Plaster Shadows</li>
+                    <li><span class="bullet">✦</span> Pebble Asymmetry: Halo Mirror</li>
+                  </ul>
+                  <button class="shelf-card-btn" aria-label="Open Objects of Home">
+                    <span>Open Magazine</span>
+                    <span>→</span>
+                  </button>
+                </div>
+              </article>
+
+              <!-- Book 3: Light / Life -->
+              <article class="magazine-shelf-card" onclick="window.homeHub.openBook('light-life')">
+                <div class="shelf-card-media" style="background-image: url('https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=1200&q=85');">
+                  <div class="shelf-card-top">
+                    <img src="assets/logo-mark.svg" alt="HomeHub" class="shelf-card-brand-mark" />
+                    <span class="shelf-card-vol">Vol. 03</span>
+                  </div>
+                  <div class="shelf-card-meta">
+                    <h3 class="shelf-card-title">Light / Life</h3>
+                    <p class="shelf-card-subtitle">Circadian Glow & Dimmable Ambiance</p>
+                  </div>
+                </div>
+                <div class="shelf-card-body">
+                  <ul class="shelf-card-lines">
+                    <li><span class="bullet">✦</span> Triplex Opal Glass: Luna Pendant</li>
+                    <li><span class="bullet">✦</span> Honed Brescia Marble Arc Lamp</li>
+                    <li><span class="bullet">✦</span> Solar Halos & 2700K Sanctuaries</li>
+                  </ul>
+                  <button class="shelf-card-btn" aria-label="Open Light / Life">
+                    <span>Open Magazine</span>
+                    <span>→</span>
+                  </button>
+                </div>
+              </article>
+
+              <!-- Book 4: Small Spaces -->
+              <article class="magazine-shelf-card" onclick="window.homeHub.openBook('small-spaces')">
+                <div class="shelf-card-media" style="background-image: url('https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&w=1200&q=85');">
+                  <div class="shelf-card-top">
+                    <img src="assets/logo-mark.svg" alt="HomeHub" class="shelf-card-brand-mark" />
+                    <span class="shelf-card-vol">Vol. 04</span>
+                  </div>
+                  <div class="shelf-card-meta">
+                    <h3 class="shelf-card-title">Small Spaces</h3>
+                    <p class="shelf-card-subtitle">Compact Living & Space Intelligence</p>
+                  </div>
+                </div>
+                <div class="shelf-card-body">
+                  <ul class="shelf-card-lines">
+                    <li><span class="bullet">✦</span> Modula Nested Console & Desk</li>
+                    <li><span class="bullet">✦</span> Wall-Hung Flute Tambour Console</li>
+                    <li><span class="bullet">✦</span> Haven Low-Profile Platform Bed</li>
+                  </ul>
+                  <button class="shelf-card-btn" aria-label="Open Small Spaces">
+                    <span>Open Magazine</span>
+                    <span>→</span>
+                  </button>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <!-- 3D Flipbook Mount Point -->
+          <div id="flipbook-mount-point"></div>
+        </div>
+      </section>
+
+    </div><!-- /#home-view -->
+
+    <!-- VIEW 2: SHOP FULL CATALOGUE VIEW -->
+    <section class="shop-view-wrapper" id="shop-view" style="display: none;">
+      <div class="container">
+        <div class="view-nav-breadcrumb-bar">
+          <div class="category-breadcrumb">
+            <a href="#home" class="breadcrumb-home-link">HomeHub</a>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-current">Shop All Collection</span>
+          </div>
+          <div class="category-nav-actions">
+            <button class="page-home-btn" id="shop-page-home-btn">
+              <span>🏠 HOME</span>
+            </button>
+          </div>
+        </div>
+        <!-- Mounted Catalogue -->
+        <div id="catalogue-mount-point"></div>
       </div>
     </section>
 
-    <!-- Full-page Category and Collection Webpage View -->
-    <section class="category-page-view" id="category-page-view" aria-label="Category & Collection Products" style="display: none;">
+    <!-- VIEW 3: INTERIOR IDEAS & VIDEO MASTERCLASSES VIEW -->
+    <section class="ideas-view-wrapper" id="ideas-view" style="display: none;">
+      <div class="container">
+        <div class="view-nav-breadcrumb-bar">
+          <div class="category-breadcrumb">
+            <a href="#home" class="breadcrumb-home-link">HomeHub</a>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-current">Interior Ideas & Video Masterclasses</span>
+          </div>
+          <div class="category-nav-actions">
+            <button class="page-home-btn" id="ideas-page-home-btn">
+              <span>🏠 HOME</span>
+            </button>
+          </div>
+        </div>
+        <!-- Mounted Video Gallery -->
+        <div id="video-mount-point"></div>
+      </div>
+    </section>
+
+    <!-- VIEW 4: CATEGORY DESTINATION WEBPAGE VIEW (9 Categories) -->
+    <section class="category-page-view" id="category-page-view" aria-label="Category Destination Webpage" style="display: none;">
       <div class="container" id="category-page-container"></div>
     </section>
 
   </main>
-
-  <!-- Offscreen Mount Points (Preserves all underlying features and data integrity) -->
-  <div id="catalogue-mount-point" class="offscreen-mount" aria-hidden="true" style="display:none;"></div>
-  <div id="video-mount-point" class="offscreen-mount" aria-hidden="true" style="display:none;"></div>
 
   <!-- Search Modal Container -->
   <div class="search-modal" id="search-modal-container" role="dialog" aria-modal="true" aria-hidden="true"></div>

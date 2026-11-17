@@ -296,3 +296,165 @@
   border-top: 1px solid var(--color-border);
   background-color: var(--color-surface-subtle);
 }
+
+/* ==========================================================================
+   Professional Responsive Shopping Header Navigation
+   Home • Shop • Categories • Interior Ideas • Magazines • Search • Wishlist • Cart
+   ========================================================================== */
+
+.header-nav-list {
+  display: flex;
+  align-items: center;
+  gap: 1.8rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-item-link {
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #2D2925;
+  text-decoration: none;
+  padding: 6px 0;
+  position: relative;
+  transition: color 0.2s ease;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.nav-item-link:hover,
+.nav-item-link.active {
+  color: var(--color-terracotta, #A8583B);
+}
+
+.nav-item-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background-color: var(--color-terracotta, #A8583B);
+  transition: width 0.2s ease;
+}
+
+.nav-item-link:hover::after,
+.nav-item-link.active::after {
+  width: 100%;
+}
+
+.nav-dropdown-chevron {
+  font-size: 0.65rem;
+  transition: transform 0.2s ease;
+}
+
+.categories-nav-wrapper:hover .nav-dropdown-chevron {
+  transform: rotate(180deg);
+}
+
+/* Categories Dropdown Container */
+.categories-nav-wrapper {
+  position: relative;
+}
+
+.categories-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(12px);
+  width: 620px;
+  background: #FFFFFF;
+  border: 1px solid #E5DFD2;
+  border-radius: 8px;
+  box-shadow: 0 16px 45px rgba(24, 21, 18, 0.12);
+  padding: 1.4rem;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+  z-index: 1200;
+}
+
+.categories-nav-wrapper:hover .categories-dropdown-menu,
+.categories-nav-wrapper.is-open .categories-dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+
+.categories-dropdown-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.8rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #F0ECE4;
+}
+
+.categories-dropdown-header span.label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-terracotta, #A8583B);
+}
+
+.categories-dropdown-header a.view-all-link {
+  font-size: 0.78rem;
+  color: #7D746A;
+  text-decoration: none;
+}
+
+.categories-dropdown-header a.view-all-link:hover {
+  color: #181512;
+}
+
+.categories-dropdown-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.category-dropdown-item {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  background: #FAF8F5;
+  border: 1px solid transparent;
+  transition: all 0.18s ease;
+  cursor: pointer;
+  text-align: left;
+}
+
+.category-dropdown-item:hover {
+  background: #F3EFE8;
+  border-color: #D8D0C3;
+  transform: translateY(-1px);
+}
+
+.cat-drop-title {
+  font-family: var(--font-serif, "Cormorant Garamond", serif);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #181512;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+
+.cat-drop-desc {
+  font-size: 0.72rem;
+  color: #7D746A;
+  line-height: 1.3;
+}
+
