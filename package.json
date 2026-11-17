@@ -1,0 +1,23 @@
+{
+  "name": "homehub-webstore",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "HomeHub — Real Production-Ready Web Application with 3D Magazine First Experience",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "serve": "node server.js",
+    "test": "node test-syntax.js && node test-e2e-headless.js"
+  },
+  "author": "Farhana Aamir <farzunmir@gmail.com>",
+  "license": "UNLICENSED",
+  "keywords": [
+    "homehub",
+    "interior-design",
+    "magazine-first",
+    "3d-flipbook",
+    "soft-luxury",
+    "ecommerce"
+  ]
+}

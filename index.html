@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+  <meta name="theme-color" content="#F8F5EF" />
+  <meta name="description" content="HomeHub — SHOP • STYLE • SMART. Independent luxury modern furniture, lighting, décor, and small space solutions. Explore our four interactive digital interior design books." />
+  <title>HomeHub — SHOP • STYLE • SMART | Soft Luxury Modern</title>
+
+  <!-- Preconnect to Google Fonts and Image CDNs -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://images.unsplash.com" />
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/components/navigation.css" />
+  <link rel="stylesheet" href="css/components/magazine-3d.css" />
+  <link rel="stylesheet" href="css/components/catalogue.css" />
+  <link rel="stylesheet" href="css/components/product-detail.css" />
+  <link rel="stylesheet" href="css/components/cart-wishlist.css" />
+  <link rel="stylesheet" href="css/components/video-section.css" />
+  <link rel="stylesheet" href="css/components/admin.css" />
+  <link rel="stylesheet" href="css/components/footer.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body>
+
+  <!-- Top Announcement Bar -->
+  <aside class="top-announcement-bar" role="complementary" aria-label="Announcement">
+    <span>HomeHub Editorial • Volume 01 Available Now</span>
+    <span class="bar-highlight">— White-Glove Installation Across Pakistan</span>
+  </aside>
+
+  <!-- Sticky Luxury Header -->
+  <header class="site-header" role="banner">
+    <div class="header-container">
+      
+      <!-- Mobile Hamburger Button -->
+      <button class="mobile-nav-toggle" id="mobile-nav-toggle" aria-label="Open Navigation Menu" aria-controls="mobile-nav-drawer">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+
+      <!-- Brand Identity -->
+      <a href="#" class="header-brand" aria-label="HomeHub Homepage">
+        <span class="brand-title">HomeHub</span>
+        <span class="brand-tagline-text">SHOP • STYLE • SMART</span>
+      </a>
+
+      <!-- Desktop Magazine Books Navigation -->
+      <nav class="header-nav" role="navigation" aria-label="Digital Books Navigation">
+        <span class="nav-books-label">Digital Books</span>
+        
+        <a href="#book-living-edit" class="nav-book-link active" data-target-book="living-edit">
+          The Living Edit
+        </a>
+        <a href="#book-objects-of-home" class="nav-book-link" data-target-book="objects-of-home">
+          Objects of Home
+        </a>
+        <a href="#book-light-life" class="nav-book-link" data-target-book="light-life">
+          Light / Life
+        </a>
+        <a href="#book-small-spaces" class="nav-book-link" data-target-book="small-spaces">
+          Small Spaces
+        </a>
+
+        <span class="nav-divider"></span>
+
+        <a href="#catalogue-section" class="nav-action-link">Catalogue</a>
+        <a href="#video-section" class="nav-action-link">Masterclasses</a>
+      </nav>
+
+      <!-- Header Utilities -->
+      <div class="header-utilities">
+        <!-- Admin Console Trigger -->
+        <button class="admin-nav-trigger admin-open-trigger" title="Open Atelier Management Console">
+          Admin Portal
+        </button>
+
+        <!-- Wishlist Icon -->
+        <button class="util-btn" id="header-wishlist-btn" title="View Wishlist" aria-label="View Wishlist">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+          <span class="util-badge" id="header-wishlist-badge" style="display: none;">0</span>
+        </button>
+
+        <!-- Shopping Bag Icon -->
+        <button class="util-btn" id="header-cart-btn" title="View Shopping Bag" aria-label="View Shopping Bag">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
+          <span class="util-badge" id="header-cart-badge" style="display: none;">0</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Mobile Drawer Menu -->
+  <aside class="mobile-nav-drawer" id="mobile-nav-drawer" aria-label="Mobile Navigation" aria-hidden="true">
+    <div class="mobile-nav-header">
+      <div class="header-brand">
+        <span class="brand-title">HomeHub</span>
+        <span class="brand-tagline-text">SHOP • STYLE • SMART</span>
+      </div>
+      <button class="mobile-nav-close" id="mobile-nav-close" aria-label="Close Navigation">✕</button>
+    </div>
+
+    <div class="mobile-nav-body">
+      <div class="mobile-nav-group-title">The Four Digital Books</div>
+      <div class="mobile-nav-links">
+        <a href="#book-living-edit" class="mobile-nav-link mobile-book-link" data-target-book="living-edit">
+          <span>The Living Edit</span>
+          <span class="arrow">→</span>
+        </a>
+        <a href="#book-objects-of-home" class="mobile-nav-link mobile-book-link" data-target-book="objects-of-home">
+          <span>Objects of Home</span>
+          <span class="arrow">→</span>
+        </a>
+        <a href="#book-light-life" class="mobile-nav-link mobile-book-link" data-target-book="light-life">
+          <span>Light / Life</span>
+          <span class="arrow">→</span>
+        </a>
+        <a href="#book-small-spaces" class="mobile-nav-link mobile-book-link" data-target-book="small-spaces">
+          <span>Small Spaces</span>
+          <span class="arrow">→</span>
+        </a>
+      </div>
+
+      <div class="mobile-nav-group-title">Atelier & Exploration</div>
+      <div class="mobile-nav-links">
+        <a href="#catalogue-section" class="mobile-nav-link" onclick="document.getElementById('mobile-nav-close').click()">
+          <span>Product Catalogue</span>
+          <span class="arrow">→</span>
+        </a>
+        <a href="#video-section" class="mobile-nav-link" onclick="document.getElementById('mobile-nav-close').click()">
+          <span>Video Masterclasses</span>
+          <span class="arrow">→</span>
+        </a>
+        <a href="#admin" class="mobile-nav-link admin-open-trigger" onclick="document.getElementById('mobile-nav-close').click()">
+          <span>Admin Portal</span>
+          <span class="arrow">→</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="mobile-nav-footer">
+      <p class="creator-label">Created by Farhana Aamir</p>
+      <a href="mailto:farzunmir@gmail.com" class="creator-email-link">✉ farzunmir@gmail.com</a>
+    </div>
+  </aside>
+  <div class="mobile-nav-backdrop" id="mobile-nav-backdrop"></div>
+
+  <!-- Main Content Landmark -->
+  <main id="main-content" role="main">
+
+    <!-- Hero Editorial Section -->
+    <section class="hero-editorial-section" aria-label="Welcome to HomeHub">
+      <div class="hero-backdrop-pattern"></div>
+      <div class="hero-content">
+        <p class="hero-brand-tagline">SHOP • STYLE • SMART</p>
+        <h1 class="hero-main-title">
+          Magazine First.<br />
+          <em>Shopping Second.</em>
+        </h1>
+        <p class="hero-paragraph">
+          Immerse yourself in our four tactile digital interior design books. Handcrafted furniture, sculptural lighting, and curated decor captured in real architectural spaces.
+        </p>
+
+        <div class="hero-cta-group">
+          <a href="#magazine-section" class="hero-btn-primary">
+            Read The Digital Books ↓
+          </a>
+          <a href="#catalogue-section" class="hero-btn-secondary">
+            View Complete Catalogue
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Category Quick Strip -->
+    <section class="category-strip" aria-label="Product Categories">
+      <div class="container">
+        <div class="category-strip-grid">
+          <div class="cat-strip-card" onclick="window.homeHub.catalogue.setCategory('furniture'); document.getElementById('catalogue-section').scrollIntoView({behavior:'smooth'})">
+            <div>
+              <h4>Furniture</h4>
+              <p>Organic sofas, monolithic stone coffee tables, shearling armchairs.</p>
+            </div>
+            <span class="cat-strip-link">Explore Furniture →</span>
+          </div>
+
+          <div class="cat-strip-card" onclick="window.homeHub.catalogue.setCategory('decor'); document.getElementById('catalogue-section').scrollIntoView({behavior:'smooth'})">
+            <div>
+              <h4>Home Décor</h4>
+              <p>Wheel-thrown ceramic vases, bas-relief plaster, French linen cushions.</p>
+            </div>
+            <span class="cat-strip-link">Explore Décor →</span>
+          </div>
+
+          <div class="cat-strip-card" onclick="window.homeHub.catalogue.setCategory('lighting'); document.getElementById('catalogue-section').scrollIntoView({behavior:'smooth'})">
+            <div>
+              <h4>Lighting</h4>
+              <p>Circadian 2700K opal glass pendants, cantilevered marble floor lamps.</p>
+            </div>
+            <span class="cat-strip-link">Explore Lighting →</span>
+          </div>
+
+          <div class="cat-strip-card" onclick="window.homeHub.catalogue.setCategory('small-spaces'); document.getElementById('catalogue-section').scrollIntoView({behavior:'smooth'})">
+            <div>
+              <h4>Small Space Solutions</h4>
+              <p>Nested extendable desks and floating consoles for urban apartments.</p>
+            </div>
+            <span class="cat-strip-link">Explore Small Spaces →</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 1: 3D Flipbook Magazine Experience -->
+    <section class="magazine-section-wrapper" id="magazine-section" aria-label="Interactive 3D Interior Magazine">
+      <div class="container">
+        <div class="section-intro-block">
+          <span class="section-kicker">Interactive 3D Editorial</span>
+          <h2 class="section-title">The Four Digital Books</h2>
+          <p class="section-subtitle">
+            Experience realistic physical page-turning with natural spine binding, paper shadows, and audio. Tap any piece inside the magazine spreads to open its specifications.
+          </p>
+        </div>
+
+        <!-- 3D Flipbook Mount Point -->
+        <div id="flipbook-mount-point"></div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: Original Product Catalogue -->
+    <section id="catalogue-section" aria-label="Independent HomeHub Product Catalogue">
+      <div class="container">
+        <div class="section-intro-block">
+          <span class="section-kicker">Original Brand Collection</span>
+          <h2 class="section-title">The Independent Catalogue</h2>
+          <p class="section-subtitle">
+            Every piece is designed with Soft Luxury Modern principles: honest materials, generous negative space, and enduring craftsmanship. Prices listed in PKR.
+          </p>
+        </div>
+
+        <!-- Catalogue Mount Point -->
+        <div id="catalogue-mount-point"></div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: Video Inspiration Masterclasses -->
+    <section id="video-section" aria-label="Interior Styling Video Masterclasses">
+      <div class="container">
+        <!-- Video Gallery Mount Point -->
+        <div id="video-mount-point"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Product Detail Page (Modal Container) -->
+  <div class="pdp-modal" id="pdp-modal-container" role="dialog" aria-modal="true" aria-hidden="true"></div>
+
+  <!-- Shopping Bag Slide-Over Drawer -->
+  <div class="cart-drawer" id="cart-drawer-container" role="dialog" aria-modal="true" aria-hidden="true"></div>
+
+  <!-- Wishlist Slide-Over Drawer -->
+  <div class="wishlist-drawer" id="wishlist-drawer-container" role="dialog" aria-modal="true" aria-hidden="true"></div>
+
+  <!-- Admin Portal Modal Container -->
+  <div class="admin-portal-modal" id="admin-portal-container" role="dialog" aria-modal="true" aria-hidden="true"></div>
+
+  <!-- SITE FOOTER -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-top-grid">
+        
+        <!-- Col 1: Brand & Creator Info -->
+        <div class="footer-brand-col">
+          <span class="footer-logo">HomeHub</span>
+          <span class="footer-tagline">SHOP • STYLE • SMART</span>
+          <p class="footer-brand-desc">
+            An independent home and lifestyle brand celebrating Soft Luxury Modern aesthetics. Curated collections of furniture, décor, lighting, and small space living.
+          </p>
+
+          <!-- Founder & Creator Attribution -->
+          <div class="footer-creator-badge">
+            <span class="creator-label">Application Architect & Designer</span>
+            <span class="creator-name">Created by Farhana Aamir</span>
+            <a href="mailto:farzunmir@gmail.com" class="creator-email-link" title="Send email to Farhana Aamir">
+              ✉ farzunmir@gmail.com
+            </a>
+          </div>
+        </div>
+
+        <!-- Col 2: The 4 Digital Books -->
+        <div class="footer-col">
+          <h4>Digital Books</h4>
+          <ul class="footer-links">
+            <li><button onclick="window.homeHub.openBook('living-edit')">The Living Edit (Vol 1)</button></li>
+            <li><button onclick="window.homeHub.openBook('objects-of-home')">Objects of Home (Vol 2)</button></li>
+            <li><button onclick="window.homeHub.openBook('light-life')">Light / Life (Vol 3)</button></li>
+            <li><button onclick="window.homeHub.openBook('small-spaces')">Small Spaces (Vol 4)</button></li>
+          </ul>
+        </div>
+
+        <!-- Col 3: Product Categories -->
+        <div class="footer-col">
+          <h4>Categories</h4>
+          <ul class="footer-links">
+            <li><button onclick="window.homeHub.catalogue.setCategory('furniture'); document.getElementById('catalogue-section').scrollIntoView({behavior:'smooth'})">Furniture</button></li>
+            <li><button onclick="window.homeHub.catalogue.setCategory('decor'); document.getElementById('catalogue-section').scrollIntoView({behavior:'smooth'})">Home Décor</button></li>
+            <li><button onclick="window.homeHub.catalogue.setCategory('lighting'); document.getElementById('catalogue-section').scrollIntoView({behavior:'smooth'})">Lighting</button></li>
+            <li><button onclick="window.homeHub.catalogue.setCategory('small-spaces'); document.getElementById('catalogue-section').scrollIntoView({behavior:'smooth'})">Small Space Solutions</button></li>
+          </ul>
+        </div>
+
+        <!-- Col 4: Atelier Care & Guarantees -->
+        <div class="footer-col">
+          <h4>Atelier Care</h4>
+          <div class="footer-contact-info">
+            <p><strong>White-Glove Delivery</strong><br />Complimentary assembly across Karachi, Lahore & Islamabad.</p>
+            <p><strong>Bespoke Inquiries</strong><br />Direct proforma quotes with lead times of 3–4 weeks for custom timber and bouclé upholstery.</p>
+            <p><strong>Founder Contact</strong><br /><a href="mailto:farzunmir@gmail.com" class="creator-email-link">farzunmir@gmail.com</a></p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom Bar -->
+      <div class="footer-bottom-bar">
+        <span>© 2026 HomeHub Atelier. All rights reserved. Original Independent Brand.</span>
+        
+        <div class="footer-bottom-links">
+          <button class="footer-admin-btn admin-open-trigger">Console Login</button>
+          <span>Soft Ivory • Sage Mist • Warm Beige</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Application Coordinator Module -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

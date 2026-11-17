@@ -1,0 +1,162 @@
+/* ==========================================================================
+   HomeHub - Site Footer & Founder Attribution
+   Brand: HomeHub (SHOP • STYLE • SMART)
+   Created by Farhana Aamir (farzunmir@gmail.com)
+   ========================================================================== */
+
+.site-footer {
+  background-color: #1A1816;
+  color: #ECE7DE;
+  padding: 5rem 0 3rem;
+  border-top: 1px solid #2B2724;
+}
+
+.footer-top-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.5fr;
+  gap: 3.5rem clamp(1.5rem, 3vw, 3rem);
+  margin-bottom: 4rem;
+}
+
+.footer-brand-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-logo {
+  font-family: var(--font-serif);
+  font-size: 2.2rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--color-soft-ivory);
+  margin-bottom: 0.3rem;
+}
+
+.footer-tagline {
+  font-size: 0.72rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--color-soft-champagne);
+  margin-bottom: 1.2rem;
+}
+
+.footer-brand-desc {
+  font-size: 0.88rem;
+  color: #A39B92;
+  line-height: 1.6;
+  max-width: 360px;
+  margin-bottom: 1.5rem;
+}
+
+.footer-creator-badge {
+  background-color: #26221E;
+  border: 1px solid #38322C;
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.creator-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-soft-champagne);
+  font-weight: 600;
+}
+
+.creator-name {
+  font-size: 1.05rem;
+  color: #FFFFFF;
+  font-family: var(--font-serif);
+  font-weight: 600;
+}
+
+.creator-email-link {
+  font-size: 0.85rem;
+  color: var(--color-soft-champagne);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.creator-email-link:hover {
+  color: #FFFFFF;
+}
+
+/* Footer Nav Columns */
+.footer-col h4 {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  color: #FFFFFF;
+  margin-bottom: 1.2rem;
+}
+
+.footer-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.footer-links a,
+.footer-links button {
+  font-size: 0.85rem;
+  color: #A39B92;
+  transition: color var(--transition-fast);
+  text-align: left;
+}
+
+.footer-links a:hover,
+.footer-links button:hover {
+  color: var(--color-soft-champagne);
+}
+
+.footer-contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  font-size: 0.85rem;
+  color: #A39B92;
+}
+
+.footer-contact-info strong {
+  color: #FFFFFF;
+}
+
+/* Bottom Bar */
+.footer-bottom-bar {
+  border-top: 1px solid #2B2724;
+  padding-top: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: #7D746A;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.footer-bottom-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.footer-admin-btn {
+  color: #7D746A;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  padding: 4px 10px;
+  border: 1px solid #332E2A;
+  border-radius: var(--radius-pill);
+}
+
+.footer-admin-btn:hover {
+  color: #FFFFFF;
+  border-color: #554D46;
+}

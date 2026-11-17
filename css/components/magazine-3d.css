@@ -1,0 +1,704 @@
+/* ==========================================================================
+   HomeHub - Realistic 3D Magazine Flipbook Styling
+   Features: CSS 3D Perspective, Central Spine, Paper Shading, Edge Curl
+   ========================================================================== */
+
+.magazine-section-wrapper {
+  padding: 3rem 0 5rem;
+  background-color: var(--color-surface-subtle);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.flipbook-wrapper {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Magazine Top Header & Book Switcher */
+.flipbook-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.book-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-terracotta);
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+
+.book-headline {
+  font-size: clamp(2rem, 3.5vw, 2.8rem);
+  font-weight: 500;
+  color: var(--color-noir);
+}
+
+.book-issue {
+  font-size: 0.9rem;
+  color: var(--color-muted-earth);
+  margin-top: 0.3rem;
+}
+
+.book-controls-top {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.book-pills {
+  display: flex;
+  background-color: var(--color-surface-pure);
+  padding: 4px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-border);
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.book-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--color-charcoal);
+  transition: all var(--transition-fast);
+}
+
+.book-pill-btn .pill-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: transparent;
+  transition: background-color var(--transition-fast);
+}
+
+.book-pill-btn.active {
+  background-color: var(--color-noir);
+  color: var(--color-soft-ivory);
+  box-shadow: var(--shadow-sm);
+}
+
+.book-pill-btn.active .pill-dot {
+  background-color: var(--color-soft-champagne);
+}
+
+.sound-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: var(--radius-pill);
+  font-size: 0.78rem;
+  font-weight: 600;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface-pure);
+  color: var(--color-charcoal);
+}
+
+.sound-toggle-btn.sound-on {
+  border-color: #7DA687;
+  color: #2F5938;
+}
+
+.sound-toggle-btn.sound-off {
+  color: var(--color-muted-earth);
+}
+
+/* 3D Perspective Stage */
+.flipbook-stage {
+  position: relative;
+  perspective: 2500px;
+  -webkit-perspective: 2500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem 0;
+  min-height: 620px;
+}
+
+/* Viewport */
+.flipbook-viewport {
+  position: relative;
+  width: 100%;
+  max-width: 1140px;
+  min-height: 660px;
+  transform-style: preserve-3d;
+  box-shadow: var(--shadow-book);
+  border-radius: 4px;
+  background-color: #FFFFFF;
+}
+
+/* Desktop Two-Page Spread Mode */
+.flipbook-viewport.mode-spread {
+  display: flex;
+}
+
+.flipbook-viewport.mode-spread .magazine-pages-container {
+  display: flex;
+  width: 100%;
+  min-height: 660px;
+}
+
+/* Mobile Single-Page Mode */
+.flipbook-viewport.mode-single {
+  display: block;
+}
+
+.flipbook-viewport.mode-single .magazine-pages-container {
+  width: 100%;
+  min-height: 580px;
+}
+
+/* Central Book Spine and Binding Crease */
+.magazine-spine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 32px;
+  margin-left: -16px;
+  background: linear-gradient(90deg, 
+    rgba(0, 0, 0, 0.15) 0%, 
+    rgba(0, 0, 0, 0.04) 40%, 
+    rgba(0, 0, 0, 0.22) 50%, 
+    rgba(0, 0, 0, 0.04) 60%, 
+    rgba(0, 0, 0, 0.15) 100%
+  );
+  z-index: 20;
+  pointer-events: none;
+}
+
+.mode-single .magazine-spine {
+  display: none;
+}
+
+/* Individual Pages */
+.magazine-page {
+  position: relative;
+  flex: 1;
+  background-color: #FFFFFF;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Paper subtle gradient to mimic physical sheen */
+.page-left {
+  background: linear-gradient(90deg, #FBF9F6 0%, #FFFFFF 15%, #FAF8F5 96%, #ECE7DE 100%);
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: inset 14px 0 20px -10px rgba(0, 0, 0, 0.04);
+}
+
+.page-right {
+  background: linear-gradient(90deg, #ECE7DE 0%, #FAF8F5 4%, #FFFFFF 85%, #FBF9F6 100%);
+  box-shadow: inset -14px 0 20px -10px rgba(0, 0, 0, 0.04);
+}
+
+.page-single {
+  background: linear-gradient(180deg, #FFFFFF 0%, #FDFBF8 100%);
+}
+
+/* 3D Turning Leaf Animation */
+.flipbook-turning-leaf {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  z-index: 50;
+  transform-style: preserve-3d;
+  pointer-events: none;
+  background: linear-gradient(90deg, #F7F5F0 0%, #FFFFFF 100%);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.flipbook-turning-leaf.flip-forward {
+  right: 0;
+  transform-origin: left center;
+  transform: rotateY(0deg);
+}
+
+.flipbook-turning-leaf.flip-forward.is-animating {
+  transform: rotateY(-180deg);
+  background: linear-gradient(270deg, #ECE7DE 0%, #FFFFFF 100%);
+}
+
+.flipbook-turning-leaf.flip-backward {
+  left: 0;
+  transform-origin: right center;
+  transform: rotateY(0deg);
+}
+
+.flipbook-turning-leaf.flip-backward.is-animating {
+  transform: rotateY(180deg);
+  background: linear-gradient(90deg, #ECE7DE 0%, #FFFFFF 100%);
+}
+
+/* Arrow Controls */
+.flip-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background-color: var(--color-surface-pure);
+  color: var(--color-noir);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 60;
+  border: 1px solid var(--color-border);
+  transition: all var(--transition-fast);
+}
+
+.flip-arrow:hover:not(:disabled) {
+  background-color: var(--color-noir);
+  color: var(--color-soft-ivory);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-50%) scale(1.05);
+}
+
+.flip-prev {
+  left: -26px;
+}
+
+.flip-next {
+  right: -26px;
+}
+
+/* Page Layouts */
+
+/* 1. Flyleaf */
+.page-flyleaf {
+  flex: 1;
+  padding: 4rem 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-color: var(--color-soft-ivory);
+  border-right: 1px solid var(--color-border);
+}
+
+.editorial-brand {
+  font-family: var(--font-serif);
+  font-size: 2.2rem;
+  letter-spacing: 0.15em;
+  font-weight: 600;
+}
+
+.brand-tagline {
+  font-size: 0.72rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--color-muted-earth);
+  margin-top: 0.4rem;
+}
+
+.flyleaf-divider {
+  width: 40px;
+  height: 1px;
+  background-color: var(--color-border);
+  margin: 2rem auto;
+}
+
+.flyleaf-quote {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.25rem;
+  color: var(--color-charcoal);
+  max-width: 380px;
+  line-height: 1.5;
+}
+
+.flyleaf-note {
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-terracotta);
+  margin-top: 2rem;
+}
+
+.page-folio {
+  margin-top: auto;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  color: var(--color-muted-earth);
+}
+
+/* 2. Cover */
+.page-cover {
+  position: relative;
+  flex: 1;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(2rem, 5vw, 4rem);
+  color: #FFFFFF;
+}
+
+.cover-kicker {
+  font-size: 0.72rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--color-soft-champagne);
+}
+
+.cover-issue-badge {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  opacity: 0.9;
+  display: block;
+  margin-top: 4px;
+}
+
+.cover-title {
+  font-family: var(--font-serif);
+  font-size: clamp(2.4rem, 5vw, 4.4rem);
+  line-height: 1.02;
+  font-weight: 400;
+  color: #FFFFFF;
+  margin-bottom: 0.8rem;
+  text-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.cover-deck {
+  font-size: clamp(0.9rem, 1.5vw, 1.15rem);
+  line-height: 1.5;
+  max-width: 440px;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 300;
+}
+
+.cover-footer-meta {
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+  padding-top: 1rem;
+}
+
+.cover-colophon {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.cover-tap-hint {
+  display: inline-block;
+  margin-top: 0.6rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-soft-champagne);
+  font-weight: 600;
+}
+
+/* 3. Back Cover */
+.page-backcover {
+  position: relative;
+  flex: 1;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 3rem;
+  color: #FFFFFF;
+}
+
+.backcover-content {
+  max-width: 420px;
+}
+
+.backcover-tagline {
+  font-size: 0.8rem;
+  letter-spacing: 0.25em;
+  color: var(--color-soft-champagne);
+  margin-top: 0.5rem;
+  margin-bottom: 1.2rem;
+}
+
+.backcover-deck {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.backcover-divider {
+  width: 50px;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.3);
+  margin: 1.5rem auto;
+}
+
+.backcover-colophon {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 1.5rem;
+}
+
+.backcover-reopen-btn {
+  background-color: var(--color-soft-champagne);
+  color: var(--color-noir);
+  padding: 0.75rem 1.6rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* 4. Editorial Spread Layouts */
+.page-editorial {
+  flex: 1;
+  padding: clamp(1.5rem, 3.5vw, 2.8rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.page-header-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.2rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.page-kicker {
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-terracotta);
+  font-weight: 700;
+}
+
+.page-number-folio {
+  font-family: var(--font-serif);
+  font-size: 0.9rem;
+  color: var(--color-muted-earth);
+  font-weight: 600;
+}
+
+.page-visual-wrap {
+  position: relative;
+  border-radius: var(--radius-xs);
+  overflow: hidden;
+  margin-bottom: 1.2rem;
+  max-height: 280px;
+}
+
+.page-photo {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  display: block;
+}
+
+.page-pullquote {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(20, 18, 16, 0.85) 100%);
+  padding: 1.5rem 1.2rem 0.8rem;
+}
+
+.page-pullquote blockquote {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--color-soft-ivory);
+  line-height: 1.35;
+}
+
+.page-text-content {
+  flex: 1;
+}
+
+.page-headline {
+  font-size: clamp(1.4rem, 2.5vw, 1.85rem);
+  margin-bottom: 0.5rem;
+  color: var(--color-noir);
+}
+
+.page-deck {
+  font-size: 0.88rem;
+  font-style: italic;
+  color: var(--color-charcoal);
+  margin-bottom: 0.8rem;
+  line-height: 1.45;
+}
+
+.page-paragraphs p {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  margin-bottom: 0.65rem;
+  color: var(--color-charcoal);
+}
+
+/* Featured In This Spread Hotspots */
+.page-shop-strip {
+  background-color: var(--color-surface-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 1rem;
+  margin-top: 1rem;
+}
+
+.shop-strip-label {
+  display: block;
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-muted-earth);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.shop-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.shop-chip-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--color-surface-pure);
+  border: 1px solid var(--color-border);
+  padding: 5px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 0.78rem;
+  color: var(--color-noir);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+  transition: all var(--transition-fast);
+}
+
+.shop-chip-btn:hover {
+  border-color: var(--color-noir);
+  background-color: var(--color-soft-ivory);
+  transform: translateY(-1px);
+}
+
+.chip-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--color-terracotta);
+}
+
+.chip-name {
+  font-weight: 600;
+}
+
+.chip-price {
+  color: var(--color-muted-earth);
+  font-size: 0.72rem;
+}
+
+.chip-arrow {
+  color: var(--color-terracotta);
+  font-weight: bold;
+}
+
+.page-footer-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.page-footer-brand {
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-muted-earth);
+}
+
+.page-footer-num {
+  font-family: var(--font-serif);
+  font-size: 0.85rem;
+  color: var(--color-charcoal);
+  font-weight: 600;
+}
+
+/* Bottom Controls Bar & Scrubber */
+.flipbook-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.footer-page-counter {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-charcoal);
+}
+
+.footer-page-counter span {
+  color: var(--color-muted-earth);
+}
+
+.footer-scrubber {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.scrubber-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--color-border);
+  border: none;
+  transition: all var(--transition-fast);
+  padding: 0;
+}
+
+.scrubber-dot:hover {
+  background-color: var(--color-muted-earth);
+  transform: scale(1.2);
+}
+
+.scrubber-dot.active {
+  background-color: var(--color-noir);
+  width: 22px;
+  border-radius: var(--radius-pill);
+}
+
+.footer-tip {
+  font-size: 0.78rem;
+  color: var(--color-muted-earth);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}

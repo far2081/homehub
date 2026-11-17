@@ -1,0 +1,399 @@
+/* ==========================================================================
+   HomeHub - Mobile-First & Android Browser Responsive Styles
+   Optimized for Android Chrome, Samsung Internet, and Desktop Displays
+   ========================================================================== */
+
+/* Touch Target Standard: Minimum 44x44px for Android Accessibility */
+button, 
+a, 
+input, 
+select {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* 1. Large Screens & Desktops (>= 1200px) */
+@media (min-width: 1200px) {
+  .hero-main-title {
+    font-size: 5rem;
+  }
+}
+
+/* 2. Tablets & Medium Displays (<= 1024px) */
+@media (max-width: 1024px) {
+  .header-nav {
+    gap: 1rem;
+  }
+
+  .nav-book-link {
+    font-size: 0.78rem;
+  }
+
+  .pdp-grid {
+    gap: 2rem;
+  }
+
+  .footer-top-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+  }
+}
+
+/* 3. Small Tablets & Mobile Landscape (<= 899px) */
+@media (max-width: 899px) {
+  .mobile-nav-toggle {
+    display: block;
+  }
+
+  .header-nav {
+    display: none; /* Collapsed into mobile drawer */
+  }
+
+  .flipbook-viewport.mode-spread {
+    display: none;
+  }
+
+  .flipbook-viewport {
+    min-height: auto;
+    box-shadow: var(--shadow-md);
+  }
+
+  .flip-prev {
+    left: 8px;
+  }
+
+  .flip-next {
+    right: 8px;
+  }
+
+  .flip-arrow {
+    width: 44px;
+    height: 44px;
+    background-color: rgba(255, 255, 255, 0.95);
+  }
+
+  .pdp-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pdp-main-image-wrap {
+    height: 380px;
+  }
+
+  .pdp-modal-dialog {
+    width: 98vw;
+    max-height: 96vh;
+    border-radius: var(--radius-sm);
+  }
+
+  .pdp-modal-body {
+    padding: 1.5rem;
+  }
+
+  .pdp-concept-strip {
+    margin: -1.5rem -1.5rem 1.5rem;
+    font-size: 0.65rem;
+  }
+
+  .catalogue-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .catalogue-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .catalogue-search-box {
+    flex: 1;
+  }
+
+  .catalogue-search-box input {
+    width: 100%;
+  }
+
+  .catalogue-search-box input:focus {
+    width: 100%;
+  }
+}
+
+/* 4. Android Phones & Compact Screens (<= 640px) */
+@media (max-width: 640px) {
+  :root {
+    --header-height: 70px;
+  }
+
+  .top-announcement-bar {
+    font-size: 0.68rem;
+    padding: 0.45rem 0.5rem;
+  }
+
+  .brand-title {
+    font-size: 1.55rem;
+  }
+
+  .brand-tagline-text {
+    font-size: 0.5rem;
+  }
+
+  .hero-editorial-section {
+    min-height: 75vh;
+    padding: 2.5rem 1rem;
+  }
+
+  .hero-main-title {
+    font-size: 2.4rem;
+  }
+
+  .hero-paragraph {
+    font-size: 0.95rem;
+  }
+
+  .hero-cta-group {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .hero-btn-primary,
+  .hero-btn-secondary {
+    width: 100%;
+    text-align: center;
+    padding: 0.85rem 1rem;
+  }
+
+  .flipbook-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .book-headline {
+    font-size: 1.85rem;
+  }
+
+  .book-pills {
+    width: 100%;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 6px;
+  }
+
+  .book-pill-btn {
+    white-space: nowrap;
+    font-size: 0.75rem;
+    padding: 6px 12px;
+  }
+
+  .page-editorial {
+    padding: 1.2rem;
+  }
+
+  .page-photo {
+    height: 200px;
+  }
+
+  .page-cover {
+    padding: 2rem 1.2rem;
+    min-height: 480px;
+  }
+
+  .cover-title {
+    font-size: 2.2rem;
+  }
+
+  .catalogue-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .catalogue-categories {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 4px;
+    width: 100%;
+  }
+
+  .cat-pill {
+    white-space: nowrap;
+  }
+
+  .video-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .video-pills {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    width: 100%;
+    padding-bottom: 4px;
+  }
+
+  .video-pill {
+    white-space: nowrap;
+  }
+
+  .pdp-main-image-wrap {
+    height: 290px;
+  }
+
+  .pdp-thumbnails {
+    gap: 8px;
+  }
+
+  .pdp-thumb-btn {
+    height: 70px;
+  }
+
+  .pdp-actions-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .pdp-qty-stepper {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .pdp-add-bag-btn {
+    width: 100%;
+  }
+
+  .pdp-wish-btn {
+    width: 100%;
+    border-radius: var(--radius-pill);
+    gap: 8px;
+  }
+
+  .pdp-wish-btn::after {
+    content: ' Save to Wishlist';
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .cart-panel,
+  .wishlist-panel {
+    width: 100vw;
+  }
+
+  .footer-top-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .footer-bottom-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .admin-dialog {
+    width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+
+  .form-row-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 5. Common Android Display Viewports (360px - 412px, e.g. Galaxy A/S series, Pixel) */
+@media (max-width: 412px) {
+  html, body {
+    overflow-x: hidden;
+    position: relative;
+    width: 100%;
+  }
+
+  .brand-title {
+    font-size: 1.35rem;
+  }
+
+  .admin-nav-trigger {
+    display: none; /* Accessible from footer to save mobile header space */
+  }
+
+  .util-btn {
+    width: 38px;
+    height: 38px;
+  }
+
+  .flipbook-stage {
+    padding: 0.5rem 0;
+  }
+
+  .flip-arrow {
+    width: 38px;
+    height: 38px;
+    opacity: 0.85;
+  }
+
+  .flip-prev {
+    left: 4px;
+  }
+
+  .flip-next {
+    right: 4px;
+  }
+
+  .page-editorial {
+    padding: 1rem 0.85rem;
+  }
+
+  .page-headline {
+    font-size: 1.3rem;
+  }
+
+  .page-photo {
+    height: 180px;
+  }
+
+  .shop-chips {
+    flex-direction: column;
+  }
+
+  .shop-chip-btn {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .admin-login-dialog {
+    width: 95vw;
+    border-radius: var(--radius-sm);
+  }
+
+  .admin-login-body {
+    padding: 1.2rem;
+  }
+}
+
+/* 6. Extra Compact Android Screens (360px, e.g. Galaxy S8/A10/Pixel 4a) */
+@media (max-width: 360px) {
+  .hero-main-title {
+    font-size: 2rem;
+  }
+
+  .section-title {
+    font-size: 1.75rem;
+  }
+
+  .card-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .card-add-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .pdp-thumbnails {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+
+  .pdp-thumb-btn {
+    height: 58px;
+  }
+}

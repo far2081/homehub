@@ -1,0 +1,280 @@
+/* ==========================================================================
+   HomeHub - Header & Navigation
+   Soft Luxury Modern Styling
+   ========================================================================== */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: rgba(248, 245, 239, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-border);
+  transition: all var(--transition-fast);
+}
+
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--header-height);
+  padding: 0 clamp(1rem, 3vw, 2.5rem);
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+/* Mobile Hamburger Toggle */
+.mobile-nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  color: var(--color-noir);
+}
+
+.hamburger-line {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background-color: var(--color-noir);
+  margin: 5px 0;
+  transition: all var(--transition-fast);
+}
+
+/* Brand Identity */
+.header-brand {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  user-select: none;
+}
+
+.brand-title {
+  font-family: var(--font-serif);
+  font-size: 1.85rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--color-noir);
+  line-height: 1;
+}
+
+.brand-tagline-text {
+  font-size: 0.58rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--color-muted-earth);
+  font-weight: 500;
+  margin-top: 3px;
+}
+
+/* Editorial 4-Book Navigation */
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav-books-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--color-terracotta);
+  font-weight: 700;
+  padding-right: 0.5rem;
+  border-right: 1px solid var(--color-border);
+}
+
+.nav-book-link {
+  font-size: 0.84rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: var(--color-charcoal);
+  position: relative;
+  padding: 6px 0;
+  transition: color var(--transition-fast);
+}
+
+.nav-book-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background-color: var(--color-noir);
+  transition: width var(--transition-fast);
+}
+
+.nav-book-link:hover,
+.nav-book-link.active {
+  color: var(--color-noir);
+}
+
+.nav-book-link:hover::after,
+.nav-book-link.active::after {
+  width: 100%;
+}
+
+.nav-divider {
+  width: 1px;
+  height: 18px;
+  background-color: var(--color-border);
+}
+
+.nav-action-link {
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: var(--color-muted-earth);
+  transition: color var(--transition-fast);
+}
+
+.nav-action-link:hover {
+  color: var(--color-noir);
+}
+
+/* Header Utilities (Search, Wishlist, Bag, Admin) */
+.header-utilities {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.util-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-pill);
+  color: var(--color-noir);
+  transition: background-color var(--transition-fast);
+}
+
+.util-btn:hover {
+  background-color: rgba(32, 29, 26, 0.06);
+}
+
+.util-badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-terracotta);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.admin-nav-trigger {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+  color: var(--color-muted-earth);
+  padding: 6px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-surface-pure);
+}
+
+.admin-nav-trigger:hover {
+  border-color: var(--color-noir);
+  color: var(--color-noir);
+}
+
+/* Mobile Slide Navigation Drawer */
+.mobile-nav-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 86vw;
+  max-width: 380px;
+  background-color: var(--color-soft-ivory);
+  z-index: 10000;
+  transform: translateX(-100%);
+  transition: transform var(--transition-smooth);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-nav-drawer.is-open {
+  transform: translateX(0);
+}
+
+.mobile-nav-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(20, 18, 16, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-smooth);
+}
+
+.mobile-nav-drawer.is-open + .mobile-nav-backdrop {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.mobile-nav-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mobile-nav-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.mobile-nav-group-title {
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-terracotta);
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.mobile-nav-links {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  margin-bottom: 2rem;
+}
+
+.mobile-nav-link {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  color: var(--color-noir);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mobile-nav-link span.arrow {
+  font-size: 1rem;
+  color: var(--color-muted-earth);
+}
+
+.mobile-nav-footer {
+  padding: 1.5rem;
+  border-top: 1px solid var(--color-border);
+  background-color: var(--color-surface-subtle);
+}
