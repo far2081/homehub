@@ -47,6 +47,18 @@
   justify-content: space-between;
 }
 
+.admin-branding {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.admin-logo-img {
+  height: 38px;
+  width: auto;
+  display: block;
+}
+
 .admin-badge {
   font-size: 0.62rem;
   letter-spacing: 0.2em;

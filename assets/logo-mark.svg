@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" fill="none">
+  <!-- HomeHub Architectural Emblem: Soft Luxury Modern House Monogram -->
+  <defs>
+    <linearGradient id="hhGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E2CA9E" />
+      <stop offset="50%" stop-color="#D6BC91" />
+      <stop offset="100%" stop-color="#BA9C6E" />
+    </linearGradient>
+    <linearGradient id="hhSageGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#9CB3A2" />
+      <stop offset="100%" stop-color="#BDCEBF" />
+    </linearGradient>
+  </defs>
+
+  <!-- Outer Architectural Roofline -->
+  <path d="M24 4L4 20H10V42H38V20H44L24 4Z" stroke="url(#hhGoldGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  
+  <!-- Inner Sanctuary Portal Archway (The "Hub") -->
+  <path d="M19 42V26C19 23.2386 21.2386 21 24 21C26.7614 21 29 23.2386 29 26V42" stroke="url(#hhSageGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Central Circadian Light Sphere (The Hearth) -->
+  <circle cx="24" cy="14" r="2.5" fill="url(#hhGoldGrad)" />
+</svg>

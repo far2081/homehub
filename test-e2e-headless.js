@@ -124,17 +124,29 @@ console.log('\n[4] Testing The Four Digital Books & Hotspot Linkages:');
     assert(!!book, `Book "${bookId}" exists with title "${book ? book.title : ''}"`);
     assert(book.pages.length === 8, `Book "${bookId}" contains complete 8-page editorial spread`);
 
-    // Verify all embedded product hotspots link to existing products in catalogue
+    // Verify cover lines on cover page
+    assert(Array.isArray(book.coverLines) && book.coverLines.length >= 3, `Book "${bookId}" has ${book.coverLines ? book.coverLines.length : 0} editorial cover lines`);
+
+    // Verify all embedded product hotspots link to existing products in catalogue and have coordinates
     let hotspotCount = 0;
     for (const page of book.pages) {
       for (const prod of (page.products || [])) {
         hotspotCount++;
         const target = INITIAL_PRODUCTS.find(p => p.sku === prod.sku);
         assert(!!target, `Page ${page.pageNumber} hotspot SKU "${prod.sku}" resolves to catalogue piece "${target ? target.name : 'MISSING'}"`);
+        if (prod.hotspot) {
+          assert(typeof prod.hotspot.x === 'number' && typeof prod.hotspot.y === 'number', `Page ${page.pageNumber} hotspot SKU "${prod.sku}" has valid coordinates (${prod.hotspot.x}%, ${prod.hotspot.y}%)`);
+        }
       }
     }
     assert(hotspotCount > 0, `Book "${bookId}" contains ${hotspotCount} clickable piece hotspots`);
   }
+
+  // Test Sound preference persistence
+  storage.set('sound_enabled', false);
+  assert(storage.get('sound_enabled', true) === false, 'Audio mute preference persists in storage');
+  storage.set('sound_enabled', true);
+  assert(storage.get('sound_enabled', false) === true, 'Audio enable preference persists in storage');
 }
 
 // --- 5. VIDEO MASTERCLASSES & PLAYBACK CONTENT ---

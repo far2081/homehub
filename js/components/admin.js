@@ -131,8 +131,11 @@ export class AdminPortal {
         <!-- Header -->
         <div class="admin-topbar">
           <div class="admin-branding">
-            <span class="admin-badge">ADMIN PORTAL • AUTHENTICATED</span>
-            <h2 id="admin-title">HomeHub Atelier Management Console</h2>
+            <img src="assets/logo-light.svg" alt="HomeHub" class="admin-logo-img" />
+            <div>
+              <span class="admin-badge">ADMIN PORTAL • AUTHENTICATED</span>
+              <h2 id="admin-title">Atelier Management Console</h2>
+            </div>
           </div>
           <div class="admin-topbar-actions">
             <span class="admin-user-tag">👤 admin@homehub.atelier</span>
@@ -189,8 +192,11 @@ export class AdminPortal {
         
         <div class="admin-login-topbar">
           <div class="admin-branding">
-            <span class="admin-badge">RESTRICTED PORTAL</span>
-            <h2 id="admin-login-title">HomeHub Atelier Management</h2>
+            <img src="assets/logo-light.svg" alt="HomeHub" class="admin-logo-img" />
+            <div>
+              <span class="admin-badge">RESTRICTED PORTAL</span>
+              <h2 id="admin-login-title">Atelier Management</h2>
+            </div>
           </div>
           <button class="admin-close-btn" id="admin-close-btn" aria-label="Close">✕</button>
         </div>

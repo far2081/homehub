@@ -1,10 +1,11 @@
 /* ==========================================================================
    HomeHub - Realistic 3D Magazine Flipbook Styling
-   Features: CSS 3D Perspective, Central Spine, Paper Shading, Edge Curl
+   Features: CSS 3D Perspective, Central Spine, Paper Shading, Edge Stack,
+   Realistic Page Turning Leaf, Hotspot Pins, and Editorial Typography
    ========================================================================== */
 
 .magazine-section-wrapper {
-  padding: 3rem 0 5rem;
+  padding: 3.5rem 0 5.5rem;
   background-color: var(--color-surface-subtle);
   border-top: 1px solid var(--color-border);
   border-bottom: 1px solid var(--color-border);
@@ -77,6 +78,9 @@
   font-weight: 500;
   color: var(--color-charcoal);
   transition: all var(--transition-fast);
+  background: transparent;
+  border: none;
+  cursor: pointer;
 }
 
 .book-pill-btn .pill-dot {
@@ -108,39 +112,82 @@
   border: 1px solid var(--color-border);
   background-color: var(--color-surface-pure);
   color: var(--color-charcoal);
+  cursor: pointer;
+  transition: all var(--transition-fast);
 }
 
 .sound-toggle-btn.sound-on {
   border-color: #7DA687;
   color: #2F5938;
+  background-color: #F1F6F2;
 }
 
 .sound-toggle-btn.sound-off {
   color: var(--color-muted-earth);
+  background-color: var(--color-surface-pure);
 }
 
 /* 3D Perspective Stage */
 .flipbook-stage {
   position: relative;
-  perspective: 2500px;
-  -webkit-perspective: 2500px;
+  perspective: 2600px;
+  -webkit-perspective: 2600px;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 1.5rem 0;
-  min-height: 620px;
+  min-height: 640px;
 }
 
-/* Viewport */
+/* Viewport with Physical Stack Shadows */
 .flipbook-viewport {
   position: relative;
   width: 100%;
-  max-width: 1140px;
-  min-height: 660px;
+  max-width: 1160px;
+  min-height: 640px;
+  height: 640px;
   transform-style: preserve-3d;
-  box-shadow: var(--shadow-book);
-  border-radius: 4px;
   background-color: #FFFFFF;
+  border-radius: 4px;
+  /* Multi-layered soft ambient and physical book drop-shadow */
+  box-shadow: 
+    0 35px 65px -15px rgba(24, 21, 18, 0.28),
+    0 15px 30px -10px rgba(24, 21, 18, 0.15),
+    0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+/* Physical Paper Stack Thickness Rim (left & right edges) */
+.book-edge-stack {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  width: 8px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.edge-left {
+  left: -8px;
+  border-radius: 4px 0 0 4px;
+  background: repeating-linear-gradient(
+    180deg,
+    #E8E3D8 0px,
+    #FFFFFF 1.5px,
+    #DCD6C9 3px
+  );
+  box-shadow: -2px 0 4px rgba(0,0,0,0.12);
+}
+
+.edge-right {
+  right: -8px;
+  border-radius: 0 4px 4px 0;
+  background: repeating-linear-gradient(
+    180deg,
+    #E8E3D8 0px,
+    #FFFFFF 1.5px,
+    #DCD6C9 3px
+  );
+  box-shadow: 2px 0 4px rgba(0,0,0,0.12);
 }
 
 /* Desktop Two-Page Spread Mode */
@@ -151,17 +198,24 @@
 .flipbook-viewport.mode-spread .magazine-pages-container {
   display: flex;
   width: 100%;
-  min-height: 660px;
+  height: 100%;
+  min-height: 640px;
 }
 
 /* Mobile Single-Page Mode */
 .flipbook-viewport.mode-single {
   display: block;
+  min-height: 620px;
+  height: auto;
 }
 
 .flipbook-viewport.mode-single .magazine-pages-container {
   width: 100%;
-  min-height: 580px;
+  min-height: 620px;
+}
+
+.mode-single .book-edge-stack {
+  display: none;
 }
 
 /* Central Book Spine and Binding Crease */
@@ -170,17 +224,38 @@
   top: 0;
   bottom: 0;
   left: 50%;
-  width: 32px;
-  margin-left: -16px;
+  width: 44px;
+  margin-left: -22px;
   background: linear-gradient(90deg, 
-    rgba(0, 0, 0, 0.15) 0%, 
-    rgba(0, 0, 0, 0.04) 40%, 
-    rgba(0, 0, 0, 0.22) 50%, 
-    rgba(0, 0, 0, 0.04) 60%, 
-    rgba(0, 0, 0, 0.15) 100%
+    rgba(0, 0, 0, 0.22) 0%, 
+    rgba(0, 0, 0, 0.05) 35%, 
+    rgba(0, 0, 0, 0.35) 50%, 
+    rgba(0, 0, 0, 0.05) 65%, 
+    rgba(0, 0, 0, 0.22) 100%
   );
-  z-index: 20;
+  z-index: 25;
   pointer-events: none;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.15);
+}
+
+.spine-binding-line {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  margin-left: -1px;
+  background-color: rgba(20, 18, 16, 0.25);
+}
+
+.spine-thread {
+  position: absolute;
+  left: 50%;
+  top: 15px;
+  bottom: 15px;
+  width: 1px;
+  margin-left: -0.5px;
+  border-left: 1px dashed rgba(214, 188, 145, 0.4);
 }
 
 .mode-single .magazine-spine {
@@ -192,28 +267,35 @@
   position: relative;
   flex: 1;
   background-color: #FFFFFF;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
+  height: 640px;
 }
 
-/* Paper subtle gradient to mimic physical sheen */
+.mode-single .magazine-page {
+  height: auto;
+  min-height: 620px;
+}
+
+/* Paper subtle curvature and sheen to mimic physical lighting */
 .page-left {
-  background: linear-gradient(90deg, #FBF9F6 0%, #FFFFFF 15%, #FAF8F5 96%, #ECE7DE 100%);
+  background: linear-gradient(90deg, #FBF9F6 0%, #FFFFFF 15%, #FAF8F5 95%, #E9E4DA 100%);
   border-right: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: inset 14px 0 20px -10px rgba(0, 0, 0, 0.04);
+  box-shadow: inset 18px 0 25px -12px rgba(0, 0, 0, 0.05);
 }
 
 .page-right {
-  background: linear-gradient(90deg, #ECE7DE 0%, #FAF8F5 4%, #FFFFFF 85%, #FBF9F6 100%);
-  box-shadow: inset -14px 0 20px -10px rgba(0, 0, 0, 0.04);
+  background: linear-gradient(90deg, #E9E4DA 0%, #FAF8F5 5%, #FFFFFF 85%, #FBF9F6 100%);
+  box-shadow: inset -18px 0 25px -12px rgba(0, 0, 0, 0.05);
 }
 
 .page-single {
-  background: linear-gradient(180deg, #FFFFFF 0%, #FDFBF8 100%);
+  background: linear-gradient(180deg, #FFFFFF 0%, #FAF8F5 100%);
 }
 
-/* 3D Turning Leaf Animation */
+/* 3D Realistic Turning Leaf */
 .flipbook-turning-leaf {
   position: absolute;
   top: 0;
@@ -222,34 +304,55 @@
   z-index: 50;
   transform-style: preserve-3d;
   pointer-events: none;
-  background: linear-gradient(90deg, #F7F5F0 0%, #FFFFFF 100%);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  background: linear-gradient(90deg, #F5F2EC 0%, #FFFFFF 100%);
+  transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.leaf-shadow-front,
+.leaf-shadow-back {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+}
+
+.leaf-shadow-front {
+  background: linear-gradient(90deg, rgba(0,0,0,0.18) 0%, transparent 60%);
+}
+
+.leaf-shadow-back {
+  background: linear-gradient(270deg, rgba(0,0,0,0.2) 0%, transparent 60%);
+  transform: rotateY(180deg);
+  backface-visibility: hidden;
 }
 
 .flipbook-turning-leaf.flip-forward {
   right: 0;
   transform-origin: left center;
   transform: rotateY(0deg);
+  box-shadow: -15px 0 35px rgba(0, 0, 0, 0.22);
 }
 
 .flipbook-turning-leaf.flip-forward.is-animating {
   transform: rotateY(-180deg);
-  background: linear-gradient(270deg, #ECE7DE 0%, #FFFFFF 100%);
+  background: linear-gradient(270deg, #E9E4DA 0%, #FFFFFF 100%);
 }
 
 .flipbook-turning-leaf.flip-backward {
   left: 0;
   transform-origin: right center;
   transform: rotateY(0deg);
+  box-shadow: 15px 0 35px rgba(0, 0, 0, 0.22);
 }
 
 .flipbook-turning-leaf.flip-backward.is-animating {
   transform: rotateY(180deg);
-  background: linear-gradient(90deg, #ECE7DE 0%, #FFFFFF 100%);
+  background: linear-gradient(90deg, #E9E4DA 0%, #FFFFFF 100%);
 }
 
-/* Arrow Controls */
+/* Arrow Navigation Controls */
 .flip-arrow {
   position: absolute;
   top: 50%;
@@ -265,6 +368,7 @@
   justify-content: center;
   z-index: 60;
   border: 1px solid var(--color-border);
+  cursor: pointer;
   transition: all var(--transition-fast);
 }
 
@@ -283,68 +387,139 @@
   right: -26px;
 }
 
-/* Page Layouts */
-
-/* 1. Flyleaf */
+/* 1. Flyleaf Page */
 .page-flyleaf {
   flex: 1;
-  padding: 4rem 3rem;
+  padding: 3.5rem 3rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
-  background-color: var(--color-soft-ivory);
+  background-color: #F8F5EF;
   border-right: 1px solid var(--color-border);
+  height: 100%;
+}
+
+.mag-brand-mark {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 1rem;
+  display: block;
 }
 
 .editorial-brand {
   font-family: var(--font-serif);
   font-size: 2.2rem;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.16em;
   font-weight: 600;
+  color: var(--color-noir);
 }
 
 .brand-tagline {
   font-size: 0.72rem;
-  letter-spacing: 0.3em;
+  letter-spacing: 0.32em;
   text-transform: uppercase;
   color: var(--color-muted-earth);
   margin-top: 0.4rem;
 }
 
 .flyleaf-divider {
-  width: 40px;
+  width: 44px;
   height: 1px;
   background-color: var(--color-border);
-  margin: 2rem auto;
+  margin: 1.5rem auto;
+}
+
+.flyleaf-volume {
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-terracotta);
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+
+.flyleaf-book-title {
+  font-family: var(--font-serif);
+  font-size: 1.6rem;
+  color: var(--color-noir);
+  margin-bottom: 0.8rem;
 }
 
 .flyleaf-quote {
   font-family: var(--font-serif);
   font-style: italic;
-  font-size: 1.25rem;
+  font-size: 1.05rem;
   color: var(--color-charcoal);
   max-width: 380px;
   line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+
+.flyleaf-toc {
+  background-color: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 1rem 1.4rem;
+  text-align: left;
+  max-width: 400px;
+  width: 100%;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+
+.toc-title {
+  display: block;
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--color-muted-earth);
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-border-subtle);
+  padding-bottom: 4px;
+}
+
+.flyleaf-toc ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.flyleaf-toc li {
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--color-charcoal);
+  margin-bottom: 0.35rem;
+  position: relative;
+  padding-left: 14px;
+}
+
+.flyleaf-toc li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--color-soft-champagne);
+  font-size: 1.1rem;
+  line-height: 1;
 }
 
 .flyleaf-note {
-  font-size: 0.78rem;
-  letter-spacing: 0.1em;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--color-terracotta);
-  margin-top: 2rem;
+  color: var(--color-muted-earth);
 }
 
 .page-folio {
   margin-top: auto;
   font-size: 0.65rem;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.22em;
   color: var(--color-muted-earth);
 }
 
-/* 2. Cover */
+/* 2. Cover Page */
 .page-cover {
   position: relative;
   flex: 1;
@@ -353,65 +528,176 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: clamp(2rem, 5vw, 4rem);
+  padding: clamp(2rem, 4vw, 3.5rem);
+  color: #FFFFFF;
+  height: 100%;
+}
+
+.cover-brand-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cover-logo-mark {
+  width: 28px;
+  height: 28px;
+}
+
+.cover-brand-name {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  letter-spacing: 0.15em;
+  font-weight: 700;
+  display: block;
   color: #FFFFFF;
 }
 
 .cover-kicker {
-  font-size: 0.72rem;
-  letter-spacing: 0.25em;
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   font-weight: 600;
   color: var(--color-soft-champagne);
+  display: block;
+}
+
+.cover-top-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .cover-issue-badge {
   font-size: 0.72rem;
   letter-spacing: 0.1em;
-  opacity: 0.9;
-  display: block;
-  margin-top: 4px;
+  background-color: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.cover-center-branding {
+  margin: 1.5rem 0;
 }
 
 .cover-title {
   font-family: var(--font-serif);
-  font-size: clamp(2.4rem, 5vw, 4.4rem);
+  font-size: clamp(2.4rem, 4.5vw, 4rem);
   line-height: 1.02;
   font-weight: 400;
   color: #FFFFFF;
   margin-bottom: 0.8rem;
-  text-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  text-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
 }
 
 .cover-deck {
-  font-size: clamp(0.9rem, 1.5vw, 1.15rem);
+  font-size: clamp(0.88rem, 1.3vw, 1.08rem);
   line-height: 1.5;
   max-width: 440px;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.95);
   font-weight: 300;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+.cover-lines-box {
+  margin-top: 1.2rem;
+  background: rgba(20, 18, 16, 0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-sm);
+  padding: 0.9rem 1.2rem;
+  max-width: 420px;
+}
+
+.cover-lines-heading {
+  display: block;
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  color: var(--color-soft-champagne);
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+
+.cover-lines-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.cover-lines-list li {
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: #F8F5EF;
+  margin-bottom: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cover-lines-list .bullet {
+  color: var(--color-soft-champagne);
+  font-size: 0.7rem;
 }
 
 .cover-footer-meta {
   border-top: 1px solid rgba(255, 255, 255, 0.25);
   padding-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .cover-colophon {
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.85);
+  max-width: 280px;
 }
 
-.cover-tap-hint {
-  display: inline-block;
-  margin-top: 0.6rem;
-  font-size: 0.75rem;
+.cover-open-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--color-soft-champagne);
+  color: var(--color-noir);
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.82rem;
+  font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--color-soft-champagne);
-  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
+  transition: all var(--transition-fast);
 }
 
-/* 3. Back Cover */
+.cover-open-btn:hover {
+  background-color: #FFFFFF;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+}
+
+.open-arrow {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.page-folio-corner {
+  position: absolute;
+  bottom: 0.8rem;
+  right: 1.2rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* 3. Back Cover Page */
 .page-backcover {
   position: relative;
   flex: 1;
@@ -423,10 +709,11 @@
   text-align: center;
   padding: 3rem;
   color: #FFFFFF;
+  height: 100%;
 }
 
 .backcover-content {
-  max-width: 420px;
+  max-width: 440px;
 }
 
 .backcover-tagline {
@@ -440,7 +727,7 @@
 .backcover-deck {
   font-size: 1rem;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.95);
 }
 
 .backcover-divider {
@@ -452,8 +739,15 @@
 
 .backcover-colophon {
   font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.75);
   margin-bottom: 1.5rem;
+}
+
+.backcover-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
 }
 
 .backcover-reopen-btn {
@@ -462,25 +756,51 @@
   padding: 0.75rem 1.6rem;
   border-radius: var(--radius-pill);
   font-size: 0.8rem;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
 }
 
-/* 4. Editorial Spread Layouts */
+.backcover-reopen-btn:hover {
+  background-color: #FFFFFF;
+  transform: translateY(-1px);
+}
+
+.backcover-shop-btn {
+  background-color: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(6px);
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  padding: 0.65rem 1.4rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+
+.backcover-shop-btn:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* 4. Editorial Pages */
 .page-editorial {
   flex: 1;
-  padding: clamp(1.5rem, 3.5vw, 2.8rem);
+  padding: clamp(1.4rem, 3vw, 2.4rem);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  height: 100%;
 }
 
 .page-header-strip {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1.2rem;
+  margin-bottom: 1rem;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid var(--color-border-subtle);
 }
@@ -500,19 +820,157 @@
   font-weight: 600;
 }
 
+/* Visual Wrap with Interactive Hotspot Pins */
 .page-visual-wrap {
   position: relative;
   border-radius: var(--radius-xs);
-  overflow: hidden;
-  margin-bottom: 1.2rem;
-  max-height: 280px;
+  overflow: visible;
+  margin-bottom: 1rem;
+  height: 240px;
 }
 
 .page-photo {
   width: 100%;
-  height: 260px;
+  height: 100%;
   object-fit: cover;
   display: block;
+  border-radius: var(--radius-xs);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+/* Hotspot Pins directly on the photography */
+.magazine-hotspot-pin {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  z-index: 35;
+}
+
+.hotspot-pulse {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: rgba(214, 188, 145, 0.5);
+  animation: hotspot-pulse-anim 2s infinite ease-out;
+}
+
+@keyframes hotspot-pulse-anim {
+  0% { transform: scale(0.8); opacity: 0.9; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+.hotspot-dot {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: var(--color-noir);
+  color: var(--color-soft-champagne);
+  font-size: 0.72rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #FFFFFF;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: transform var(--transition-fast);
+}
+
+.magazine-hotspot-pin:hover .hotspot-dot {
+  transform: scale(1.15);
+  background-color: var(--color-soft-champagne);
+  color: var(--color-noir);
+}
+
+/* Floating Hotspot Mini Card */
+.hotspot-card {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%) translateY(6px);
+  width: 200px;
+  background-color: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem;
+  box-shadow: 0 10px 25px -5px rgba(24, 21, 18, 0.25);
+  z-index: 40;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: all var(--transition-fast);
+}
+
+.magazine-hotspot-pin:hover .hotspot-card,
+.hotspot-card.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+
+.hotspot-card-badge {
+  display: block;
+  font-size: 0.58rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-terracotta);
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.hotspot-card-title {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--color-noir);
+  line-height: 1.25;
+  margin-bottom: 3px;
+}
+
+.hotspot-card-price {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--color-charcoal);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.hotspot-card-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.hotspot-btn-view,
+.hotspot-btn-add {
+  flex: 1;
+  padding: 4px 6px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  border: none;
+  transition: all var(--transition-fast);
+}
+
+.hotspot-btn-view {
+  background-color: var(--color-surface-subtle);
+  color: var(--color-charcoal);
+  border: 1px solid var(--color-border);
+}
+
+.hotspot-btn-view:hover {
+  background-color: var(--color-border);
+}
+
+.hotspot-btn-add {
+  background-color: var(--color-noir);
+  color: var(--color-soft-ivory);
+}
+
+.hotspot-btn-add:hover {
+  background-color: #383431;
 }
 
 .page-pullquote {
@@ -520,60 +978,63 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(180deg, transparent 0%, rgba(20, 18, 16, 0.85) 100%);
-  padding: 1.5rem 1.2rem 0.8rem;
+  background: linear-gradient(180deg, transparent 0%, rgba(20, 18, 16, 0.88) 100%);
+  padding: 1.2rem 1rem 0.6rem;
+  border-radius: 0 0 var(--radius-xs) var(--radius-xs);
 }
 
 .page-pullquote blockquote {
   font-family: var(--font-serif);
   font-style: italic;
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   color: var(--color-soft-ivory);
   line-height: 1.35;
+  margin: 0;
 }
 
 .page-text-content {
   flex: 1;
+  margin-bottom: 0.5rem;
 }
 
 .page-headline {
-  font-size: clamp(1.4rem, 2.5vw, 1.85rem);
-  margin-bottom: 0.5rem;
+  font-size: clamp(1.3rem, 2.2vw, 1.7rem);
+  margin-bottom: 0.4rem;
   color: var(--color-noir);
 }
 
 .page-deck {
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   font-style: italic;
   color: var(--color-charcoal);
-  margin-bottom: 0.8rem;
+  margin-bottom: 0.6rem;
   line-height: 1.45;
 }
 
 .page-paragraphs p {
-  font-size: 0.85rem;
-  line-height: 1.6;
-  margin-bottom: 0.65rem;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  margin-bottom: 0.5rem;
   color: var(--color-charcoal);
 }
 
-/* Featured In This Spread Hotspots */
+/* Shop Strip with Direct "Inspect" and "+ Bag" Actions */
 .page-shop-strip {
   background-color: var(--color-surface-subtle);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  padding: 0.75rem 1rem;
-  margin-top: 1rem;
+  padding: 0.65rem 0.85rem;
+  margin-top: 0.5rem;
 }
 
 .shop-strip-label {
   display: block;
-  font-size: 0.62rem;
+  font-size: 0.6rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--color-muted-earth);
   font-weight: 700;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem;
 }
 
 .shop-chips {
@@ -582,29 +1043,36 @@
   flex-wrap: wrap;
 }
 
+.shop-chip-group {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--color-surface-pure);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+
 .shop-chip-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  background-color: var(--color-surface-pure);
-  border: 1px solid var(--color-border);
-  padding: 5px 10px;
-  border-radius: var(--radius-pill);
-  font-size: 0.78rem;
+  gap: 5px;
+  background: transparent;
+  border: none;
+  padding: 5px 8px 5px 10px;
+  font-size: 0.74rem;
   color: var(--color-noir);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
-  transition: all var(--transition-fast);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
 }
 
 .shop-chip-btn:hover {
-  border-color: var(--color-noir);
   background-color: var(--color-soft-ivory);
-  transform: translateY(-1px);
 }
 
 .chip-dot {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   background-color: var(--color-terracotta);
 }
@@ -615,7 +1083,7 @@
 
 .chip-price {
   color: var(--color-muted-earth);
-  font-size: 0.72rem;
+  font-size: 0.7rem;
 }
 
 .chip-arrow {
@@ -623,17 +1091,33 @@
   font-weight: bold;
 }
 
+.shop-chip-add-btn {
+  background-color: var(--color-noir);
+  color: var(--color-soft-ivory);
+  border: none;
+  padding: 5px 10px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  border-left: 1px solid var(--color-border);
+}
+
+.shop-chip-add-btn:hover {
+  background-color: #383431;
+}
+
 .page-footer-strip {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 1rem;
-  padding-top: 0.5rem;
+  margin-top: 0.8rem;
+  padding-top: 0.4rem;
   border-top: 1px solid var(--color-border-subtle);
 }
 
 .page-footer-brand {
-  font-size: 0.62rem;
+  font-size: 0.6rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--color-muted-earth);
@@ -641,7 +1125,7 @@
 
 .page-footer-num {
   font-family: var(--font-serif);
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   color: var(--color-charcoal);
   font-weight: 600;
 }
@@ -680,6 +1164,7 @@
   border-radius: 50%;
   background-color: var(--color-border);
   border: none;
+  cursor: pointer;
   transition: all var(--transition-fast);
   padding: 0;
 }
@@ -691,7 +1176,7 @@
 
 .scrubber-dot.active {
   background-color: var(--color-noir);
-  width: 22px;
+  width: 24px;
   border-radius: var(--radius-pill);
 }
 
@@ -701,4 +1186,167 @@
   display: flex;
   align-items: center;
   gap: 6px;
+}
+
+/* ==========================================================================
+   Editorial Book Rack / 4 Magazine Covers Showcase
+   ========================================================================== */
+
+.magazine-shelf-showcase {
+  margin-bottom: 3rem;
+}
+
+.magazine-shelf-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+.magazine-shelf-card {
+  position: relative;
+  background-color: #FFFFFF;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+
+.magazine-shelf-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px -10px rgba(24, 21, 18, 0.2);
+  border-color: var(--color-soft-champagne);
+}
+
+.shelf-card-media {
+  position: relative;
+  height: 280px;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1.2rem;
+  color: #FFFFFF;
+}
+
+.shelf-card-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(20,18,16,0.3) 0%, rgba(20,18,16,0.85) 100%);
+  pointer-events: none;
+}
+
+.shelf-card-top {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.shelf-card-brand-mark {
+  width: 22px;
+  height: 22px;
+}
+
+.shelf-card-vol {
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-soft-champagne);
+  font-weight: 700;
+  background: rgba(0, 0, 0, 0.45);
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+}
+
+.shelf-card-meta {
+  position: relative;
+  z-index: 2;
+}
+
+.shelf-card-title {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  line-height: 1.15;
+  color: #FFFFFF;
+  margin-bottom: 0.3rem;
+}
+
+.shelf-card-subtitle {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.4;
+}
+
+.shelf-card-body {
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: space-between;
+  background-color: #FFFFFF;
+}
+
+.shelf-card-lines {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.2rem 0;
+}
+
+.shelf-card-lines li {
+  font-size: 0.74rem;
+  line-height: 1.45;
+  color: var(--color-charcoal);
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.shelf-card-lines .bullet {
+  color: var(--color-terracotta);
+  font-size: 0.65rem;
+}
+
+.shelf-card-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: var(--color-surface-subtle);
+  color: var(--color-noir);
+  border: 1px solid var(--color-border);
+  padding: 0.65rem 1rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  width: 100%;
+}
+
+.magazine-shelf-card:hover .shelf-card-btn {
+  background-color: var(--color-noir);
+  color: var(--color-soft-ivory);
+  border-color: var(--color-noir);
+}
+
+@media (max-width: 1024px) {
+  .magazine-shelf-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .magazine-shelf-grid {
+    grid-template-columns: 1fr;
+  }
 }

@@ -41,6 +41,20 @@ class HomeHubApp {
     this.initAdminPortal();
     this.bindGlobalNavigation();
     this.handleInitialRouting();
+    this.dismissPreloader();
+  }
+
+  dismissPreloader() {
+    if (typeof document === 'undefined') return;
+    const preloader = document.getElementById('homehub-preloader');
+    if (preloader) {
+      setTimeout(() => {
+        preloader.classList.add('fade-out');
+        setTimeout(() => {
+          if (preloader.parentNode) preloader.parentNode.removeChild(preloader);
+        }, 500);
+      }, 350);
+    }
   }
 
   initCart() {
@@ -80,6 +94,7 @@ class HomeHubApp {
     this.flipbook = new Flipbook('flipbook-mount-point', {
       initialBook: 'living-edit',
       onProductSelect: (sku) => this.openProduct(sku),
+      onAddToCart: (sku, qty) => this.cart.addItem(sku, qty || 1),
       onBookChange: (bookId) => {
         this.updateActiveNavBook(bookId);
       }
@@ -204,6 +219,23 @@ class HomeHubApp {
     if (mobileClose) mobileClose.addEventListener('click', closeDrawer);
     this.closeMobileDrawer = closeDrawer;
 
+    // Header Quick Search Button
+    const searchBtn = document.getElementById('header-search-btn');
+    if (searchBtn) {
+      searchBtn.addEventListener('click', () => {
+        const catSection = document.getElementById('catalogue-section');
+        const searchInput = document.getElementById('catalogue-search-input');
+        if (catSection) catSection.scrollIntoView({ behavior: 'smooth' });
+        setTimeout(() => { if (searchInput) searchInput.focus(); }, 350);
+      });
+    }
+
+    // Header Client Account Button
+    const accountBtn = document.getElementById('header-account-btn');
+    if (accountBtn) {
+      accountBtn.addEventListener('click', () => this.openAccountModal());
+    }
+
     // Cart Button Trigger
     const cartBtn = document.getElementById('header-cart-btn');
     if (cartBtn) {
@@ -231,6 +263,98 @@ class HomeHubApp {
     window.addEventListener('popstate', () => {
       this.handleInitialRouting();
     });
+  }
+
+  openAccountModal() {
+    const modal = document.getElementById('account-modal-container');
+    if (!modal) return;
+
+    modal.innerHTML = `
+      <div class="account-backdrop" id="account-backdrop"></div>
+      <div class="account-dialog" role="dialog" aria-modal="true" aria-labelledby="account-dialog-title">
+        <div class="account-header">
+          <h3 id="account-dialog-title">Client Atelier Profile</h3>
+          <button class="cart-close-btn" id="close-account-modal-btn" aria-label="Close">✕</button>
+        </div>
+
+        <div class="account-profile-card">
+          <div class="account-avatar">FA</div>
+          <div class="account-user-meta">
+            <strong>Farhana Aamir</strong>
+            <span>farzunmir@gmail.com</span>
+            <div class="account-tier-badge">Private Atelier Client</div>
+          </div>
+        </div>
+
+        <div class="account-nav-list">
+          <button class="account-nav-item" id="account-view-wishlist-btn">
+            <span>❤️ Saved Wishlist Pieces</span>
+            <strong>${this.wishlist ? this.wishlist.getCount() : 0} Pieces →</strong>
+          </button>
+          <button class="account-nav-item" id="account-view-bag-btn">
+            <span>🛍️ Active Shopping Bag</span>
+            <strong>${this.cart ? this.cart.getCount() : 0} Items →</strong>
+          </button>
+          <button class="account-nav-item" id="account-view-consult-btn">
+            <span>📋 White-Glove Staged Consultation</span>
+            <span>Active in Atelier →</span>
+          </button>
+        </div>
+
+        <div style="border-top: 1px solid var(--color-border); padding-top: 1.2rem; margin-top: 1rem;">
+          <p style="font-size: 0.75rem; color: var(--color-muted-earth); margin-bottom: 0.8rem;">
+            Atelier staff, design directors and administrators can access the full management console below:
+          </p>
+          <button class="account-admin-switch-btn admin-open-trigger" id="account-launch-admin-btn">
+            🔑 Switch to Staff Admin Console
+          </button>
+        </div>
+      </div>
+    `;
+
+    modal.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+
+    const close = () => {
+      modal.classList.remove('is-open');
+      document.body.style.overflow = '';
+      modal.innerHTML = '';
+    };
+
+    modal.querySelector('#account-backdrop').addEventListener('click', close);
+    modal.querySelector('#close-account-modal-btn').addEventListener('click', close);
+
+    const wishBtn = modal.querySelector('#account-view-wishlist-btn');
+    if (wishBtn) {
+      wishBtn.addEventListener('click', () => {
+        close();
+        if (this.wishlist) this.wishlist.open();
+      });
+    }
+
+    const bagBtn = modal.querySelector('#account-view-bag-btn');
+    if (bagBtn) {
+      bagBtn.addEventListener('click', () => {
+        close();
+        if (this.cart) this.cart.open();
+      });
+    }
+
+    const consultBtn = modal.querySelector('#account-view-consult-btn');
+    if (consultBtn) {
+      consultBtn.addEventListener('click', () => {
+        close();
+        if (this.cart) this.cart.openCheckoutStatusModal();
+      });
+    }
+
+    const adminBtn = modal.querySelector('#account-launch-admin-btn');
+    if (adminBtn) {
+      adminBtn.addEventListener('click', () => {
+        close();
+        if (this.adminPortal) this.adminPortal.open();
+      });
+    }
   }
 
   handleInitialRouting() {

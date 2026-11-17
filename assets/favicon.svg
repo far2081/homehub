@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none">
+  <!-- Subtle circular tile in Soft Ivory -->
+  <rect width="64" height="64" rx="14" fill="#F8F5EF"/>
+  <rect x="0.75" y="0.75" width="62.5" height="62.5" rx="13.25" stroke="#E5DDD3" stroke-width="1.5"/>
+
+  <!-- Architectural House Monogram -->
+  <g transform="translate(10, 8)">
+    <!-- Roof & Walls in Champagne Gold -->
+    <path d="M22 3L3 18H8V39H36V18H41L22 3Z" stroke="#D6BC91" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <!-- Inner Portal in Sage Green -->
+    <path d="M17 39V24C17 21.2386 19.2386 19 22 19C24.7614 19 27 21.2386 27 24V39" stroke="#8EA893" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Hearth Sun in Champagne Gold -->
+    <circle cx="22" cy="12" r="2.5" fill="#D6BC91" />
+  </g>
+</svg>

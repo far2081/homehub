@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 52" width="260" height="52" fill="none">
+  <defs>
+    <linearGradient id="logoGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E2CA9E" />
+      <stop offset="50%" stop-color="#D6BC91" />
+      <stop offset="100%" stop-color="#BA9C6E" />
+    </linearGradient>
+    <linearGradient id="logoSage" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#8EA893" />
+      <stop offset="100%" stop-color="#B2C5B6" />
+    </linearGradient>
+  </defs>
+
+  <!-- Architectural House Icon Mark -->
+  <g transform="translate(4, 4)">
+    <!-- Outer Gable & Walls -->
+    <path d="M22 3L3 18H8V39H36V18H41L22 3Z" stroke="url(#logoGold)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <!-- Inner Arch Portal -->
+    <path d="M17 39V24C17 21.2386 19.2386 19 22 19C24.7614 19 27 21.2386 27 24V39" stroke="url(#logoSage)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Central Circadian Sun -->
+    <circle cx="22" cy="12" r="2.2" fill="url(#logoGold)" />
+  </g>
+
+  <!-- Typography: Brand Name -->
+  <text x="56" y="27" font-family="'Cormorant Garamond', Georgia, serif" font-size="24" font-weight="600" letter-spacing="0.12em" fill="#201D1A">HOMEHUB</text>
+  
+  <!-- Typography: Tagline -->
+  <text x="57" y="42" font-family="'Plus Jakarta Sans', -apple-system, sans-serif" font-size="7" font-weight="600" letter-spacing="0.32em" fill="#7D746A">SHOP • STYLE • SMART</text>
+</svg>

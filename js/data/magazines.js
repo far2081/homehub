@@ -13,6 +13,12 @@ export const MAGAZINE_BOOKS = {
     themeColor: "#EADCCB",
     coverImage: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=85",
     description: "An exploration of modern communal living through sculptural curves, monolithic stone, and tactile Italian bouclé.",
+    coverLines: [
+      "The Architecture of Rest: CloudCurve Sofa in Situ",
+      "Roman Travertine: The Geological Permanence of Noma",
+      "Cantilevered Illumination: The Arc Floor Lamp Profile",
+      "Low-Horizon Living: 42cm Seating Planes for Open Lofts"
+    ],
     totalPages: 8,
     pages: [
       {
@@ -23,6 +29,12 @@ export const MAGAZINE_BOOKS = {
         deck: "Fluid curves, monolithic travertine, and the gentle art of stillness in contemporary living spaces.",
         heroImage: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=85",
         colophon: "Curated by HomeHub Design Studio • Photography by Atelier Nord",
+        coverLines: [
+          "The Architecture of Rest: CloudCurve Sofa in Situ",
+          "Roman Travertine: Geological Permanence of Noma",
+          "Cantilevered Illumination: The Arc Lamp Profile",
+          "Low-Horizon Living: 42cm Seating Planes for Lofts"
+        ],
         products: []
       },
       {
@@ -37,7 +49,7 @@ export const MAGAZINE_BOOKS = {
         ],
         heroImage: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1000&q=85",
         products: [
-          { sku: "HH-FUR-001", label: "CloudCurve Sofa", price: "₨ 345,000", badge: "Centerpiece" }
+          { sku: "HH-FUR-001", label: "CloudCurve Sofa", price: "₨ 345,000", badge: "Centerpiece", hotspot: { x: 50, y: 62 } }
         ]
       },
       {
@@ -51,7 +63,7 @@ export const MAGAZINE_BOOKS = {
         ],
         heroImage: "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&w=1000&q=85",
         products: [
-          { sku: "HH-FUR-002", label: "Noma Coffee Table", price: "₨ 125,000", badge: "Natural Stone" }
+          { sku: "HH-FUR-002", label: "Noma Coffee Table", price: "₨ 125,000", badge: "Natural Stone", hotspot: { x: 52, y: 68 } }
         ]
       },
       {
@@ -66,8 +78,8 @@ export const MAGAZINE_BOOKS = {
         ],
         heroImage: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=1000&q=85",
         products: [
-          { sku: "HH-FUR-003", label: "Aura Lounge Chair", price: "₨ 165,000", badge: "360° Swivel" },
-          { sku: "HH-LGT-002", label: "Arc Floor Lamp", price: "₨ 78,500", badge: "Cantilever" }
+          { sku: "HH-FUR-003", label: "Aura Lounge Chair", price: "₨ 165,000", badge: "360° Swivel", hotspot: { x: 38, y: 60 } },
+          { sku: "HH-LGT-002", label: "Arc Floor Lamp", price: "₨ 78,500", badge: "Cantilever", hotspot: { x: 74, y: 35 } }
         ]
       },
       {
@@ -81,7 +93,7 @@ export const MAGAZINE_BOOKS = {
         ],
         heroImage: "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&w=1000&q=85",
         products: [
-          { sku: "HH-DEC-003", label: "CloudSoft Cushions", price: "₨ 14,500", badge: "French Flax" }
+          { sku: "HH-DEC-003", label: "CloudSoft Cushions", price: "₨ 14,500", badge: "French Flax", hotspot: { x: 48, y: 55 } }
         ]
       },
       {
@@ -96,8 +108,8 @@ export const MAGAZINE_BOOKS = {
         ],
         heroImage: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1000&q=85",
         products: [
-          { sku: "HH-FUR-001", label: "CloudCurve Sofa", price: "₨ 345,000", badge: "In Stock" },
-          { sku: "HH-FUR-002", label: "Noma Coffee Table", price: "₨ 125,000", badge: "Honed Stone" }
+          { sku: "HH-FUR-001", label: "CloudCurve Sofa", price: "₨ 345,000", badge: "In Stock", hotspot: { x: 36, y: 64 } },
+          { sku: "HH-FUR-002", label: "Noma Coffee Table", price: "₨ 125,000", badge: "Honed Stone", hotspot: { x: 68, y: 72 } }
         ]
       },
       {
@@ -108,10 +120,10 @@ export const MAGAZINE_BOOKS = {
         deck: "Coordinated pieces ready to transform your living room into an oasis of understated elegance.",
         heroImage: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=85",
         products: [
-          { sku: "HH-FUR-001", label: "CloudCurve Sofa", price: "₨ 345,000" },
-          { sku: "HH-FUR-002", label: "Noma Coffee Table", price: "₨ 125,000" },
-          { sku: "HH-FUR-003", label: "Aura Lounge Chair", price: "₨ 165,000" },
-          { sku: "HH-DEC-001", label: "Solis Ceramic Vase", price: "₨ 28,500" }
+          { sku: "HH-FUR-001", label: "CloudCurve Sofa", price: "₨ 345,000", hotspot: { x: 28, y: 56 } },
+          { sku: "HH-FUR-002", label: "Noma Coffee Table", price: "₨ 125,000", hotspot: { x: 50, y: 68 } },
+          { sku: "HH-FUR-003", label: "Aura Lounge Chair", price: "₨ 165,000", hotspot: { x: 76, y: 58 } },
+          { sku: "HH-DEC-001", label: "Solis Ceramic Vase", price: "₨ 28,500", hotspot: { x: 52, y: 48 } }
         ]
       },
       {
@@ -121,7 +133,7 @@ export const MAGAZINE_BOOKS = {
         kicker: "SHOP • STYLE • SMART",
         deck: "The Living Edit concludes here. Continue your journey through Objects of Home, Light / Life, and Small Spaces.",
         heroImage: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1000&q=85",
-        colophon: "All pieces handcrafted in limited runs. Available exclusively via HomeHub.",
+        colophon: "All pieces handcrafted in limited runs. Available exclusively via HomeHub Atelier.",
         products: []
       }
     ]
@@ -135,6 +147,12 @@ export const MAGAZINE_BOOKS = {
     themeColor: "#E9D8D0",
     coverImage: "https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?auto=format&fit=crop&w=1200&q=85",
     description: "Celebrating the intimate power of singular handcrafted objects that transform surfaces into meditative still lifes.",
+    coverLines: [
+      "The Soul of the Vessel: Wheel-Thrown Solis Ceramics",
+      "Shadows in Plaster: Forma Bas-Relief Wall Sculptures",
+      "Pebble Geometries: Organic Reflections with Halo Mirror",
+      "Pumice-Washed French Flax: CloudSoft Cushions Palette"
+    ],
     totalPages: 8,
     pages: [
       {
@@ -145,6 +163,12 @@ export const MAGAZINE_BOOKS = {
         deck: "Artisan ceramics, bas-relief plaster, and the tactile beauty of handcrafted daily rituals.",
         heroImage: "https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?auto=format&fit=crop&w=1200&q=85",
         colophon: "Studio Edition • Curated with artisan ceramicists & textile weavers",
+        coverLines: [
+          "The Soul of the Vessel: Wheel-Thrown Solis Ceramics",
+          "Shadows in Plaster: Forma Bas-Relief Wall Art",
+          "Pebble Geometries: Reflections with Halo Mirror",
+          "Pumice-Washed French Flax: CloudSoft Cushions"
+        ],
         products: []
       },
       {
@@ -159,7 +183,7 @@ export const MAGAZINE_BOOKS = {
         ],
         heroImage: "https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=1000&q=85",
         products: [
-          { sku: "HH-DEC-001", label: "Solis Ceramic Vase", price: "₨ 28,500", badge: "Wheel-Thrown" }
+          { sku: "HH-DEC-001", label: "Solis Ceramic Vase", price: "₨ 28,500", badge: "Wheel-Thrown", hotspot: { x: 50, y: 55 } }
         ]
       },
       {
@@ -173,7 +197,7 @@ export const MAGAZINE_BOOKS = {
         ],
         heroImage: "https://images.unsplash.com/photo-1577083552431-6e5fd01aa342?auto=format&fit=crop&w=1000&q=85",
         products: [
-          { sku: "HH-DEC-002", label: "Forma Wall Art", price: "₨ 45,000", badge: "Bas-Relief" }
+          { sku: "HH-DEC-002", label: "Forma Wall Art", price: "₨ 45,000", badge: "Bas-Relief", hotspot: { x: 52, y: 44 } }
         ]
       },
       {
@@ -188,7 +212,7 @@ export const MAGAZINE_BOOKS = {
         ],
         heroImage: "https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?auto=format&fit=crop&w=1000&q=85",
         products: [
-          { sku: "HH-DEC-004", label: "Halo Mirror", price: "₨ 58,000", badge: "Brushed Brass" }
+          { sku: "HH-DEC-004", label: "Halo Mirror", price: "₨ 58,000", badge: "Brushed Brass", hotspot: { x: 48, y: 40 } }
         ]
       },
       {
@@ -202,7 +226,7 @@ export const MAGAZINE_BOOKS = {
         ],
         heroImage: "https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?auto=format&fit=crop&w=1000&q=85",
         products: [
-          { sku: "HH-DEC-003", label: "CloudSoft Cushions", price: "₨ 14,500", badge: "Pure Linen" }
+          { sku: "HH-DEC-003", label: "CloudSoft Cushions", price: "₨ 14,500", badge: "Pure Linen", hotspot: { x: 52, y: 58 } }
         ]
       },
       {
@@ -217,7 +241,7 @@ export const MAGAZINE_BOOKS = {
         ],
         heroImage: "https://images.unsplash.com/photo-1581783342308-f792dbdd27c5?auto=format&fit=crop&w=1000&q=85",
         products: [
-          { sku: "HH-DEC-001", label: "Solis Ceramic Vase", price: "₨ 28,500", badge: "Artisan" }
+          { sku: "HH-DEC-001", label: "Solis Ceramic Vase", price: "₨ 28,500", badge: "Artisan", hotspot: { x: 46, y: 52 } }
         ]
       },
       {
@@ -228,10 +252,10 @@ export const MAGAZINE_BOOKS = {
         deck: "Handcrafted additions to elevate shelves, tables, and walls.",
         heroImage: "https://images.unsplash.com/photo-1616046229478-9901c5536a45?auto=format&fit=crop&w=1000&q=85",
         products: [
-          { sku: "HH-DEC-001", label: "Solis Ceramic Vase", price: "₨ 28,500" },
-          { sku: "HH-DEC-002", label: "Forma Wall Art", price: "₨ 45,000" },
-          { sku: "HH-DEC-003", label: "CloudSoft Cushions", price: "₨ 14,500" },
-          { sku: "HH-DEC-004", label: "Halo Mirror", price: "₨ 58,000" }
+          { sku: "HH-DEC-001", label: "Solis Ceramic Vase", price: "₨ 28,500", hotspot: { x: 26, y: 58 } },
+          { sku: "HH-DEC-002", label: "Forma Wall Art", price: "₨ 45,000", hotspot: { x: 48, y: 36 } },
+          { sku: "HH-DEC-003", label: "CloudSoft Cushions", price: "₨ 14,500", hotspot: { x: 74, y: 64 } },
+          { sku: "HH-DEC-004", label: "Halo Mirror", price: "₨ 58,000", hotspot: { x: 80, y: 32 } }
         ]
       },
       {
@@ -255,6 +279,12 @@ export const MAGAZINE_BOOKS = {
     themeColor: "#D6BC91",
     coverImage: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=1200&q=85",
     description: "Mastering the emotional temperature of living spaces through dimmable layers of diffused, warm illumination.",
+    coverLines: [
+      "Circadian Glow: Mouth-Blown Triplex Glass Luna Pendant",
+      "Cantilever Grace: Brescia Marble Base of Arc Floor Lamp",
+      "Solar Halos: Indirect Eclipse Beams with Aura Wall Sconce",
+      "Fluted Travertine: Dimmable Mushroom Domes on Bedside Tables"
+    ],
     totalPages: 8,
     pages: [
       {
@@ -265,6 +295,12 @@ export const MAGAZINE_BOOKS = {
         deck: "The poetry of illumination: hand-blown glass, cantilevered arches, and warm 2700K sanctuaries.",
         heroImage: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=1200&q=85",
         colophon: "Illumination Guide • Engineered for circadian harmony",
+        coverLines: [
+          "Circadian Glow: Mouth-Blown Luna Pendant",
+          "Cantilever Grace: Marble Base Arc Floor Lamp",
+          "Solar Halos: Indirect Eclipse Aura Sconces",
+          "Fluted Travertine: Dimmable Glow Table Lamp"
+        ],
         products: []
       },
       {
@@ -279,7 +315,7 @@ export const MAGAZINE_BOOKS = {
         ],
         heroImage: "https://images.unsplash.com/photo-1540932239986-30128078f3c5?auto=format&fit=crop&w=1000&q=85",
         products: [
-          { sku: "HH-LGT-001", label: "Luna Pendant", price: "₨ 62,000", badge: "Hand-Blown" }
+          { sku: "HH-LGT-001", label: "Luna Pendant", price: "₨ 62,000", badge: "Hand-Blown", hotspot: { x: 50, y: 38 } }
         ]
       },
       {
@@ -293,7 +329,7 @@ export const MAGAZINE_BOOKS = {
         ],
         heroImage: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=1000&q=85",
         products: [
-          { sku: "HH-LGT-002", label: "Arc Floor Lamp", price: "₨ 78,500", badge: "Marble Base" }
+          { sku: "HH-LGT-002", label: "Arc Floor Lamp", price: "₨ 78,500", badge: "Marble Base", hotspot: { x: 62, y: 46 } }
         ]
       },
       {
@@ -308,7 +344,7 @@ export const MAGAZINE_BOOKS = {
         ],
         heroImage: "https://images.unsplash.com/photo-1540932239986-30128078f3c5?auto=format&fit=crop&w=1000&q=85",
         products: [
-          { sku: "HH-LGT-004", label: "Aura Wall Light", price: "₨ 32,500", badge: "Eclipse Halo" }
+          { sku: "HH-LGT-004", label: "Aura Wall Light", price: "₨ 32,500", badge: "Eclipse Halo", hotspot: { x: 48, y: 36 } }
         ]
       },
       {
@@ -322,7 +358,7 @@ export const MAGAZINE_BOOKS = {
         ],
         heroImage: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=1000&q=85",
         products: [
-          { sku: "HH-LGT-003", label: "Glow Table Lamp", price: "₨ 36,000", badge: "Touch Dimmer" }
+          { sku: "HH-LGT-003", label: "Glow Table Lamp", price: "₨ 36,000", badge: "Touch Dimmer", hotspot: { x: 50, y: 55 } }
         ]
       },
       {
@@ -337,8 +373,8 @@ export const MAGAZINE_BOOKS = {
         ],
         heroImage: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1000&q=85",
         products: [
-          { sku: "HH-LGT-001", label: "Luna Pendant", price: "₨ 62,000", badge: "CRI 95+" },
-          { sku: "HH-LGT-003", label: "Glow Table Lamp", price: "₨ 36,000", badge: "Warm 2700K" }
+          { sku: "HH-LGT-001", label: "Luna Pendant", price: "₨ 62,000", badge: "CRI 95+", hotspot: { x: 38, y: 34 } },
+          { sku: "HH-LGT-003", label: "Glow Table Lamp", price: "₨ 36,000", badge: "Warm 2700K", hotspot: { x: 68, y: 62 } }
         ]
       },
       {
@@ -349,10 +385,10 @@ export const MAGAZINE_BOOKS = {
         deck: "Coordinated architectural lighting for every room in the residence.",
         heroImage: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=1000&q=85",
         products: [
-          { sku: "HH-LGT-001", label: "Luna Pendant", price: "₨ 62,000" },
-          { sku: "HH-LGT-002", label: "Arc Floor Lamp", price: "₨ 78,500" },
-          { sku: "HH-LGT-003", label: "Glow Table Lamp", price: "₨ 36,000" },
-          { sku: "HH-LGT-004", label: "Aura Wall Light", price: "₨ 32,500" }
+          { sku: "HH-LGT-001", label: "Luna Pendant", price: "₨ 62,000", hotspot: { x: 25, y: 32 } },
+          { sku: "HH-LGT-002", label: "Arc Floor Lamp", price: "₨ 78,500", hotspot: { x: 50, y: 44 } },
+          { sku: "HH-LGT-003", label: "Glow Table Lamp", price: "₨ 36,000", hotspot: { x: 74, y: 65 } },
+          { sku: "HH-LGT-004", label: "Aura Wall Light", price: "₨ 32,500", hotspot: { x: 80, y: 30 } }
         ]
       },
       {
@@ -376,6 +412,12 @@ export const MAGAZINE_BOOKS = {
     themeColor: "#DDE8DF",
     coverImage: "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&w=1200&q=85",
     description: "Proving that restricted square meters can produce the most thoughtful, refined, and serene living environments.",
+    coverLines: [
+      "The Freedom of Less: Modula Nested Desk Transformations",
+      "Floating Horizontally: Cleat-Mounted Flute Tambour Console",
+      "Integrated Platforms: Acoustic Sanctuaries with Haven Bed",
+      "Optical Horizons: Asymmetrical Halo Mirrors in Narrow Entries"
+    ],
     totalPages: 8,
     pages: [
       {
@@ -386,6 +428,12 @@ export const MAGAZINE_BOOKS = {
         deck: "Urban compactness, multifunctional elegance, and the art of uncrowded living.",
         heroImage: "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&w=1200&q=85",
         colophon: "Urban Edition • Solutions for modern metropolitan apartments",
+        coverLines: [
+          "The Freedom of Less: Modula Nested Desk",
+          "Floating Horizontally: Flute Tambour Console",
+          "Integrated Platforms: Rest in Haven Bed",
+          "Optical Horizons: Halo Mirrors in Entries"
+        ],
         products: []
       },
       {
@@ -400,7 +448,7 @@ export const MAGAZINE_BOOKS = {
         ],
         heroImage: "https://images.unsplash.com/photo-1507652313519-d4e9174996dd?auto=format&fit=crop&w=1000&q=85",
         products: [
-          { sku: "HH-SSS-001", label: "Modula Nested Desk", price: "₨ 89,000", badge: "Extendable" }
+          { sku: "HH-SSS-001", label: "Modula Nested Desk", price: "₨ 89,000", badge: "Extendable", hotspot: { x: 50, y: 58 } }
         ]
       },
       {
@@ -414,7 +462,7 @@ export const MAGAZINE_BOOKS = {
         ],
         heroImage: "https://images.unsplash.com/photo-1538688525198-9b88f6f53126?auto=format&fit=crop&w=1000&q=85",
         products: [
-          { sku: "HH-SSS-002", label: "Flute Floating Console", price: "₨ 74,000", badge: "Wall-Hung" }
+          { sku: "HH-SSS-002", label: "Flute Floating Console", price: "₨ 74,000", badge: "Wall-Hung", hotspot: { x: 52, y: 64 } }
         ]
       },
       {
@@ -429,8 +477,8 @@ export const MAGAZINE_BOOKS = {
         ],
         heroImage: "https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?auto=format&fit=crop&w=1000&q=85",
         products: [
-          { sku: "HH-DEC-004", label: "Halo Mirror", price: "₨ 58,000", badge: "Optical Depth" },
-          { sku: "HH-LGT-004", label: "Aura Wall Light", price: "₨ 32,500", badge: "Slim Fit" }
+          { sku: "HH-DEC-004", label: "Halo Mirror", price: "₨ 58,000", badge: "Optical Depth", hotspot: { x: 42, y: 38 } },
+          { sku: "HH-LGT-004", label: "Aura Wall Light", price: "₨ 32,500", badge: "Slim Fit", hotspot: { x: 72, y: 34 } }
         ]
       },
       {
@@ -444,8 +492,8 @@ export const MAGAZINE_BOOKS = {
         ],
         heroImage: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1000&q=85",
         products: [
-          { sku: "HH-FUR-004", label: "Haven Bed", price: "₨ 285,000", badge: "Platform" },
-          { sku: "HH-LGT-003", label: "Glow Table Lamp", price: "₨ 36,000", badge: "Bedside" }
+          { sku: "HH-FUR-004", label: "Haven Bed", price: "₨ 285,000", badge: "Platform", hotspot: { x: 46, y: 60 } },
+          { sku: "HH-LGT-003", label: "Glow Table Lamp", price: "₨ 36,000", badge: "Bedside", hotspot: { x: 78, y: 50 } }
         ]
       },
       {
@@ -459,7 +507,7 @@ export const MAGAZINE_BOOKS = {
         ],
         heroImage: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1000&q=85",
         products: [
-          { sku: "HH-FUR-003", label: "Aura Lounge Chair", price: "₨ 165,000", badge: "Compact Footprint" }
+          { sku: "HH-FUR-003", label: "Aura Lounge Chair", price: "₨ 165,000", badge: "Compact Footprint", hotspot: { x: 50, y: 58 } }
         ]
       },
       {
@@ -470,10 +518,10 @@ export const MAGAZINE_BOOKS = {
         deck: "Engineered pieces for apartments, studios, and high-efficiency homes.",
         heroImage: "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&w=1000&q=85",
         products: [
-          { sku: "HH-SSS-001", label: "Modula Nested Desk", price: "₨ 89,000" },
-          { sku: "HH-SSS-002", label: "Flute Floating Console", price: "₨ 74,000" },
-          { sku: "HH-LGT-003", label: "Glow Table Lamp", price: "₨ 36,000" },
-          { sku: "HH-DEC-004", label: "Halo Mirror", price: "₨ 58,000" }
+          { sku: "HH-SSS-001", label: "Modula Nested Desk", price: "₨ 89,000", hotspot: { x: 30, y: 60 } },
+          { sku: "HH-SSS-002", label: "Flute Floating Console", price: "₨ 74,000", hotspot: { x: 52, y: 55 } },
+          { sku: "HH-LGT-003", label: "Glow Table Lamp", price: "₨ 36,000", hotspot: { x: 74, y: 68 } },
+          { sku: "HH-DEC-004", label: "Halo Mirror", price: "₨ 58,000", hotspot: { x: 78, y: 34 } }
         ]
       },
       {
@@ -483,7 +531,7 @@ export const MAGAZINE_BOOKS = {
         kicker: "SHOP • STYLE • SMART",
         deck: "Small Spaces concludes here. Browse our complete catalogue online or visit our studios.",
         heroImage: "https://images.unsplash.com/photo-1507652313519-d4e9174996dd?auto=format&fit=crop&w=1000&q=85",
-        colophon: "HomeHub • Designed for living well in every square meter.",
+        colophon: "HomeHub Atelier • Designed for living well in every square meter.",
         products: []
       }
     ]

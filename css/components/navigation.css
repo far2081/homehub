@@ -46,9 +46,27 @@
 /* Brand Identity */
 .header-brand {
   display: flex;
-  flex-direction: column;
-  text-align: left;
+  align-items: center;
+  gap: 12px;
   user-select: none;
+  text-decoration: none;
+}
+
+.header-logo-img {
+  height: 44px;
+  width: auto;
+  display: block;
+}
+
+.mobile-logo-img {
+  height: 38px;
+  width: auto;
+  display: block;
+}
+
+.brand-text-wrap {
+  display: flex;
+  flex-direction: column;
 }
 
 .brand-title {
