@@ -1,12 +1,15 @@
 /**
- * HomeHub - Realistic 3D Magazine Flipbook Engine
- * Supports two-page spread on desktop, single-page touch reader on mobile / Android.
- * Features 3D page turning with realistic paper spine shadows, swipe support, procedural sound,
- * interactive photo hotspot pins, and instant "Add to Bag" / "View Details" actions.
+ * HomeHub - Premium Coated Paper & 3D Curved Page-Turn Flipbook Engine
+ * Features:
+ * 1. Premium Glossy Art Paper material shaders (subtle specular highlights, paper grain, coated sheen).
+ * 2. Natural curved cylindrical page bending (multi-strip 3D mesh, non-flat rotation, progressive bending).
+ * 3. Physical central binding/spine with saddle-stitch staples and layered paper edges.
+ * 4. Interactive mouse dragging (peel & flip) and Android touch swipe.
+ * 5. Silent operation (no sound).
+ * 6. Preserves all 4 digital books, product hotspots, and catalogue links.
  */
 
 import { MAGAZINE_BOOKS } from '../data/magazines.js';
-import { sound } from './sound.js';
 import { attachSwipeHandler, showToast } from '../utils/helpers.js';
 
 export class Flipbook {
@@ -16,6 +19,9 @@ export class Flipbook {
     this.currentPageIndex = 0; // 0-indexed page number
     this.isDesktopSpread = typeof window !== 'undefined' ? window.innerWidth >= 992 : true;
     this.isFlipping = false;
+    this.isDragging = false;
+    this.dragProgress = 0;
+    this.activeLeaf = null;
     this.onProductSelect = options.onProductSelect || (() => {});
     this.onAddToCart = options.onAddToCart || (() => {});
     this.onBookChange = options.onBookChange || (() => {});
@@ -70,44 +76,72 @@ export class Flipbook {
     return book ? book.pages.length : 0;
   }
 
+  getSpreadPages(pageIdx) {
+    const book = this.getCurrentBook();
+    if (!book) return { leftPage: null, rightPage: null };
+
+    if (this.isDesktopSpread) {
+      if (pageIdx === 0) {
+        return {
+          leftPage: { type: 'brand-flyleaf', pageNumber: 0 },
+          rightPage: book.pages[0] || null
+        };
+      } else {
+        let lIdx = pageIdx;
+        if (lIdx % 2 === 0) lIdx -= 1;
+        let rIdx = lIdx + 1;
+        return {
+          leftPage: book.pages[lIdx] || null,
+          rightPage: book.pages[rIdx] || null
+        };
+      }
+    } else {
+      return {
+        leftPage: null,
+        rightPage: book.pages[pageIdx] || null
+      };
+    }
+  }
+
   nextPage() {
     if (this.isFlipping) return;
     const total = this.getTotalPages();
     const step = this.isDesktopSpread ? 2 : 1;
 
-    if (this.currentPageIndex + step < total) {
-      this.animateTurn('forward', () => {
-        this.currentPageIndex += step;
-        sound.playPageTurn();
-        this.renderSpreadContent();
-      });
+    let targetIndex = this.currentPageIndex;
+    if (this.currentPageIndex === 0 && this.isDesktopSpread) {
+      targetIndex = 1;
+    } else if (this.currentPageIndex + step < total) {
+      targetIndex = this.currentPageIndex + step;
     } else if (this.currentPageIndex + 1 < total) {
-      // Last odd page
-      this.animateTurn('forward', () => {
-        this.currentPageIndex += 1;
-        sound.playPageTurn();
-        this.renderSpreadContent();
-      });
+      targetIndex = this.currentPageIndex + 1;
+    } else {
+      return; // Already at end
     }
+
+    this.animateCurvedTurn('forward', () => {
+      this.currentPageIndex = targetIndex;
+      this.renderSpreadContent();
+    });
   }
 
   prevPage() {
     if (this.isFlipping) return;
     const step = this.isDesktopSpread ? 2 : 1;
 
+    let targetIndex = this.currentPageIndex;
     if (this.currentPageIndex - step >= 0) {
-      this.animateTurn('backward', () => {
-        this.currentPageIndex -= step;
-        sound.playPageTurn();
-        this.renderSpreadContent();
-      });
+      targetIndex = this.currentPageIndex - step;
     } else if (this.currentPageIndex > 0) {
-      this.animateTurn('backward', () => {
-        this.currentPageIndex = 0;
-        sound.playPageTurn();
-        this.renderSpreadContent();
-      });
+      targetIndex = 0;
+    } else {
+      return; // Already at start
     }
+
+    this.animateCurvedTurn('backward', () => {
+      this.currentPageIndex = targetIndex;
+      this.renderSpreadContent();
+    });
   }
 
   goToPage(pageIdx) {
@@ -118,39 +152,266 @@ export class Flipbook {
       if (this.isDesktopSpread && target > 0 && target % 2 === 0) {
         target = target - 1;
       }
-      this.currentPageIndex = target;
-      sound.playPageTurn();
-      this.renderSpreadContent();
+      if (target > this.currentPageIndex) {
+        this.animateCurvedTurn('forward', () => {
+          this.currentPageIndex = target;
+          this.renderSpreadContent();
+        });
+      } else if (target < this.currentPageIndex) {
+        this.animateCurvedTurn('backward', () => {
+          this.currentPageIndex = target;
+          this.renderSpreadContent();
+        });
+      }
     }
   }
 
-  animateTurn(direction, callback) {
+  /**
+   * Natural Curved Page-Turn Engine
+   * Slices the turning leaf into 10 connected vertical strips with cylindrical curvature,
+   * specular highlights, dynamic under-leaf drop shadows, and progressive bending.
+   */
+  animateCurvedTurn(direction, callback) {
     this.isFlipping = true;
-    const bookEl = this.container ? this.container.querySelector('.flipbook-viewport') : null;
-    if (!bookEl) {
+    const viewport = this.container ? this.container.querySelector('.flipbook-viewport') : null;
+    if (!viewport) {
       callback();
       this.isFlipping = false;
       return;
     }
 
-    const turningLeaf = document.createElement('div');
-    turningLeaf.className = `flipbook-turning-leaf flip-${direction}`;
-    turningLeaf.innerHTML = `
-      <div class="leaf-shadow-front"></div>
-      <div class="leaf-shadow-back"></div>
-    `;
-    bookEl.appendChild(turningLeaf);
-
-    // CSS 3D transform execution
-    requestAnimationFrame(() => {
-      turningLeaf.classList.add('is-animating');
-    });
-
-    setTimeout(() => {
+    const { turningLeaf, strips, underShadow, pageWidth } = this.createCurvedTurningLeaf(direction);
+    if (!turningLeaf) {
       callback();
-      if (turningLeaf.parentNode) turningLeaf.parentNode.removeChild(turningLeaf);
       this.isFlipping = false;
-    }, 450);
+      return;
+    }
+
+    viewport.appendChild(turningLeaf);
+
+    const duration = 520; // Natural physical duration in ms
+    const startTime = performance.now();
+
+    const frame = (now) => {
+      const elapsed = now - startTime;
+      const t = Math.min(1, elapsed / duration);
+      // Smooth natural cubic ease-in-out
+      const p = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+      this.updateCurl(p, direction, strips, underShadow, pageWidth);
+
+      if (t < 1) {
+        requestAnimationFrame(frame);
+      } else {
+        callback();
+        if (turningLeaf.parentNode) {
+          turningLeaf.parentNode.removeChild(turningLeaf);
+        }
+        this.isFlipping = false;
+      }
+    };
+
+    requestAnimationFrame(frame);
+  }
+
+  createCurvedTurningLeaf(direction) {
+    const viewport = this.container.querySelector('.flipbook-viewport');
+    if (!viewport) return { turningLeaf: null };
+
+    const vpRect = viewport.getBoundingClientRect();
+    const pageWidth = this.isDesktopSpread ? vpRect.width / 2 : vpRect.width;
+    const N = 10;
+    const stripWidth = pageWidth / N;
+
+    // Determine current and target pages
+    const curPages = this.getSpreadPages(this.currentPageIndex);
+    let frontPage = null;
+    let backPage = null;
+
+    if (direction === 'forward') {
+      frontPage = curPages.rightPage;
+      const nextIdx = this.currentPageIndex === 0 && this.isDesktopSpread
+        ? 1
+        : (this.currentPageIndex + (this.isDesktopSpread ? 2 : 1));
+      const nextPages = this.getSpreadPages(nextIdx);
+      backPage = this.isDesktopSpread ? nextPages.leftPage : nextPages.rightPage;
+    } else {
+      frontPage = curPages.leftPage;
+      const prevIdx = this.currentPageIndex <= 2
+        ? 0
+        : (this.currentPageIndex - (this.isDesktopSpread ? 2 : 1));
+      const prevPages = this.getSpreadPages(prevIdx);
+      backPage = this.isDesktopSpread ? prevPages.rightPage : prevPages.leftPage;
+    }
+
+    const turningLeaf = document.createElement('div');
+    turningLeaf.className = `flipbook-curved-leaf flip-${direction}`;
+
+    // Dynamic curved under-leaf drop shadow
+    const underShadow = document.createElement('div');
+    underShadow.className = 'flip-under-shadow';
+    turningLeaf.appendChild(underShadow);
+
+    // Strips track
+    const stripsTrack = document.createElement('div');
+    stripsTrack.className = 'flip-curved-strips-track';
+    turningLeaf.appendChild(stripsTrack);
+
+    const frontHTML = this.buildPageHTML(frontPage, direction === 'forward' ? 'right' : 'left');
+    const backHTML = this.buildPageHTML(backPage, direction === 'forward' ? 'left' : 'right');
+
+    const strips = [];
+
+    for (let k = 0; k < N; k++) {
+      const strip = document.createElement('div');
+      strip.className = 'curved-strip';
+      strip.style.width = `${stripWidth + 0.9}px`; // 0.9px subpixel overlap ensures continuous sheet
+      strip.style.left = '0px';
+
+      // Front Face
+      const frontFace = document.createElement('div');
+      frontFace.className = 'strip-face strip-front';
+      const frontWrap = document.createElement('div');
+      frontWrap.className = 'strip-content-wrap';
+      frontWrap.style.width = `${pageWidth}px`;
+      frontWrap.style.transform = `translateX(-${k * stripWidth}px)`;
+      frontWrap.innerHTML = frontHTML;
+      frontFace.appendChild(frontWrap);
+
+      const frontGloss = document.createElement('div');
+      frontGloss.className = 'strip-specular-gloss';
+      frontFace.appendChild(frontGloss);
+
+      const frontShadow = document.createElement('div');
+      frontShadow.className = 'strip-ambient-shadow';
+      frontFace.appendChild(frontShadow);
+
+      strip.appendChild(frontFace);
+
+      // Back Face
+      const backFace = document.createElement('div');
+      backFace.className = 'strip-face strip-back';
+      const backWrap = document.createElement('div');
+      backWrap.className = 'strip-content-wrap';
+      backWrap.style.width = `${pageWidth}px`;
+      const backOffsetK = (N - 1 - k);
+      backWrap.style.transform = `translateX(-${backOffsetK * stripWidth}px)`;
+      backWrap.innerHTML = backHTML;
+      backFace.appendChild(backWrap);
+
+      const backGloss = document.createElement('div');
+      backGloss.className = 'strip-specular-gloss';
+      backFace.appendChild(backGloss);
+
+      const backShadow = document.createElement('div');
+      backShadow.className = 'strip-ambient-shadow';
+      backFace.appendChild(backShadow);
+
+      strip.appendChild(backFace);
+
+      stripsTrack.appendChild(strip);
+      strips.push({
+        el: strip,
+        frontGloss,
+        frontShadow,
+        backGloss,
+        backShadow,
+        index: k
+      });
+    }
+
+    return { turningLeaf, strips, underShadow, pageWidth };
+  }
+
+  /**
+   * Physically calculates 3D coordinates, progressive cylindrical bending angles,
+   * specular glossy sheen, and curved drop shadows along the paper surface.
+   */
+  updateCurl(p, direction, strips, underShadow, pageWidth) {
+    if (!strips || strips.length === 0) return;
+    const N = strips.length;
+    const ds = pageWidth / N;
+    const isForward = direction === 'forward';
+
+    // 1. Root angle progression (from 0 to -180 for forward, -180 to 0 for backward)
+    let rootAngle = 0;
+    let totalBend = 0;
+    let u_peak = 0.5;
+
+    if (isForward) {
+      rootAngle = -180 * Math.pow(p, 1.35);
+      totalBend = -115 * Math.sin(Math.PI * p);
+      u_peak = 0.85 - 0.7 * p;
+    } else {
+      rootAngle = -180 + 180 * Math.pow(p, 1.35);
+      totalBend = 115 * Math.sin(Math.PI * p);
+      u_peak = 0.85 - 0.7 * p;
+    }
+
+    const sigma = 0.28;
+    const weights = [];
+    for (let i = 0; i < N - 1; i++) {
+      const u = (i + 0.5) / (N - 1);
+      const d = (u - u_peak) / sigma;
+      weights.push(Math.exp(-0.5 * d * d));
+    }
+    const sumW = weights.reduce((a, b) => a + b, 0);
+    const deltaAngles = weights.map(w => (w / sumW) * totalBend);
+
+    // Compute strip angles
+    const angles = [rootAngle];
+    let curAngle = rootAngle;
+    for (const da of deltaAngles) {
+      curAngle += da;
+      angles.push(curAngle);
+    }
+
+    // Natural 3D paper arch lift towards viewer (Z axis)
+    const maxZ = 120 * Math.sin(Math.PI * p);
+    // Subtle diagonal corner curl tilt
+    const tiltZ = (isForward ? 1 : -1) * 4.5 * Math.sin(Math.PI * p);
+
+    let curX = 0;
+    let curZ = 0;
+
+    for (let k = 0; k < N; k++) {
+      const seg = strips[k];
+      const rad = angles[k] * Math.PI / 180;
+      const startX = curX;
+      // Arch lift component along paper curve
+      const archLift = maxZ * Math.sin(Math.PI * (k + 0.5) / N);
+      const startZ = curZ + archLift;
+
+      // Advance to next strip position
+      curX += Math.cos(rad) * ds;
+      curZ += Math.sin(rad) * ds;
+
+      const segTilt = tiltZ * (k / N);
+
+      // Hardware-accelerated 3D transform for current strip
+      seg.el.style.transform = `translate3d(${startX.toFixed(1)}px, 0, ${startZ.toFixed(1)}px) rotateY(${angles[k].toFixed(2)}deg) rotateZ(${segTilt.toFixed(2)}deg)`;
+
+      // Dynamic Specular Gloss Shading (highlights the apex of the curved paper)
+      const lightFacing = Math.abs(angles[k] - (isForward ? -50 : -130));
+      const specularIntensity = Math.max(0, 1 - lightFacing / 35);
+      seg.frontGloss.style.opacity = (specularIntensity * 0.75).toFixed(2);
+      seg.backGloss.style.opacity = (Math.max(0, 1 - Math.abs(angles[k] - (isForward ? -130 : -50)) / 35) * 0.75).toFixed(2);
+
+      // Ambient Concave Shadows
+      const shadowFactor = Math.sin(Math.PI * p) * (1 - k / N);
+      seg.frontShadow.style.opacity = (shadowFactor * 0.42).toFixed(2);
+      seg.backShadow.style.opacity = (shadowFactor * 0.35).toFixed(2);
+    }
+
+    // Under-Leaf Curved Drop Shadow
+    if (underShadow) {
+      const shadowX = curX * 0.55;
+      const shadowOpacity = Math.sin(Math.PI * p) * 0.62;
+      const blurRadius = 12 + 16 * Math.sin(Math.PI * p);
+      underShadow.style.opacity = shadowOpacity.toFixed(2);
+      underShadow.style.filter = `blur(${blurRadius.toFixed(1)}px)`;
+      underShadow.style.transform = `translate3d(${shadowX.toFixed(1)}px, 0, 0) scaleX(${(0.6 + 0.5 * Math.sin(Math.PI * p)).toFixed(2)})`;
+    }
   }
 
   render() {
@@ -184,19 +445,22 @@ export class Flipbook {
               `).join('')}
             </div>
 
-            <!-- Audio & Info Controls -->
+            <!-- Paper Quality & Silent Mode Indicators -->
             <div class="book-action-icons">
-              <button class="sound-toggle-btn ${sound.isSoundEnabled() ? 'sound-on' : 'sound-off'}" id="magazine-sound-btn" title="Toggle Page Turn Audio Effect">
-                <span class="sound-icon">${sound.isSoundEnabled() ? '🔊' : '🔇'}</span>
-                <span class="sound-label">${sound.isSoundEnabled() ? 'Sound On' : 'Sound Off'}</span>
-              </button>
+              <span class="paper-badge" title="Coated Art Paper with Natural Page Curl">
+                <span class="paper-dot"></span>
+                <span>Coated Paper 170gsm</span>
+              </span>
             </div>
           </div>
         </div>
 
         <!-- 3D Perspective Stage -->
         <div class="flipbook-stage">
-          <div class="flipbook-viewport ${this.isDesktopSpread ? 'mode-spread' : 'mode-single'}">
+          <div class="flipbook-viewport ${this.isDesktopSpread ? 'mode-spread' : 'mode-single'}" id="flipbook-viewport">
+            <!-- Ambient Specular Reflection Layer (tracks cursor/light) -->
+            <div class="ambient-specular-light"></div>
+
             <!-- Paper Stack Rim Simulation (Left & Right page depth) -->
             <div class="book-edge-stack edge-left"></div>
             <div class="book-edge-stack edge-right"></div>
@@ -204,12 +468,21 @@ export class Flipbook {
             <!-- Central Spine / Binding Shadow (Desktop Spread) -->
             <div class="magazine-spine">
               <div class="spine-binding-line"></div>
-              <div class="spine-thread"></div>
+              <div class="spine-staple spine-staple-top"></div>
+              <div class="spine-staple spine-staple-bottom"></div>
             </div>
             
             <!-- Pages Container -->
             <div class="magazine-pages-container" id="magazine-pages-slot">
               <!-- Content injected by renderSpreadContent -->
+            </div>
+
+            <!-- Corner Lift / Drag Indicators -->
+            <div class="page-corner-cue corner-cue-right" title="Drag or click to turn page">
+              <div class="page-corner-curl"></div>
+            </div>
+            <div class="page-corner-cue corner-cue-left" title="Drag or click to turn page">
+              <div class="page-corner-curl"></div>
             </div>
           </div>
 
@@ -233,8 +506,8 @@ export class Flipbook {
           </div>
 
           <div class="footer-tip">
-            <span class="tip-icon">✨</span>
-            <span class="tip-text">${this.isDesktopSpread ? 'Use Left / Right arrow keys or click pages to turn' : 'Swipe left or right on screen to flip pages'}</span>
+            <span class="tip-icon">✦</span>
+            <span class="tip-text">${this.isDesktopSpread ? 'Drag page edge with mouse or use arrow keys to curl pages' : 'Swipe left or right across screen to curl pages'}</span>
           </div>
         </div>
       </div>
@@ -256,18 +529,6 @@ export class Flipbook {
       });
     });
 
-    // Sound toggle
-    const soundBtn = this.container.querySelector('#magazine-sound-btn');
-    if (soundBtn) {
-      soundBtn.addEventListener('click', () => {
-        const isEnabled = sound.toggleSound();
-        soundBtn.className = `sound-toggle-btn ${isEnabled ? 'sound-on' : 'sound-off'}`;
-        soundBtn.querySelector('.sound-icon').textContent = isEnabled ? '🔊' : '🔇';
-        soundBtn.querySelector('.sound-label').textContent = isEnabled ? 'Sound On' : 'Sound Off';
-        if (isEnabled) sound.playClick();
-      });
-    }
-
     // Prev / Next Arrows
     const prevBtn = this.container.querySelector('#flip-prev-btn');
     const nextBtn = this.container.querySelector('#flip-next-btn');
@@ -275,15 +536,192 @@ export class Flipbook {
     if (prevBtn) prevBtn.addEventListener('click', () => this.prevPage());
     if (nextBtn) nextBtn.addEventListener('click', () => this.nextPage());
 
-    // Swipe navigation on touch devices (Android, etc.)
-    const viewport = this.container.querySelector('.flipbook-viewport');
+    // Interactive Ambient Light Tracking (mouse sheen across glossy coated paper)
+    const viewport = this.container.querySelector('#flipbook-viewport');
     if (viewport) {
-      attachSwipeHandler(
-        viewport,
-        () => this.nextPage(), // Swipe left -> Next
-        () => this.prevPage()  // Swipe right -> Prev
-      );
+      viewport.addEventListener('mousemove', (e) => {
+        const rect = viewport.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        viewport.style.setProperty('--sheen-x', `${x.toFixed(1)}%`);
+        viewport.style.setProperty('--sheen-y', `${y.toFixed(1)}%`);
+      });
+
+      // Bind Interactive Mouse & Touch Dragging
+      this.bindDragEvents(viewport);
     }
+  }
+
+  /**
+   * Interactive Drag Engine
+   * Allows clicking/touching on the page and dragging horizontally to peel & curl the paper in real-time.
+   */
+  bindDragEvents(viewport) {
+    let startX = 0;
+    let startY = 0;
+    let startTime = 0;
+    let direction = null;
+    let activeDrag = null;
+
+    const onStart = (clientX, clientY, target) => {
+      if (this.isFlipping) return;
+      // Do not initiate drag on buttons, pins, or links
+      if (target.closest('.magazine-hotspot-pin, button, a, input, select, textarea, .shop-chip-btn, .shop-chip-add-btn, .cover-open-btn, .backcover-shop-btn, .backcover-reopen-btn')) {
+        return;
+      }
+
+      const rect = viewport.getBoundingClientRect();
+      const relativeX = clientX - rect.left;
+      const isRightHalf = relativeX > rect.width / 2;
+
+      // Determine direction
+      if (isRightHalf) {
+        direction = 'forward';
+        const total = this.getTotalPages();
+        const isEnd = this.isDesktopSpread
+          ? (this.currentPageIndex >= total - 2)
+          : (this.currentPageIndex >= total - 1);
+        if (isEnd) return;
+      } else {
+        direction = 'backward';
+        if (this.currentPageIndex === 0) return;
+      }
+
+      startX = clientX;
+      startY = clientY;
+      startTime = performance.now();
+      this.isDragging = true;
+
+      // Create live turning leaf
+      activeDrag = this.createCurvedTurningLeaf(direction);
+      if (activeDrag && activeDrag.turningLeaf) {
+        viewport.appendChild(activeDrag.turningLeaf);
+        this.updateCurl(0, direction, activeDrag.strips, activeDrag.underShadow, activeDrag.pageWidth);
+      }
+    };
+
+    const onMove = (clientX, clientY) => {
+      if (!this.isDragging || !activeDrag) return;
+      const deltaX = clientX - startX;
+      const pageWidth = activeDrag.pageWidth;
+
+      let p = 0;
+      if (direction === 'forward') {
+        p = Math.max(0, Math.min(1, -deltaX / (pageWidth * 0.9)));
+      } else {
+        p = Math.max(0, Math.min(1, deltaX / (pageWidth * 0.9)));
+      }
+
+      this.dragProgress = p;
+      this.updateCurl(p, direction, activeDrag.strips, activeDrag.underShadow, pageWidth);
+    };
+
+    const onEnd = (clientX) => {
+      if (!this.isDragging || !activeDrag) return;
+      this.isDragging = false;
+      const duration = performance.now() - startTime;
+      const deltaX = clientX - startX;
+      const velocity = Math.abs(deltaX) / Math.max(1, duration);
+
+      const p = this.dragProgress;
+      const shouldFlip = p > 0.35 || (velocity > 0.35 && p > 0.1);
+
+      const leaf = activeDrag.turningLeaf;
+      const strips = activeDrag.strips;
+      const underShadow = activeDrag.underShadow;
+      const pageWidth = activeDrag.pageWidth;
+      const dir = direction;
+
+      this.isFlipping = true;
+
+      if (shouldFlip) {
+        // Complete the flip smoothly to 1.0
+        const animDuration = Math.max(180, (1 - p) * 420);
+        const animStart = performance.now();
+        const startP = p;
+
+        const animateComplete = (now) => {
+          const t = Math.min(1, (now - animStart) / animDuration);
+          const currentP = startP + (1 - startP) * (t * t * (3 - 2 * t));
+          this.updateCurl(currentP, dir, strips, underShadow, pageWidth);
+
+          if (t < 1) {
+            requestAnimationFrame(animateComplete);
+          } else {
+            // Commit page turn
+            if (dir === 'forward') {
+              const step = this.isDesktopSpread ? (this.currentPageIndex === 0 ? 1 : 2) : 1;
+              this.currentPageIndex += step;
+            } else {
+              const step = this.isDesktopSpread ? (this.currentPageIndex <= 2 ? this.currentPageIndex : 2) : 1;
+              this.currentPageIndex = Math.max(0, this.currentPageIndex - step);
+            }
+            this.renderSpreadContent();
+            if (leaf.parentNode) leaf.parentNode.removeChild(leaf);
+            this.isFlipping = false;
+            activeDrag = null;
+          }
+        };
+        requestAnimationFrame(animateComplete);
+      } else {
+        // Snap back to 0.0
+        const animDuration = Math.max(150, p * 320);
+        const animStart = performance.now();
+        const startP = p;
+
+        const animateSnap = (now) => {
+          const t = Math.min(1, (now - animStart) / animDuration);
+          const currentP = startP * (1 - t * t);
+          this.updateCurl(currentP, dir, strips, underShadow, pageWidth);
+
+          if (t < 1) {
+            requestAnimationFrame(animateSnap);
+          } else {
+            if (leaf.parentNode) leaf.parentNode.removeChild(leaf);
+            this.isFlipping = false;
+            activeDrag = null;
+          }
+        };
+        requestAnimationFrame(animateSnap);
+      }
+    };
+
+    // Mouse listeners
+    viewport.addEventListener('mousedown', (e) => {
+      onStart(e.clientX, e.clientY, e.target);
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      onMove(e.clientX, e.clientY);
+    });
+
+    window.addEventListener('mouseup', (e) => {
+      onEnd(e.clientX);
+    });
+
+    // Touch listeners (Android mobile viewport)
+    viewport.addEventListener('touchstart', (e) => {
+      if (e.touches && e.touches.length === 1) {
+        onStart(e.touches[0].clientX, e.touches[0].clientY, e.target);
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+      if (e.touches && e.touches.length === 1) {
+        onMove(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchend', (e) => {
+      const clientX = e.changedTouches && e.changedTouches[0] ? e.changedTouches[0].clientX : 0;
+      onEnd(clientX);
+    });
+
+    // Corner cues click
+    const cornerRight = this.container.querySelector('.corner-cue-right');
+    const cornerLeft = this.container.querySelector('.corner-cue-left');
+    if (cornerRight) cornerRight.addEventListener('click', () => this.nextPage());
+    if (cornerLeft) cornerLeft.addEventListener('click', () => this.prevPage());
   }
 
   renderSpreadContent() {
@@ -298,27 +736,7 @@ export class Flipbook {
     const nextBtn = this.container.querySelector('#flip-next-btn');
 
     const total = book.pages.length;
-
-    let leftPage = null;
-    let rightPage = null;
-
-    if (this.isDesktopSpread) {
-      if (this.currentPageIndex === 0) {
-        // Page 0: Cover display (left side is brand flyleaf, right side is cover)
-        leftPage = { type: 'brand-flyleaf', pageNumber: 0 };
-        rightPage = book.pages[0];
-      } else {
-        let lIdx = this.currentPageIndex;
-        if (lIdx % 2 === 0) lIdx -= 1; // align spread
-        let rIdx = lIdx + 1;
-
-        leftPage = book.pages[lIdx] || null;
-        rightPage = book.pages[rIdx] || null;
-      }
-    } else {
-      // Mobile single page
-      rightPage = book.pages[this.currentPageIndex];
-    }
+    const { leftPage, rightPage } = this.getSpreadPages(this.currentPageIndex);
 
     // Render pages into slot
     let html = '';
@@ -430,7 +848,7 @@ export class Flipbook {
       });
     });
 
-    // 3. Quick Add To Bag buttons inside hotspot card and chips
+    // 3. Quick Add To Bag buttons inside hotspot card and chips (silent, no sound)
     slot.querySelectorAll('[data-quick-add]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -438,7 +856,6 @@ export class Flipbook {
         if (typeof this.onAddToCart === 'function') {
           this.onAddToCart(sku, 1);
           showToast(`Added piece to your shopping bag.`);
-          sound.playClick();
         }
       });
     });

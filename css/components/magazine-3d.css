@@ -101,45 +101,44 @@
   background-color: var(--color-soft-champagne);
 }
 
-.sound-toggle-btn {
+.paper-badge {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
+  gap: 7px;
+  padding: 6px 14px;
   border-radius: var(--radius-pill);
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   border: 1px solid var(--color-border);
   background-color: var(--color-surface-pure);
   color: var(--color-charcoal);
-  cursor: pointer;
-  transition: all var(--transition-fast);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
-.sound-toggle-btn.sound-on {
-  border-color: #7DA687;
-  color: #2F5938;
-  background-color: #F1F6F2;
-}
-
-.sound-toggle-btn.sound-off {
-  color: var(--color-muted-earth);
-  background-color: var(--color-surface-pure);
+.paper-badge .paper-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--color-soft-champagne);
 }
 
 /* 3D Perspective Stage */
 .flipbook-stage {
   position: relative;
-  perspective: 2600px;
-  -webkit-perspective: 2600px;
+  perspective: 2800px;
+  -webkit-perspective: 2800px;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 1.5rem 0;
   min-height: 640px;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
-/* Viewport with Physical Stack Shadows */
+/* Viewport with Physical Stack Shadows & Ambient Sheen */
 .flipbook-viewport {
   position: relative;
   width: 100%;
@@ -147,13 +146,31 @@
   min-height: 640px;
   height: 640px;
   transform-style: preserve-3d;
-  background-color: #FFFFFF;
+  background-color: #FAF8F5;
   border-radius: 4px;
+  cursor: default;
   /* Multi-layered soft ambient and physical book drop-shadow */
   box-shadow: 
-    0 35px 65px -15px rgba(24, 21, 18, 0.28),
-    0 15px 30px -10px rgba(24, 21, 18, 0.15),
-    0 0 0 1px rgba(0, 0, 0, 0.05);
+    0 35px 70px -15px rgba(24, 21, 18, 0.3),
+    0 16px 32px -10px rgba(24, 21, 18, 0.18),
+    0 0 0 1px rgba(0, 0, 0, 0.08);
+}
+
+/* Interactive Ambient Specular Sheen (follows mouse over coated paper) */
+.ambient-specular-light {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 15;
+  background: radial-gradient(
+    circle 520px at var(--sheen-x, 50%) var(--sheen-y, 40%), 
+    rgba(255, 255, 255, 0.22) 0%, 
+    rgba(255, 255, 255, 0.05) 45%, 
+    transparent 75%
+  );
+  opacity: 0.85;
+  mix-blend-mode: overlay;
+  transition: opacity 0.2s ease;
 }
 
 /* Physical Paper Stack Thickness Rim (left & right edges) */
@@ -161,33 +178,33 @@
   position: absolute;
   top: 4px;
   bottom: 4px;
-  width: 8px;
-  z-index: 10;
+  width: 10px;
+  z-index: 20;
   pointer-events: none;
 }
 
 .edge-left {
-  left: -8px;
+  left: -10px;
   border-radius: 4px 0 0 4px;
   background: repeating-linear-gradient(
     180deg,
-    #E8E3D8 0px,
-    #FFFFFF 1.5px,
-    #DCD6C9 3px
+    #E8E3D7 0px,
+    #FCFAF6 1.5px,
+    #D7D0C0 3px
   );
-  box-shadow: -2px 0 4px rgba(0,0,0,0.12);
+  box-shadow: -4px 3px 8px rgba(0,0,0,0.18), inset 1px 0 1px rgba(255,255,255,0.6);
 }
 
 .edge-right {
-  right: -8px;
+  right: -10px;
   border-radius: 0 4px 4px 0;
   background: repeating-linear-gradient(
     180deg,
-    #E8E3D8 0px,
-    #FFFFFF 1.5px,
-    #DCD6C9 3px
+    #E8E3D7 0px,
+    #FCFAF6 1.5px,
+    #D7D0C0 3px
   );
-  box-shadow: 2px 0 4px rgba(0,0,0,0.12);
+  box-shadow: 4px 3px 8px rgba(0,0,0,0.18), inset -1px 0 1px rgba(255,255,255,0.6);
 }
 
 /* Desktop Two-Page Spread Mode */
@@ -224,18 +241,18 @@
   top: 0;
   bottom: 0;
   left: 50%;
-  width: 44px;
-  margin-left: -22px;
+  width: 40px;
+  margin-left: -20px;
   background: linear-gradient(90deg, 
-    rgba(0, 0, 0, 0.22) 0%, 
-    rgba(0, 0, 0, 0.05) 35%, 
-    rgba(0, 0, 0, 0.35) 50%, 
-    rgba(0, 0, 0, 0.05) 65%, 
-    rgba(0, 0, 0, 0.22) 100%
+    rgba(20, 18, 16, 0.32) 0%, 
+    rgba(20, 18, 16, 0.08) 36%, 
+    rgba(20, 18, 16, 0.52) 50%, 
+    rgba(20, 18, 16, 0.08) 64%, 
+    rgba(20, 18, 16, 0.32) 100%
   );
   z-index: 25;
   pointer-events: none;
-  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.15);
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.22);
 }
 
 .spine-binding-line {
@@ -245,33 +262,111 @@
   bottom: 0;
   width: 2px;
   margin-left: -1px;
-  background-color: rgba(20, 18, 16, 0.25);
+  background-color: rgba(15, 12, 10, 0.35);
+  box-shadow: 0 0 2px rgba(255, 255, 255, 0.2);
 }
 
-.spine-thread {
+.spine-staple {
   position: absolute;
   left: 50%;
-  top: 15px;
-  bottom: 15px;
-  width: 1px;
-  margin-left: -0.5px;
-  border-left: 1px dashed rgba(214, 188, 145, 0.4);
+  width: 3.5px;
+  height: 20px;
+  margin-left: -1.75px;
+  background: linear-gradient(180deg, #A89F91 0%, #E6E1D5 50%, #7D7569 100%);
+  border-radius: 1px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
 }
+.spine-staple-top { top: 60px; }
+.spine-staple-bottom { bottom: 60px; }
 
 .mode-single .magazine-spine {
   display: none;
 }
 
-/* Individual Pages */
+/* Corner Lift & Drag Cues */
+.page-corner-cue {
+  position: absolute;
+  bottom: 0;
+  width: 54px;
+  height: 54px;
+  cursor: grab;
+  z-index: 30;
+  pointer-events: auto;
+}
+.corner-cue-right { right: 0; }
+.corner-cue-left { left: 0; }
+
+.page-corner-curl {
+  position: absolute;
+  bottom: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.3, 1);
+  pointer-events: none;
+}
+
+.corner-cue-right .page-corner-curl {
+  right: 0;
+  border-width: 0 0 0 0;
+  border-color: transparent transparent #EDE7DC transparent;
+  box-shadow: -3px -3px 8px rgba(0,0,0,0.22);
+}
+.corner-cue-right:hover .page-corner-curl {
+  border-width: 0 0 38px 38px;
+  border-color: transparent transparent #EDE7DC transparent;
+}
+
+.corner-cue-left .page-corner-curl {
+  left: 0;
+  border-width: 0 0 0 0;
+  border-color: transparent transparent transparent #EDE7DC;
+  box-shadow: 3px -3px 8px rgba(0,0,0,0.22);
+}
+.corner-cue-left:hover .page-corner-curl {
+  border-width: 0 38px 38px 0;
+  border-color: transparent transparent #EDE7DC transparent;
+}
+
+/* Individual Pages — Premium Coated Art Paper */
 .magazine-page {
   position: relative;
   flex: 1;
-  background-color: #FFFFFF;
+  background-color: #FAF8F5;
   overflow-y: auto;
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
   height: 640px;
+  box-sizing: border-box;
+}
+
+/* Tactile Coated Paper Micro-Grain Filter */
+.magazine-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.035'/%3E%3C/svg%3E");
+  z-index: 10;
+  mix-blend-mode: multiply;
+}
+
+/* Gentle Coated Paper Reflective Sheen */
+.magazine-page::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.4) 0%, 
+    rgba(255, 255, 255, 0.08) 25%, 
+    rgba(0, 0, 0, 0.015) 55%, 
+    rgba(255, 255, 255, 0.12) 85%, 
+    rgba(0, 0, 0, 0.04) 100%
+  );
+  z-index: 11;
+  transition: opacity 0.3s ease;
 }
 
 .mode-single .magazine-page {
@@ -281,13 +376,13 @@
 
 /* Paper subtle curvature and sheen to mimic physical lighting */
 .page-left {
-  background: linear-gradient(90deg, #FBF9F6 0%, #FFFFFF 15%, #FAF8F5 95%, #E9E4DA 100%);
+  background: linear-gradient(90deg, #F8F5F0 0%, #FFFFFF 12%, #FAF7F2 92%, #E7E1D4 100%);
   border-right: 1px solid rgba(0, 0, 0, 0.08);
   box-shadow: inset 18px 0 25px -12px rgba(0, 0, 0, 0.05);
 }
 
 .page-right {
-  background: linear-gradient(90deg, #E9E4DA 0%, #FAF8F5 5%, #FFFFFF 85%, #FBF9F6 100%);
+  background: linear-gradient(90deg, #E7E1D4 0%, #FAF7F2 8%, #FFFFFF 88%, #F8F5F0 100%);
   box-shadow: inset -18px 0 25px -12px rgba(0, 0, 0, 0.05);
 }
 
@@ -295,61 +390,130 @@
   background: linear-gradient(180deg, #FFFFFF 0%, #FAF8F5 100%);
 }
 
-/* 3D Realistic Turning Leaf */
-.flipbook-turning-leaf {
+/* ==========================================================================
+   3D CURVED CYLINDRICAL PAGE-TURN ENGINE
+   Segments the turning paper into a 10-strip 3D mesh with specular gloss,
+   curved under-shadow, and progressive physical bend.
+   ========================================================================== */
+
+.flipbook-curved-leaf {
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 50%;
-  z-index: 50;
+  z-index: 60;
+  pointer-events: none;
   transform-style: preserve-3d;
-  pointer-events: none;
-  background: linear-gradient(90deg, #F5F2EC 0%, #FFFFFF 100%);
-  transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-.leaf-shadow-front,
-.leaf-shadow-back {
+.flipbook-curved-leaf.flip-forward {
+  left: 50%;
+  right: 0;
+  width: 50%;
+}
+
+.flipbook-curved-leaf.flip-backward {
+  left: 50%;
+  right: 0;
+  width: 50%;
+}
+
+.mode-single .flipbook-curved-leaf.flip-forward,
+.mode-single .flipbook-curved-leaf.flip-backward {
+  left: 0;
+  right: 0;
+  width: 100%;
+}
+
+/* Dynamic Curved Under-Leaf Drop Shadow */
+.flip-under-shadow {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 320px;
+  background: radial-gradient(ellipse at center, rgba(15, 12, 10, 0.44) 0%, rgba(15, 12, 10, 0.18) 50%, transparent 80%);
+  pointer-events: none;
+  z-index: 55;
+  transform-origin: center center;
+  mix-blend-mode: multiply;
+  opacity: 0;
+}
+
+.flip-curved-strips-track {
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
+  transform-style: preserve-3d;
+}
+
+/* Individual 3D Strip Segment */
+.curved-strip {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.strip-face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  background-color: #FAF8F5;
+  box-sizing: border-box;
+}
+
+.strip-front {
+  transform: rotateY(0deg);
+}
+
+.strip-back {
+  transform: rotateY(180deg);
+  background-color: #F8F5F0;
+}
+
+.strip-content-wrap {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  height: 100%;
   pointer-events: none;
 }
 
-.leaf-shadow-front {
-  background: linear-gradient(90deg, rgba(0,0,0,0.18) 0%, transparent 60%);
+/* Specular High-Gloss Sheen Band along the curved apex */
+.strip-specular-gloss {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, 
+    rgba(255, 255, 255, 0) 0%, 
+    rgba(255, 255, 255, 0.5) 45%, 
+    rgba(255, 255, 255, 0.9) 50%, 
+    rgba(255, 255, 255, 0.35) 55%, 
+    rgba(255, 255, 255, 0) 100%
+  );
+  opacity: 0;
+  mix-blend-mode: overlay;
+  transition: opacity 0.04s linear;
 }
 
-.leaf-shadow-back {
-  background: linear-gradient(270deg, rgba(0,0,0,0.2) 0%, transparent 60%);
-  transform: rotateY(180deg);
-  backface-visibility: hidden;
-}
-
-.flipbook-turning-leaf.flip-forward {
-  right: 0;
-  transform-origin: left center;
-  transform: rotateY(0deg);
-  box-shadow: -15px 0 35px rgba(0, 0, 0, 0.22);
-}
-
-.flipbook-turning-leaf.flip-forward.is-animating {
-  transform: rotateY(-180deg);
-  background: linear-gradient(270deg, #E9E4DA 0%, #FFFFFF 100%);
-}
-
-.flipbook-turning-leaf.flip-backward {
-  left: 0;
-  transform-origin: right center;
-  transform: rotateY(0deg);
-  box-shadow: 15px 0 35px rgba(0, 0, 0, 0.22);
-}
-
-.flipbook-turning-leaf.flip-backward.is-animating {
-  transform: rotateY(180deg);
-  background: linear-gradient(90deg, #E9E4DA 0%, #FFFFFF 100%);
+/* Ambient Concave Self-Shadow */
+.strip-ambient-shadow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, 
+    rgba(20, 18, 16, 0.3) 0%, 
+    rgba(20, 18, 16, 0.08) 50%, 
+    rgba(20, 18, 16, 0) 100%
+  );
+  opacity: 0;
+  mix-blend-mode: multiply;
+  transition: opacity 0.04s linear;
 }
 
 /* Arrow Navigation Controls */
