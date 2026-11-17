@@ -171,10 +171,12 @@
 }
 
 /* Product Grid (Normal Full-Page Webpage) */
+/* Product Grid (Consistent 6-Column Grid for All 9 Categories) */
 .category-products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 1.25rem;
+  width: 100%;
 }
 
 .category-product-card {
@@ -184,111 +186,211 @@
   border: 1px solid #EAE4D8;
   border-radius: 6px;
   overflow: hidden;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
   cursor: pointer;
+  height: 100%;
 }
 
 .category-product-card:hover {
   transform: translateY(-4px);
   border-color: #181512;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
+/* Card Media (Consistent Square Aspect Ratio across all cards) */
+.cat-card-media,
 .category-card-media {
   position: relative;
   width: 100%;
-  aspect-ratio: 4 / 3;
-  overflow: hidden;
+  aspect-ratio: 1 / 1;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   background-color: #F0ECE4;
+  overflow: hidden;
 }
 
+.cat-card-media img,
 .category-card-media img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 0.5s ease;
+  transition: transform 0.4s ease;
 }
 
+.category-product-card:hover .cat-card-media img,
 .category-product-card:hover .category-card-media img {
   transform: scale(1.05);
 }
 
+.cat-card-tag,
 .category-card-badge {
   position: absolute;
-  top: 12px;
-  left: 12px;
-  background-color: rgba(20, 18, 16, 0.75);
+  top: 8px;
+  left: 8px;
+  background-color: rgba(20, 18, 16, 0.78);
   color: #FFFFFF;
-  font-size: 0.65rem;
-  font-weight: 600;
+  font-size: 0.58rem;
+  font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  padding: 3px 8px;
+  padding: 3px 6px;
   border-radius: 2px;
   backdrop-filter: blur(4px);
 }
 
+/* Card Body (Equal-height flex container ensuring footer alignment) */
+.cat-card-body,
 .category-card-body {
   display: flex;
   flex-direction: column;
-  padding: 1.4rem;
+  justify-content: space-between;
+  padding: 0.9rem;
   flex: 1;
 }
 
+.cat-card-meta {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.cat-card-material,
+.category-card-material {
+  font-size: 0.68rem;
+  color: #8C8276;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  margin: 0 0 0.25rem;
+}
+
+.cat-card-title,
 .category-card-title {
   font-family: var(--font-serif, "Cormorant Garamond", serif);
-  font-size: 1.35rem;
-  font-weight: 500;
+  font-size: 1.02rem;
+  font-weight: 600;
   color: #181512;
-  margin: 0 0 0.4rem;
+  margin: 0 0 0.35rem;
+  line-height: 1.25;
 }
 
-.category-card-material {
-  font-size: 0.78rem;
-  color: #7D746A;
-  margin: 0 0 0.8rem;
+.cat-card-desc {
+  font-size: 0.74rem;
+  color: #6E6863;
   line-height: 1.4;
-  flex: 1;
+  margin: 0 0 0.8rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
+/* Card Footer: Strictly pinned to the bottom */
+.cat-card-footer,
 .category-card-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: 1rem;
+  padding-top: 0.75rem;
   border-top: 1px solid #F0ECE4;
   margin-top: auto;
+  gap: 0.4rem;
 }
 
+.cat-card-price-wrap {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.cat-card-price-label {
+  font-size: 0.56rem;
+  text-transform: uppercase;
+  color: #8C8276;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+}
+
+.cat-card-price,
 .category-card-price {
-  font-size: 1.05rem;
+  font-size: 0.92rem;
   font-weight: 700;
   color: #181512;
+  white-space: nowrap;
 }
 
+.cat-card-add-btn,
 .category-card-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
   background-color: var(--color-noir, #181512);
   color: #FAF8F5;
   border: 1px solid var(--color-noir, #181512);
   border-radius: 9999px;
-  padding: 6px 14px;
-  font-size: 0.75rem;
+  padding: 5px 9px;
+  font-size: 0.68rem;
   font-weight: 600;
   cursor: pointer;
+  white-space: nowrap;
   transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
+.cat-card-add-btn:hover,
 .category-card-add-btn:hover {
   background-color: var(--color-terracotta, #A8583B);
   border-color: var(--color-terracotta, #A8583B);
 }
 
-/* Mobile Responsiveness */
-@media (max-width: 768px) {
+.cat-card-add-btn.added {
+  background-color: #2D6A4F;
+  border-color: #2D6A4F;
+}
+
+/* Tablet: 3 columns */
+@media (max-width: 1024px) {
   .category-products-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+}
+
+/* Android Mobile: 2 columns */
+@media (max-width: 640px) {
+  .category-products-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .cat-card-body,
+  .category-card-body {
+    padding: 0.75rem;
+  }
+
+  .cat-card-title,
+  .category-card-title {
+    font-size: 0.88rem;
+  }
+
+  .cat-card-desc {
+    display: none; /* Keep mobile cards equal height */
+  }
+
+  .cat-card-footer,
+  .category-card-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+  }
+
+  .cat-card-add-btn,
+  .category-card-add-btn {
+    width: 100%;
+    justify-content: center;
   }
 
   .category-page-nav-bar {
