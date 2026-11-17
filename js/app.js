@@ -16,6 +16,7 @@ import { VideoGallery } from './components/videoGallery.js';
 import { AdminPortal } from './components/admin.js';
 import { BookNavigation, BOOK_NAV_DATA } from './components/bookNavigation.js';
 import { CATEGORY_INSPIRATION_DATA } from './data/categoryInspiration.js';
+import { fetchStorefrontProducts } from './services/supabaseClient.js';
 
 // Curated Collection and Category Definitions for Full-Page Webpage Views
 const COLLECTIONS = {
@@ -158,6 +159,23 @@ class HomeHubApp {
     this.bindGlobalNavigation();
     this.handleInitialRouting();
     this.dismissPreloader();
+    this.loadSupabaseProducts();
+  }
+
+  async loadSupabaseProducts() {
+    try {
+      const res = await fetchStorefrontProducts();
+      if (res && res.data && res.data.length > 0 && !res.isFallback) {
+        this.products = res.data;
+        if (this.catalogue) this.catalogue.setProducts(this.products);
+        if (this.productDetail) this.productDetail.products = this.products;
+        if (this.cart) this.cart.setProducts(this.products);
+        if (this.wishlist) this.wishlist.setProducts(this.products);
+        if (this.adminPortal) this.adminPortal.products = this.products;
+      }
+    } catch (err) {
+      console.warn('Could not load products from Supabase, using local catalogue:', err);
+    }
   }
 
   dismissPreloader() {
