@@ -48,6 +48,10 @@ class HomeHubApp {
     if (typeof document === 'undefined') return;
     const preloader = document.getElementById('homehub-preloader');
     if (preloader) {
+      if (typeof window !== 'undefined' && window.location && window.location.search && window.location.search.includes('nopreloader')) {
+        if (preloader.parentNode) preloader.parentNode.removeChild(preloader);
+        return;
+      }
       setTimeout(() => {
         preloader.classList.add('fade-out');
         setTimeout(() => {
@@ -157,16 +161,16 @@ class HomeHubApp {
     }
   }
 
-  openBook(bookId) {
+  openBook(bookId, targetPage = 0) {
     if (this.flipbook) {
-      this.flipbook.loadBook(bookId, 0);
+      this.flipbook.loadBook(bookId, targetPage);
       this.updateActiveNavBook(bookId);
 
-      const section = document.getElementById('magazine-section');
-      if (section) {
-        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const stage = document.getElementById('flipbook-mount-point') || document.getElementById('magazine-section');
+      if (stage) {
+        stage.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
-      window.history.pushState(null, '', `#book-${bookId}`);
+      window.history.pushState(null, '', targetPage > 0 ? `#book-${bookId}-page-${targetPage + 1}` : `#book-${bookId}`);
     }
   }
 
@@ -360,8 +364,12 @@ class HomeHubApp {
   handleInitialRouting() {
     const hash = window.location.hash;
     if (hash.startsWith('#book-')) {
-      const bookId = hash.replace('#book-', '');
-      this.openBook(bookId);
+      const match = hash.match(/^#book-(living-edit|objects-of-home|light-life|small-spaces)(?:-page-(\d+))?$/);
+      if (match) {
+        const bookId = match[1];
+        const pageNum = match[2] ? Math.max(0, parseInt(match[2], 10) - 1) : 0;
+        this.openBook(bookId, pageNum);
+      }
     } else if (hash.startsWith('#product-')) {
       const sku = hash.replace('#product-', '');
       this.openProduct(sku);

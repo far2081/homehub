@@ -26,6 +26,14 @@
   <link rel="stylesheet" href="css/components/admin.css" />
   <link rel="stylesheet" href="css/components/footer.css" />
   <link rel="stylesheet" href="css/responsive.css" />
+  <script>
+    if (window.location.search.indexOf('nopreloader') !== -1) {
+      document.documentElement.classList.add('nopreloader');
+    }
+  </script>
+  <style>
+    .nopreloader #homehub-preloader { display: none !important; opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }
+  </style>
 </head>
 <body>
 
@@ -185,136 +193,7 @@
   <!-- Main Content Landmark -->
   <main id="main-content" role="main">
 
-    <!-- Hero Editorial Section -->
-    <section class="hero-editorial-section" aria-label="Welcome to HomeHub">
-      <div class="hero-backdrop-pattern"></div>
-      <div class="hero-content">
-        <p class="hero-brand-tagline">SHOP • STYLE • SMART</p>
-        <h1 class="hero-main-title">
-          Magazine First.<br />
-          <em>Shopping Second.</em>
-        </h1>
-        <p class="hero-paragraph">
-          Immerse yourself in our four tactile digital interior design books. Handcrafted furniture, sculptural lighting, and curated decor captured in real architectural spaces.
-        </p>
-
-        <div class="hero-cta-group">
-          <a href="#magazine-section" class="hero-btn-primary">
-            Read The Digital Books ↓
-          </a>
-          <a href="#catalogue-section" class="hero-btn-secondary">
-            View Complete Catalogue
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- Category Quick Strip -->
-    <section class="category-strip" aria-label="Product Categories">
-      <div class="container">
-        <div class="category-strip-grid">
-          <div class="cat-strip-card" onclick="window.homeHub.catalogue.setCategory('furniture'); document.getElementById('catalogue-section').scrollIntoView({behavior:'smooth'})">
-            <div>
-              <h4>Furniture</h4>
-              <p>Organic sofas, monolithic stone coffee tables, shearling armchairs.</p>
-            </div>
-            <span class="cat-strip-link">Explore Furniture →</span>
-          </div>
-
-          <div class="cat-strip-card" onclick="window.homeHub.catalogue.setCategory('decor'); document.getElementById('catalogue-section').scrollIntoView({behavior:'smooth'})">
-            <div>
-              <h4>Home Décor</h4>
-              <p>Wheel-thrown ceramic vases, bas-relief plaster, French linen cushions.</p>
-            </div>
-            <span class="cat-strip-link">Explore Décor →</span>
-          </div>
-
-          <div class="cat-strip-card" onclick="window.homeHub.catalogue.setCategory('lighting'); document.getElementById('catalogue-section').scrollIntoView({behavior:'smooth'})">
-            <div>
-              <h4>Lighting</h4>
-              <p>Circadian 2700K opal glass pendants, cantilevered marble floor lamps.</p>
-            </div>
-            <span class="cat-strip-link">Explore Lighting →</span>
-          </div>
-
-          <div class="cat-strip-card" onclick="window.homeHub.catalogue.setCategory('small-spaces'); document.getElementById('catalogue-section').scrollIntoView({behavior:'smooth'})">
-            <div>
-              <h4>Small Space Solutions</h4>
-              <p>Nested extendable desks and floating consoles for urban apartments.</p>
-            </div>
-            <span class="cat-strip-link">Explore Small Spaces →</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- FEATURED PIECES CURATION SHOWCASE -->
-    <section class="featured-showcase-section" id="featured-showcase-section" aria-label="Featured Signature Pieces">
-      <div class="container">
-        <div class="section-intro-block">
-          <span class="section-kicker">Signature Creations</span>
-          <h2 class="section-title">Curated Architectural Highlights</h2>
-          <p class="section-subtitle">
-            Flagship designs defining the Soft Luxury Modern aesthetic. Handcrafted with honest natural stone, kiln-dried hardwoods, and tactile Italian bouclé.
-          </p>
-        </div>
-
-        <div class="featured-showcase-grid">
-          <!-- Highlight 1: CloudCurve Sofa -->
-          <article class="featured-showcase-card" onclick="window.homeHub.openProduct('HH-FUR-001')">
-            <div class="featured-media">
-              <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1200&q=85" alt="CloudCurve Sofa" loading="lazy" />
-              <span class="featured-badge">Centerpiece</span>
-            </div>
-            <div class="featured-meta">
-              <span class="featured-cat">Furniture • HH-FUR-001</span>
-              <h3>CloudCurve Sofa</h3>
-              <p>Sculptural Italian bouclé silhouette engineered for quiet restorative comfort.</p>
-              <div class="featured-bottom">
-                <span class="featured-price">₨ 345,000</span>
-                <button class="featured-inspect-btn" onclick="event.stopPropagation(); window.homeHub.openProduct('HH-FUR-001')">Inspect Piece →</button>
-              </div>
-            </div>
-          </article>
-
-          <!-- Highlight 2: Noma Coffee Table -->
-          <article class="featured-showcase-card" onclick="window.homeHub.openProduct('HH-FUR-002')">
-            <div class="featured-media">
-              <img src="https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&w=1200&q=85" alt="Noma Coffee Table" loading="lazy" />
-              <span class="featured-badge">Roman Travertine</span>
-            </div>
-            <div class="featured-meta">
-              <span class="featured-cat">Furniture • HH-FUR-002</span>
-              <h3>Noma Coffee Table</h3>
-              <p>Monolithic honed Roman travertine stone with softened bullnose edges.</p>
-              <div class="featured-bottom">
-                <span class="featured-price">₨ 125,000</span>
-                <button class="featured-inspect-btn" onclick="event.stopPropagation(); window.homeHub.openProduct('HH-FUR-002')">Inspect Piece →</button>
-              </div>
-            </div>
-          </article>
-
-          <!-- Highlight 3: Luna Pendant -->
-          <article class="featured-showcase-card" onclick="window.homeHub.openProduct('HH-LGT-001')">
-            <div class="featured-media">
-              <img src="https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=1200&q=85" alt="Luna Pendant" loading="lazy" />
-              <span class="featured-badge">Handblown Glass</span>
-            </div>
-            <div class="featured-meta">
-              <span class="featured-cat">Lighting • HH-LGT-001</span>
-              <h3>Luna Pendant</h3>
-              <p>Mouth-blown triplex opal glass orb suspended from champagne brushed brass.</p>
-              <div class="featured-bottom">
-                <span class="featured-price">₨ 62,000</span>
-                <button class="featured-inspect-btn" onclick="event.stopPropagation(); window.homeHub.openProduct('HH-LGT-001')">Inspect Piece →</button>
-              </div>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- SECTION 1: 3D Flipbook Magazine Experience -->
+    <!-- SECTION 1: 3D Flipbook Magazine Experience (Primary HomeHub Visual Experience) -->
     <section class="magazine-section-wrapper" id="magazine-section" aria-label="Interactive 3D Interior Magazine">
       <div class="container">
         <div class="section-intro-block">

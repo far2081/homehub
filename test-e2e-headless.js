@@ -122,7 +122,20 @@ console.log('\n[4] Testing The Four Digital Books & Hotspot Linkages:');
   for (const bookId of requiredBooks) {
     const book = MAGAZINE_BOOKS[bookId];
     assert(!!book, `Book "${bookId}" exists with title "${book ? book.title : ''}"`);
-    assert(book.pages.length === 8, `Book "${bookId}" contains complete 8-page editorial spread`);
+    assert(book.pages.length === 24, `Book "${bookId}" contains complete 24-page editorial catalogue`);
+    assert(book.totalPages === 24, `Book "${bookId}" declares 24 total pages`);
+
+    // Verify 5 distinct layouts present in every magazine
+    const types = new Set(book.pages.map(p => p.type));
+    assert(types.has('layout-a'), `Book "${bookId}" contains Layout A (Continuous double-page image)`);
+    assert(types.has('layout-b'), `Book "${bookId}" contains Layout B (Two different photographs)`);
+    assert(types.has('layout-c'), `Book "${bookId}" contains Layout C (Full-page room photography)`);
+    assert(types.has('layout-d'), `Book "${bookId}" contains Layout D (Editorial story)`);
+    assert(types.has('layout-e'), `Book "${bookId}" contains Layout E (Product collection)`);
+
+    // Verify at least 2 continuous double-page spreads (4 pages of layout-a)
+    const layoutACount = book.pages.filter(p => p.type === 'layout-a').length;
+    assert(layoutACount >= 4, `Book "${bookId}" contains at least 2 continuous double-page spreads (${layoutACount} pages)`);
 
     // Verify cover lines on cover page
     assert(Array.isArray(book.coverLines) && book.coverLines.length >= 3, `Book "${bookId}" has ${book.coverLines ? book.coverLines.length : 0} editorial cover lines`);

@@ -837,7 +837,7 @@ export class Flipbook {
       });
     });
 
-    // 2. View details buttons inside hotspot card and chips
+    // 2. View details buttons inside hotspot card, chips, and product collections
     slot.querySelectorAll('[data-view-product]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -848,7 +848,7 @@ export class Flipbook {
       });
     });
 
-    // 3. Quick Add To Bag buttons inside hotspot card and chips (silent, no sound)
+    // 3. Quick Add To Bag buttons inside hotspot card, chips, and product collections
     slot.querySelectorAll('[data-quick-add]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -862,7 +862,7 @@ export class Flipbook {
 
     // 4. Shop chips trigger PDP
     slot.querySelectorAll('[data-product-sku]').forEach(pill => {
-      if (pill.classList.contains('shop-chip-btn')) {
+      if (pill.classList.contains('shop-chip-btn') || pill.classList.contains('layout-e-btn-inspect')) {
         pill.addEventListener('click', (e) => {
           e.stopPropagation();
           const sku = e.currentTarget.dataset.productSku;
@@ -872,6 +872,29 @@ export class Flipbook {
         });
       }
     });
+  }
+
+  renderHotspots(products) {
+    if (!products || products.length === 0) return '';
+    return products.map((p, idx) => {
+      const x = p.hotspot ? p.hotspot.x : (35 + idx * 30);
+      const y = p.hotspot ? p.hotspot.y : (50 + idx * 12);
+      return `
+        <div class="magazine-hotspot-pin" style="left:${x}%; top:${y}%;" data-product-sku="${p.sku}" title="Inspect ${p.label}">
+          <div class="hotspot-pulse"></div>
+          <div class="hotspot-dot">✦</div>
+          <div class="hotspot-card">
+            <span class="hotspot-card-badge">${p.badge || 'Featured Piece'}</span>
+            <strong class="hotspot-card-title">${p.label}</strong>
+            <span class="hotspot-card-price">${p.price}</span>
+            <div class="hotspot-card-actions">
+              <button class="hotspot-btn-view" data-view-product="${p.sku}">Inspect</button>
+              <button class="hotspot-btn-add" data-quick-add="${p.sku}">+ Add to Bag</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
   }
 
   buildPageHTML(page, position) {
@@ -886,8 +909,10 @@ export class Flipbook {
       `;
     }
 
+    const currentBook = this.getCurrentBook() || { title: 'HomeHub' };
+
+    // Brand Flyleaf (Desktop Page 0 Left)
     if (page.type === 'brand-flyleaf') {
-      const book = this.getCurrentBook();
       return `
         <div class="page-flyleaf">
           <div class="flyleaf-content">
@@ -895,25 +920,25 @@ export class Flipbook {
             <span class="editorial-brand">HOMEHUB</span>
             <p class="brand-tagline">SHOP • STYLE • SMART</p>
             <div class="flyleaf-divider"></div>
-            <p class="flyleaf-volume">${book.issue}</p>
-            <h3 class="flyleaf-book-title">${book.title}</h3>
+            <p class="flyleaf-volume">${currentBook.issue || 'Editorial Series'}</p>
+            <h3 class="flyleaf-book-title">${currentBook.title}</h3>
             <p class="flyleaf-quote">"True luxury is not ornament; it is the presence of generous negative space and honest, enduring materials."</p>
             <div class="flyleaf-toc">
               <span class="toc-title">IN THIS ISSUE</span>
               <ul>
-                ${(book.coverLines || []).map(line => `<li>${line}</li>`).join('')}
+                ${(currentBook.coverLines || []).map(line => `<li>${line}</li>`).join('')}
               </ul>
             </div>
-            <p class="flyleaf-note">Soft Luxury Modern Editorial Series</p>
+            <p class="flyleaf-note">Soft Luxury Modern Editorial Series • 24 Pages</p>
           </div>
           <div class="page-folio">HOMEHUB ATELIER • PAKISTAN</div>
         </div>
       `;
     }
 
+    // Cover (Page 1)
     if (page.type === 'cover') {
-      const book = this.getCurrentBook();
-      const coverLines = page.coverLines || book.coverLines || [];
+      const coverLines = page.coverLines || currentBook.coverLines || [];
       return `
         <div class="page-cover" style="background-image: linear-gradient(180deg, rgba(20,18,16,0.2) 0%, rgba(20,18,16,0.45) 40%, rgba(20,18,16,0.85) 100%), url('${page.heroImage}')">
           <div class="cover-top-meta">
@@ -924,7 +949,7 @@ export class Flipbook {
                 <span class="cover-kicker">${page.kicker || 'EDITORIAL EDITION'}</span>
               </div>
             </div>
-            <span class="cover-issue-badge">${book.issue}</span>
+            <span class="cover-issue-badge">${currentBook.issue}</span>
           </div>
 
           <div class="cover-center-branding">
@@ -955,6 +980,7 @@ export class Flipbook {
       `;
     }
 
+    // Backcover (Page 24)
     if (page.type === 'backcover') {
       return `
         <div class="page-backcover" style="background-image: linear-gradient(180deg, rgba(20,18,16,0.45) 0%, rgba(20,18,16,0.9) 100%), url('${page.heroImage}')">
@@ -979,74 +1005,200 @@ export class Flipbook {
       `;
     }
 
-    // Standard Editorial Pages (essay, feature, curation-spread, etc.)
-    const hasProducts = page.products && page.products.length > 0;
+    // =========================================================================
+    // LAYOUT A: ONE CONTINUOUS DOUBLE-PAGE IMAGE
+    // Spans smoothly across left and right pages at the central spine.
+    // =========================================================================
+    if (page.type === 'layout-a') {
+      const isLeft = (position === 'left' || page.spreadRole === 'left') && position !== 'single';
+      const roleClass = isLeft ? 'spread-left' : 'spread-right';
+      return `
+        <div class="page-layout-a ${roleClass}" style="background-image: url('${page.spreadImage}');">
+          ${this.renderHotspots(page.products)}
+          
+          <div class="spread-overlay-meta">
+            <span class="spread-kicker">${page.kicker || 'DOUBLE-PAGE SPREAD'}</span>
+            <h2 class="spread-title">${page.headline}</h2>
+            <p class="spread-deck">${page.deck || ''}</p>
+          </div>
+          <div class="page-folio-corner">PAGE ${page.pageNumber}</div>
+        </div>
+      `;
+    }
 
+    // =========================================================================
+    // LAYOUT B: TWO DIFFERENT PHOTOGRAPHS
+    // Full photograph with architectural caption, notes, and technical credits.
+    // =========================================================================
+    if (page.type === 'layout-b') {
+      return `
+        <div class="page-layout-b">
+          <div class="page-header-strip">
+            <span class="page-kicker">${page.kicker || 'VIGNETTE STUDY'}</span>
+            <span class="page-number-folio">N° ${page.pageNumber}</span>
+          </div>
+
+          <div class="layout-b-photo-frame">
+            <img src="${page.heroImage}" alt="${page.headline}" class="layout-b-photo" loading="lazy" />
+            ${this.renderHotspots(page.products)}
+          </div>
+
+          <div class="layout-b-caption-wrap">
+            <h3 class="layout-b-title">${page.headline}</h3>
+            <p class="layout-b-deck">${page.deck || ''}</p>
+            ${page.note ? `<p class="layout-b-note">✦ ${page.note}</p>` : ''}
+          </div>
+
+          <div class="page-footer-strip">
+            <span class="page-footer-brand">HOMEHUB • ${currentBook.title.toUpperCase()}</span>
+            <span class="page-footer-num">${page.pageNumber}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // LAYOUT C: FULL-PAGE ROOM PHOTOGRAPHY
+    // Edge-to-edge room photography with minimal glassmorphic overlay.
+    // =========================================================================
+    if (page.type === 'layout-c') {
+      return `
+        <div class="page-layout-c" style="background-image: linear-gradient(180deg, rgba(20,18,16,0.15) 0%, rgba(20,18,16,0.15) 60%, rgba(20,18,16,0.85) 100%), url('${page.heroImage}');">
+          <div class="layout-c-top-kicker">${page.kicker || 'ROOM IN SITU'}</div>
+          
+          ${this.renderHotspots(page.products)}
+
+          <div class="layout-c-bottom-meta">
+            <h2 class="layout-c-title">${page.headline}</h2>
+            <p class="layout-c-specs">${page.deck || ''}</p>
+          </div>
+          <div class="page-folio-corner">PAGE ${page.pageNumber}</div>
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // LAYOUT D: EDITORIAL STORY
+    // Large headline, readable editorial copy, drop-caps, material callout box,
+    // and featured shopping chip strip.
+    // =========================================================================
+    if (page.type === 'layout-d') {
+      const hasProducts = page.products && page.products.length > 0;
+      return `
+        <div class="page-layout-d">
+          <div class="page-header-strip">
+            <span class="page-kicker">${page.kicker || 'EDITORIAL STORY'}</span>
+            <span class="page-number-folio">N° ${page.pageNumber}</span>
+          </div>
+
+          <h2 class="layout-d-headline">${page.headline}</h2>
+          ${page.deck ? `<p class="layout-d-deck">${page.deck}</p>` : ''}
+
+          ${page.quote ? `<div class="layout-d-quote"><blockquote>"${page.quote}"</blockquote></div>` : ''}
+
+          <div class="layout-d-body">
+            ${(page.body || []).map(p => `<p>${p}</p>`).join('')}
+          </div>
+
+          ${page.materialNote ? `
+            <div class="layout-d-material-box">
+              <span class="material-box-title">MATERIAL INTELLIGENCE</span>
+              <p class="material-box-text">${page.materialNote}</p>
+            </div>
+          ` : ''}
+
+          ${hasProducts ? `
+            <div class="page-shop-strip">
+              <span class="shop-strip-label">INSPECT FEATURED PIECES:</span>
+              <div class="shop-chips">
+                ${page.products.map(p => `
+                  <div class="shop-chip-group">
+                    <button class="shop-chip-btn" data-product-sku="${p.sku}" title="Inspect ${p.label}">
+                      <span class="chip-dot"></span>
+                      <span class="chip-name">${p.label}</span>
+                      <span class="chip-price">${p.price}</span>
+                      <span class="chip-arrow">↗</span>
+                    </button>
+                    <button class="shop-chip-add-btn" data-quick-add="${p.sku}" title="Add ${p.label} to bag">
+                      + Bag
+                    </button>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+
+          <div class="page-footer-strip">
+            <span class="page-footer-brand">HOMEHUB • ${currentBook.title.toUpperCase()}</span>
+            <span class="page-footer-num">${page.pageNumber}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // LAYOUT E: PRODUCT COLLECTION
+    // Catalogue collection with product photography, names, specs, PKR prices,
+    // Inspect triggers, and Add to Bag buttons.
+    // =========================================================================
+    if (page.type === 'layout-e') {
+      const items = page.collectionItems || [];
+      return `
+        <div class="page-layout-e">
+          <div class="page-header-strip">
+            <span class="page-kicker">${page.kicker || 'COLLECTION EDIT'}</span>
+            <span class="page-number-folio">N° ${page.pageNumber}</span>
+          </div>
+
+          <div class="layout-e-header">
+            <h2 class="layout-e-title">${page.headline}</h2>
+            <p class="layout-e-deck">${page.deck || 'Architectural pieces with complete specifications.'}</p>
+          </div>
+
+          <div class="layout-e-grid">
+            ${items.map(item => `
+              <div class="layout-e-card">
+                <div class="layout-e-card-media">
+                  <img src="${item.image}" alt="${item.label}" loading="lazy" />
+                </div>
+                <div class="layout-e-card-body">
+                  <h4 class="layout-e-card-name">${item.label}</h4>
+                  <p class="layout-e-card-specs">${item.specs}</p>
+                  <span class="layout-e-card-price">${item.price}</span>
+                  <div class="layout-e-card-actions">
+                    <button class="layout-e-btn-inspect" data-view-product="${item.sku}">Inspect</button>
+                    <button class="layout-e-btn-add" data-quick-add="${item.sku}">+ Add to Bag</button>
+                  </div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+
+          <div class="page-footer-strip">
+            <span class="page-footer-brand">HOMEHUB CATALOGUE • ${currentBook.title.toUpperCase()}</span>
+            <span class="page-footer-num">${page.pageNumber}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    // Fallback Editorial Page
     return `
       <div class="page-editorial ${page.type}">
         <div class="page-header-strip">
           <span class="page-kicker">${page.kicker || 'EDITORIAL'}</span>
           <span class="page-number-folio">N° ${page.pageNumber}</span>
         </div>
-
         <div class="page-visual-wrap">
-          <img src="${page.heroImage}" alt="${page.headline}" class="page-photo" loading="lazy" />
-          
-          <!-- Interactive Visual Hotspot Pins directly on the photography -->
-          ${hasProducts ? page.products.map((p, idx) => {
-            const x = p.hotspot ? p.hotspot.x : (35 + idx * 30);
-            const y = p.hotspot ? p.hotspot.y : (50 + idx * 12);
-            return `
-              <div class="magazine-hotspot-pin" style="left:${x}%; top:${y}%;" data-product-sku="${p.sku}" title="Inspect ${p.label}">
-                <div class="hotspot-pulse"></div>
-                <div class="hotspot-dot">✦</div>
-                <div class="hotspot-card">
-                  <span class="hotspot-card-badge">${p.badge || 'Featured Piece'}</span>
-                  <strong class="hotspot-card-title">${p.label}</strong>
-                  <span class="hotspot-card-price">${p.price}</span>
-                  <div class="hotspot-card-actions">
-                    <button class="hotspot-btn-view" data-view-product="${p.sku}">Inspect</button>
-                    <button class="hotspot-btn-add" data-quick-add="${p.sku}">+ Add to Bag</button>
-                  </div>
-                </div>
-              </div>
-            `;
-          }).join('') : ''}
-
-          ${page.quote ? `<div class="page-pullquote"><blockquote>${page.quote}</blockquote></div>` : ''}
+          <img src="${page.heroImage || ''}" alt="${page.headline}" class="page-photo" loading="lazy" />
+          ${this.renderHotspots(page.products)}
         </div>
-
         <div class="page-text-content">
           <h3 class="page-headline">${page.headline}</h3>
           ${page.deck ? `<p class="page-deck">${page.deck}</p>` : ''}
-          <div class="page-paragraphs">
-            ${(page.body || []).map(p => `<p>${p}</p>`).join('')}
-          </div>
         </div>
-
-        ${hasProducts ? `
-          <div class="page-shop-strip">
-            <span class="shop-strip-label">FEATURED IN THIS SPREAD:</span>
-            <div class="shop-chips">
-              ${page.products.map(p => `
-                <div class="shop-chip-group">
-                  <button class="shop-chip-btn" data-product-sku="${p.sku}" title="Inspect ${p.label}">
-                    <span class="chip-dot"></span>
-                    <span class="chip-name">${p.label}</span>
-                    <span class="chip-price">${p.price}</span>
-                    <span class="chip-arrow">↗</span>
-                  </button>
-                  <button class="shop-chip-add-btn" data-quick-add="${p.sku}" title="Quick add ${p.label} to bag">
-                    + Bag
-                  </button>
-                </div>
-              `).join('')}
-            </div>
-          </div>
-        ` : ''}
-
         <div class="page-footer-strip">
-          <span class="page-footer-brand">HOMEHUB MAGAZINE • ${this.getCurrentBook().title.toUpperCase()}</span>
+          <span class="page-footer-brand">HOMEHUB • ${currentBook.title.toUpperCase()}</span>
           <span class="page-footer-num">${page.pageNumber}</span>
         </div>
       </div>

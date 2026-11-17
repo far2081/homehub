@@ -1514,3 +1514,407 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ==========================================================================
+   THE FIVE EDITORIAL MAGAZINE PAGE LAYOUTS
+   Layout A: One Continuous Double-Page Image (Spread across spine)
+   Layout B: Two Different Photographs (Framed photo + specs caption)
+   Layout C: Full-Page Room Photography (Edge-to-edge + minimal overlay)
+   Layout D: Editorial Story (Serif headline, drop cap, body, material box)
+   Layout E: Product Collection (Catalogue grid with PKR prices & shopping buttons)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   LAYOUT A — ONE CONTINUOUS DOUBLE-PAGE IMAGE
+   -------------------------------------------------------------------------- */
+.page-layout-a {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: #FAF8F5;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  box-sizing: border-box;
+}
+
+.page-layout-a.spread-left {
+  background-size: 200% 100%;
+  background-position: left center;
+}
+
+.page-layout-a.spread-right {
+  background-size: 200% 100%;
+  background-position: right center;
+}
+
+.mode-single .page-layout-a {
+  background-size: cover !important;
+  background-position: center center !important;
+}
+
+.spread-overlay-meta {
+  position: relative;
+  z-index: 15;
+  padding: 3rem 2.2rem 2.2rem;
+  background: linear-gradient(0deg, rgba(20, 18, 16, 0.88) 0%, rgba(20, 18, 16, 0.4) 60%, transparent 100%);
+  color: #FAF8F5;
+}
+
+.spread-kicker {
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-soft-champagne);
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  display: block;
+}
+
+.spread-title {
+  font-size: clamp(1.4rem, 2.2vw, 2.1rem);
+  font-weight: 450;
+  color: #FAF8F5;
+  margin-bottom: 0.4rem;
+  line-height: 1.25;
+}
+
+.spread-deck {
+  font-size: 0.86rem;
+  color: rgba(248, 245, 239, 0.88);
+  line-height: 1.48;
+  max-width: 480px;
+}
+
+/* --------------------------------------------------------------------------
+   LAYOUT B — TWO DIFFERENT PHOTOGRAPHS
+   -------------------------------------------------------------------------- */
+.page-layout-b {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #FAF8F5;
+  padding: 2.2rem 2rem 1.8rem;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.layout-b-photo-frame {
+  position: relative;
+  flex: 1;
+  min-height: 330px;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 1.2rem;
+  background-color: #EDE8DF;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+}
+
+.layout-b-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.layout-b-caption-wrap {
+  padding-top: 0.2rem;
+}
+
+.layout-b-title {
+  font-size: 1.35rem;
+  font-weight: 500;
+  color: var(--color-noir);
+  margin: 0.3rem 0;
+  line-height: 1.3;
+}
+
+.layout-b-deck {
+  font-size: 0.86rem;
+  color: var(--color-charcoal);
+  line-height: 1.48;
+}
+
+.layout-b-note {
+  font-size: 0.76rem;
+  color: var(--color-muted-earth);
+  margin-top: 0.45rem;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+/* --------------------------------------------------------------------------
+   LAYOUT C — FULL-PAGE ROOM PHOTOGRAPHY
+   -------------------------------------------------------------------------- */
+.page-layout-c {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2rem;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.layout-c-top-kicker {
+  align-self: flex-start;
+  background: rgba(20, 18, 16, 0.58);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--color-soft-champagne);
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.layout-c-bottom-meta {
+  background: linear-gradient(0deg, rgba(20, 18, 16, 0.88) 0%, rgba(20, 18, 16, 0.3) 65%, transparent 100%);
+  margin: -2rem;
+  padding: 3rem 2rem 2rem;
+  color: #FAF8F5;
+}
+
+.layout-c-title {
+  font-size: 1.65rem;
+  font-weight: 450;
+  margin-bottom: 0.4rem;
+  color: #FAF8F5;
+  line-height: 1.25;
+}
+
+.layout-c-specs {
+  font-size: 0.85rem;
+  color: rgba(248, 245, 239, 0.88);
+  line-height: 1.45;
+}
+
+/* --------------------------------------------------------------------------
+   LAYOUT D — EDITORIAL STORY
+   -------------------------------------------------------------------------- */
+.page-layout-d {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #FAF8F5;
+  padding: 2.5rem 2.2rem 2rem;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.layout-d-headline {
+  font-size: clamp(1.6rem, 2.4vw, 2.2rem);
+  font-weight: 500;
+  color: var(--color-noir);
+  line-height: 1.2;
+  margin: 0.4rem 0 0.8rem;
+}
+
+.layout-d-deck {
+  font-size: 0.92rem;
+  color: var(--color-charcoal);
+  line-height: 1.5;
+  margin-bottom: 1.2rem;
+  font-weight: 450;
+}
+
+.layout-d-body p {
+  font-size: 0.86rem;
+  line-height: 1.65;
+  color: #383430;
+  margin-bottom: 1rem;
+}
+
+.layout-d-body p:first-of-type::first-letter {
+  font-size: 3.2rem;
+  line-height: 0.8;
+  float: left;
+  margin-right: 0.6rem;
+  font-family: var(--font-serif);
+  color: var(--color-noir);
+}
+
+.layout-d-quote {
+  border-left: 2px solid var(--color-soft-champagne);
+  padding-left: 1.2rem;
+  margin: 1.2rem 0;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.98rem;
+  color: var(--color-noir);
+  line-height: 1.5;
+}
+
+.layout-d-material-box {
+  background-color: #F3EFE7;
+  border: 1px solid #E4DCCF;
+  border-radius: 4px;
+  padding: 0.9rem 1.1rem;
+  margin: 1.2rem 0;
+}
+
+.material-box-title {
+  font-size: 0.65rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--color-terracotta);
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.material-box-text {
+  font-size: 0.8rem;
+  color: var(--color-charcoal);
+  line-height: 1.45;
+}
+
+/* --------------------------------------------------------------------------
+   LAYOUT E — PRODUCT COLLECTION
+   -------------------------------------------------------------------------- */
+.page-layout-e {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #FAF8F5;
+  padding: 2.2rem 2rem 1.8rem;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.layout-e-header {
+  border-bottom: 1px solid #E7E0D3;
+  padding-bottom: 0.8rem;
+  margin-bottom: 1.2rem;
+}
+
+.layout-e-title {
+  font-size: 1.45rem;
+  font-weight: 500;
+  color: var(--color-noir);
+  margin: 0.2rem 0;
+  line-height: 1.3;
+}
+
+.layout-e-deck {
+  font-size: 0.82rem;
+  color: var(--color-muted-earth);
+  line-height: 1.4;
+}
+
+.layout-e-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex: 1;
+}
+
+.layout-e-card {
+  display: flex;
+  gap: 1.2rem;
+  background-color: #FFFFFF;
+  border: 1px solid #EBE4D8;
+  border-radius: 4px;
+  padding: 0.9rem;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  transition: all 0.2s ease;
+}
+
+.layout-e-card:hover {
+  border-color: var(--color-noir);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+}
+
+.layout-e-card-media {
+  width: 110px;
+  height: 100px;
+  border-radius: 3px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background-color: #F5F2EB;
+}
+
+.layout-e-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.layout-e-card-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.layout-e-card-name {
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: var(--color-noir);
+  margin: 0 0 0.2rem;
+}
+
+.layout-e-card-specs {
+  font-size: 0.76rem;
+  color: var(--color-muted-earth);
+  margin-bottom: 0.5rem;
+  line-height: 1.35;
+}
+
+.layout-e-card-price {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-noir);
+  display: block;
+}
+
+.layout-e-card-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.layout-e-btn-inspect,
+.layout-e-btn-add {
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 0.74rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.layout-e-btn-inspect {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-charcoal);
+}
+
+.layout-e-btn-inspect:hover {
+  border-color: var(--color-noir);
+  color: var(--color-noir);
+}
+
+.layout-e-btn-add {
+  background-color: var(--color-noir);
+  border: 1px solid var(--color-noir);
+  color: var(--color-soft-ivory);
+}
+
+.layout-e-btn-add:hover {
+  background-color: #2D2926;
+}
