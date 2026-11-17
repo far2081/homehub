@@ -14,6 +14,118 @@ import { Cart } from './components/cart.js';
 import { Wishlist } from './components/wishlist.js';
 import { VideoGallery } from './components/videoGallery.js';
 import { AdminPortal } from './components/admin.js';
+import { BookNavigation, BOOK_NAV_DATA } from './components/bookNavigation.js';
+
+// Curated Collection and Category Definitions for Full-Page Webpage Views
+const COLLECTIONS = {
+  // Furniture Book collections
+  'living-room': {
+    title: 'Living Room Collection',
+    deck: 'Architectural silhouettes, low-profile seating, and solid timber centerpieces tailored for serene living.',
+    filter: (p) => p.category === 'furniture' || ['HH-FUR-001', 'HH-FUR-002', 'HH-FUR-003', 'HH-LGT-002', 'HH-DEC-002', 'HH-DEC-003'].includes(p.id)
+  },
+  'bedroom': {
+    title: 'Bedroom Collection',
+    deck: 'Tactile organic linens, platform joinery, and serene ambient lighting designed for restoration.',
+    filter: (p) => p.category === 'furniture' || ['HH-FUR-004', 'HH-SSS-002', 'HH-LGT-003', 'HH-DEC-003', 'HH-DEC-004'].includes(p.id)
+  },
+  'dining-room': {
+    title: 'Dining Room Collection',
+    deck: 'Monolithic travertine tables, sculpted oak seating, and intimate pendant illumination.',
+    filter: (p) => ['HH-FUR-002', 'HH-DEC-001', 'HH-DEC-004', 'HH-LGT-001'].includes(p.id) || p.category === 'furniture'
+  },
+  'sofas-seating': {
+    title: 'Sofas & Seating',
+    deck: 'Sculptural lounge profiles, high-density comfort cores, and Italian bouclé upholstery.',
+    filter: (p) => ['HH-FUR-001', 'HH-FUR-003'].includes(p.id) || (p.category === 'furniture' && p.name.toLowerCase().includes('chair'))
+  },
+  'tables-desks': {
+    title: 'Tables & Desks',
+    deck: 'Honed travertine slabs, solid FSC white oak surfaces, and minimalist workspace architecture.',
+    filter: (p) => ['HH-FUR-002', 'HH-SSS-001', 'HH-SSS-002'].includes(p.id) || p.name.toLowerCase().includes('table') || p.name.toLowerCase().includes('desk')
+  },
+  'storage-shelving': {
+    title: 'Storage & Shelving',
+    deck: 'Slatted tambour consoles, modular floating credenzas, and integrated cable architectural joinery.',
+    filter: (p) => ['HH-SSS-001', 'HH-SSS-002'].includes(p.id) || p.category === 'small-spaces'
+  },
+  'beds-headboards': {
+    title: 'Beds & Sleep Systems',
+    deck: 'Integrated floating nightstands, solid ash platform architecture, and natural linen contours.',
+    filter: (p) => ['HH-FUR-004'].includes(p.id) || p.name.toLowerCase().includes('bed')
+  },
+
+  // Décor Book collections
+  'vases-ceramics': {
+    title: 'Vases & Ceramic Objects',
+    deck: 'Hand-thrown unglazed stoneware, tactile mineral glazes, and organic vessel silhouettes.',
+    filter: (p) => ['HH-DEC-001'].includes(p.id) || p.category === 'decor'
+  },
+  'wall-art': {
+    title: 'Wall Art & Relief Sculptures',
+    deck: 'Textured lime-wash panels, bas-relief plaster compositions, and shadow-casting forms.',
+    filter: (p) => ['HH-DEC-002'].includes(p.id) || p.category === 'decor'
+  },
+  'cushions-textiles': {
+    title: 'Cushions & Loom Textiles',
+    deck: 'Handwoven Belgian linen, tactile alpaca bouclé, and understated earthy pigments.',
+    filter: (p) => ['HH-DEC-003'].includes(p.id) || p.category === 'decor'
+  },
+  'mirrors-accessories': {
+    title: 'Mirrors & Decorative Objects',
+    deck: 'Asymmetric cast-bronze mirrors, travertine bookends, and sculptural brass bowls.',
+    filter: (p) => ['HH-DEC-004'].includes(p.id) || p.category === 'decor'
+  },
+
+  // Lighting Book collections
+  'ceiling-lights': {
+    title: 'Ceiling Lights & Chandeliers',
+    deck: 'Warm architectural wash, diffused acoustic canopies, and suspended brass geometry.',
+    filter: (p) => ['HH-LGT-001'].includes(p.id) || p.category === 'lighting'
+  },
+  'pendant-lights': {
+    title: 'Pendant Lights & Suspensions',
+    deck: 'Hand-spun raw brass shades, dim-to-warm LED illumination, and dining horizon balance.',
+    filter: (p) => ['HH-LGT-001', 'HH-LGT-004'].includes(p.id) || p.category === 'lighting'
+  },
+  'table-lamps': {
+    title: 'Table & Accent Lamps',
+    deck: 'Tactile alabaster stone pedestals, pleated linen shades, and intimate desktop glow.',
+    filter: (p) => ['HH-LGT-003'].includes(p.id) || p.category === 'lighting'
+  },
+  'floor-lamps': {
+    title: 'Floor Lamps & Torchières',
+    deck: 'Arched carbon-steel lines, weighted marble bases, and reading-corner ambiance.',
+    filter: (p) => ['HH-LGT-002'].includes(p.id) || p.category === 'lighting'
+  },
+  'wall-lights': {
+    title: 'Wall Sconces & Flush Mounts',
+    deck: 'Directable brass arms, fluted optic glass diffusers, and hallway grazing light.',
+    filter: (p) => ['HH-LGT-004'].includes(p.id) || p.category === 'lighting'
+  },
+
+  // Generic categories
+  'furniture': {
+    title: 'Furniture Atelier',
+    deck: 'Solid hardwoods, monolithic stone slabs, and tactile upholstery designed to last generations.',
+    filter: (p) => p.category === 'furniture'
+  },
+  'decor': {
+    title: 'Home Décor & Curated Objects',
+    deck: 'Artisanal ceramics, architectural mirrors, and tactile textiles that give spaces soul.',
+    filter: (p) => p.category === 'decor'
+  },
+  'lighting': {
+    title: 'Architectural & Ambient Lighting',
+    deck: 'Warm 2700K illumination, sculpted brass silhouettes, and handcrafted stone bases.',
+    filter: (p) => p.category === 'lighting'
+  },
+  'small-spaces': {
+    title: 'Small Spaces & Smart Living',
+    deck: 'Multifunctional nested joinery, space-intelligent proportions, and concealed storage.',
+    filter: (p) => p.category === 'small-spaces'
+  }
+};
 
 class HomeHubApp {
   constructor() {
@@ -28,6 +140,7 @@ class HomeHubApp {
     this.wishlist = null;
     this.videoGallery = null;
     this.adminPortal = null;
+    this.bookNav = null;
 
     this.init();
   }
@@ -40,6 +153,7 @@ class HomeHubApp {
     this.initCatalogue();
     this.initVideoGallery();
     this.initAdminPortal();
+    this.initBookNavigation();
     this.bindGlobalNavigation();
     this.handleInitialRouting();
     this.dismissPreloader();
@@ -138,6 +252,13 @@ class HomeHubApp {
     });
   }
 
+  initBookNavigation() {
+    this.bookNav = new BookNavigation('book-nav-modal', {
+      onHome: () => this.showHomepage(),
+      onNavigate: (target) => this.handleBookNavigationTarget(target)
+    });
+  }
+
   updateHeaderBadges() {
     const cartBadge = document.getElementById('header-cart-badge');
     const wishBadge = document.getElementById('header-wishlist-badge');
@@ -183,7 +304,52 @@ class HomeHubApp {
   }
 
   bindGlobalNavigation() {
-    // 4 Book Header links
+    // Dedicated HOME Buttons (Header, Drawer, Brand Logo)
+    const headerHomeBtn = document.getElementById('header-home-btn');
+    if (headerHomeBtn) {
+      headerHomeBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.showHomepage();
+      });
+    }
+
+    const brandLogoLink = document.querySelector('.header-brand-mark');
+    if (brandLogoLink) {
+      brandLogoLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.showHomepage();
+      });
+    }
+
+    const mobileDrawerHomeBtn = document.getElementById('mobile-drawer-home-btn');
+    if (mobileDrawerHomeBtn) {
+      mobileDrawerHomeBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.closeMobileDrawer();
+        this.showHomepage();
+      });
+    }
+
+    // Header Book Navigation Triggers (Furniture, Décor, Lighting, Living Room, Bedroom, Magazines)
+    document.querySelectorAll('.nav-book-trigger').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const bookKey = btn.dataset.navBook;
+        if (this.bookNav) this.bookNav.open(bookKey);
+      });
+    });
+
+    // Mobile Drawer Book Navigation Triggers
+    document.querySelectorAll('.mobile-nav-book-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const bookKey = btn.dataset.navBook;
+        this.closeMobileDrawer();
+        if (this.bookNav) this.bookNav.open(bookKey);
+      });
+    });
+
+    // 4 Book Header links (if any legacy or extra links remain)
     document.querySelectorAll('.nav-book-link').forEach(link => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
@@ -535,9 +701,228 @@ class HomeHubApp {
     modal.querySelector('#close-info-modal-btn').addEventListener('click', close);
   }
 
+  showHomepage() {
+    if (this.bookNav) this.bookNav.close();
+    if (this.closeMobileDrawer) this.closeMobileDrawer();
+
+    const catPage = document.getElementById('category-page-view');
+    const magSection = document.getElementById('magazine-section');
+
+    if (catPage) catPage.style.display = 'none';
+    if (magSection) magSection.style.display = '';
+
+    // Deactivate any active book nav triggers
+    document.querySelectorAll('.nav-book-trigger').forEach(b => b.classList.remove('active'));
+
+    window.history.pushState(null, '', '#home');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  openCollection(collectionKey) {
+    if (this.bookNav) this.bookNav.close();
+    if (this.closeMobileDrawer) this.closeMobileDrawer();
+
+    const config = COLLECTIONS[collectionKey] || {
+      title: collectionKey.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
+      deck: 'Discover architectural pieces crafted for quiet luxury living.',
+      filter: (p) => p.category.toLowerCase().includes(collectionKey.toLowerCase())
+    };
+
+    this.showCategoryPageView({
+      id: collectionKey,
+      type: 'collection',
+      title: config.title,
+      deck: config.deck,
+      filter: config.filter
+    });
+
+    window.history.pushState(null, '', `#collection-${collectionKey}`);
+  }
+
+  openCategory(categoryKey) {
+    if (this.bookNav) this.bookNav.close();
+    if (this.closeMobileDrawer) this.closeMobileDrawer();
+
+    const config = COLLECTIONS[categoryKey] || {
+      title: categoryKey.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
+      deck: 'Curated architectural furniture, décor, and lighting collections.',
+      filter: (p) => p.category === categoryKey
+    };
+
+    this.showCategoryPageView({
+      id: categoryKey,
+      type: 'category',
+      title: config.title,
+      deck: config.deck,
+      filter: config.filter
+    });
+
+    window.history.pushState(null, '', `#category-${categoryKey}`);
+  }
+
+  showCategoryPageView(config) {
+    if (this.bookNav) this.bookNav.close();
+    if (this.closeMobileDrawer) this.closeMobileDrawer();
+
+    const magSection = document.getElementById('magazine-section');
+    const catPage = document.getElementById('category-page-view');
+    const container = document.getElementById('category-page-container');
+
+    if (magSection) magSection.style.display = 'none';
+    if (catPage) catPage.style.display = 'block';
+
+    if (!container) return;
+
+    const filtered = this.products.filter(config.filter || (() => true));
+    const items = filtered.length > 0 ? filtered : this.products.slice(0, 6);
+
+    container.innerHTML = `
+      <div class="category-page-nav-bar">
+        <div class="page-breadcrumb">
+          <a href="#home" class="breadcrumb-link" id="cat-crumb-home">HomeHub</a>
+          <span class="breadcrumb-sep">/</span>
+          <span class="breadcrumb-current">${config.title}</span>
+        </div>
+        <div class="category-page-nav-actions">
+          <button class="page-home-btn" id="cat-page-home-btn" aria-label="Return to Magazine Home">
+            <span class="home-icon">🏠</span>
+            <span>HOME</span>
+          </button>
+          <button class="page-back-btn" id="cat-page-back-btn" aria-label="Go Back">
+            <span>← Back</span>
+          </button>
+        </div>
+      </div>
+
+      <header class="category-page-hero">
+        <div class="page-hero-eyebrow">
+          <span class="eyebrow-bullet">✦</span>
+          <span>HOMEHUB ATELIER ${config.type ? config.type.toUpperCase() : 'COLLECTION'}</span>
+        </div>
+        <h1 class="page-hero-title">${config.title}</h1>
+        <p class="page-hero-deck">${config.deck || 'Architectural pieces handcrafted for quiet luxury living.'}</p>
+        <div class="page-hero-meta">
+          <span class="piece-count-badge">${items.length} Architectural Pieces</span>
+          <span class="hero-meta-divider">•</span>
+          <span class="hero-meta-note">Handcrafted with Solid Hardwoods & Natural Stone</span>
+        </div>
+      </header>
+
+      <div class="category-products-grid">
+        ${items.map(p => `
+          <article class="category-product-card" data-sku="${p.id}">
+            <div class="cat-card-media" style="background-image: url('${p.images && p.images[0] ? p.images[0] : ''}');">
+              <span class="cat-card-tag">${p.category.toUpperCase()}</span>
+            </div>
+            <div class="cat-card-body">
+              <div class="cat-card-meta">
+                <span class="cat-card-material">${p.material || 'Architectural Object'}</span>
+                <h3 class="cat-card-title">${p.name}</h3>
+                <p class="cat-card-desc">${p.description || ''}</p>
+              </div>
+              <div class="cat-card-footer">
+                <div class="cat-card-price-wrap">
+                  <span class="cat-card-price-label">Price</span>
+                  <span class="cat-card-price">${formatPKR ? formatPKR(p.price) : `₨ ${p.price.toLocaleString()}`}</span>
+                </div>
+                <button class="cat-card-add-btn" data-sku="${p.id}" aria-label="Add ${p.name} to Shopping Bag">
+                  <span>Add to Bag</span>
+                  <span>+</span>
+                </button>
+              </div>
+            </div>
+          </article>
+        `).join('')}
+      </div>
+    `;
+
+    // Bind Category Page buttons
+    const homeBtn = container.querySelector('#cat-page-home-btn');
+    if (homeBtn) {
+      homeBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.showHomepage();
+      });
+    }
+
+    const crumbHome = container.querySelector('#cat-crumb-home');
+    if (crumbHome) {
+      crumbHome.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.showHomepage();
+      });
+    }
+
+    const backBtn = container.querySelector('#cat-page-back-btn');
+    if (backBtn) {
+      backBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.history.back();
+      });
+    }
+
+    // Product card click opens PDP modal
+    container.querySelectorAll('.category-product-card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        if (e.target.closest('.cat-card-add-btn')) return;
+        const sku = card.dataset.sku;
+        if (sku) this.openProduct(sku);
+      });
+    });
+
+    // Add to cart buttons
+    container.querySelectorAll('.cat-card-add-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const sku = btn.dataset.sku;
+        if (sku && this.cart) {
+          this.cart.addItem(sku, 1);
+          btn.classList.add('added');
+          const originalText = btn.innerHTML;
+          btn.innerHTML = '<span>Added ✓</span>';
+          setTimeout(() => {
+            btn.classList.remove('added');
+            btn.innerHTML = originalText;
+          }, 1400);
+        }
+      });
+    });
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  handleBookNavigationTarget(target) {
+    if (!target) return;
+    if (target.startsWith('magazine:')) {
+      const bookId = target.replace('magazine:', '');
+      this.showHomepage();
+      this.openBook(bookId);
+    } else if (target.startsWith('product:')) {
+      const sku = target.replace('product:', '');
+      this.openProduct(sku);
+    } else if (target.startsWith('collection:')) {
+      const col = target.replace('collection:', '');
+      this.openCollection(col);
+    } else if (target.startsWith('category:')) {
+      const cat = target.replace('category:', '');
+      this.openCategory(cat);
+    }
+  }
+
   handleInitialRouting() {
     const hash = window.location.hash;
-    if (hash.startsWith('#book-')) {
+    if (hash === '#home' || hash === '' || hash === '#') {
+      this.showHomepage();
+    } else if (hash.startsWith('#book-nav-')) {
+      const bookKey = hash.replace('#book-nav-', '');
+      if (this.bookNav) this.bookNav.open(bookKey);
+    } else if (hash.startsWith('#collection-')) {
+      const colKey = hash.replace('#collection-', '');
+      this.openCollection(colKey);
+    } else if (hash.startsWith('#category-')) {
+      const catKey = hash.replace('#category-', '');
+      this.openCategory(catKey);
+    } else if (hash.startsWith('#book-')) {
       const match = hash.match(/^#book-(living-edit|objects-of-home|light-life|small-spaces)(?:-page-(\d+))?$/);
       if (match) {
         const bookId = match[1];

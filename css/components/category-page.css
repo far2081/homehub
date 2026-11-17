@@ -1,0 +1,303 @@
+/* ==========================================================================
+   HomeHub - Category & Collection Full Webpage View
+   Full-page normal webpage displaying real products, photos, prices,
+   Add to Cart, search, sorting, and prominent HOME and BACK buttons.
+   ========================================================================== */
+
+.category-page-view {
+  min-height: 80vh;
+  padding: 3rem 0 5rem;
+  background-color: #FAF8F5;
+}
+
+/* Page Top Navigation Bar (HOME & Back Buttons) */
+.category-page-nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #E5DFD2;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.category-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: #7D746A;
+  letter-spacing: 0.05em;
+}
+
+.breadcrumb-home-link {
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  color: var(--color-noir, #181512);
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.breadcrumb-home-link:hover {
+  color: var(--color-terracotta, #A8583B);
+}
+
+.breadcrumb-sep {
+  color: #B5ADA1;
+}
+
+.breadcrumb-current {
+  color: #2D2925;
+  font-weight: 600;
+}
+
+/* Nav Action Buttons: HOME & BACK */
+.category-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.page-home-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--color-noir, #181512);
+  color: #FAF8F5;
+  border: 1px solid var(--color-noir, #181512);
+  border-radius: 9999px;
+  padding: 8px 18px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+
+.page-home-btn:hover {
+  background-color: #383430;
+  transform: translateY(-1px);
+}
+
+.page-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #FFFFFF;
+  color: #181512;
+  border: 1px solid #D8D1C4;
+  border-radius: 9999px;
+  padding: 8px 16px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.page-back-btn:hover {
+  border-color: #181512;
+  background-color: #F5F1E8;
+}
+
+/* Category Page Intro Header */
+.category-page-header {
+  margin-bottom: 2.5rem;
+  max-width: 800px;
+}
+
+.category-page-kicker {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-terracotta, #A8583B);
+  margin-bottom: 0.5rem;
+}
+
+.category-page-title {
+  font-family: var(--font-serif, "Cormorant Garamond", serif);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 400;
+  color: #181512;
+  margin: 0 0 0.8rem;
+  line-height: 1.15;
+}
+
+.category-page-desc {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #5A534B;
+  margin: 0;
+}
+
+/* Category Toolbar (Filters & Sorting) */
+.category-page-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.2rem 1.6rem;
+  background-color: #FFFFFF;
+  border: 1px solid #E5DFD2;
+  border-radius: 6px;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.category-count-badge {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #181512;
+}
+
+.category-sort-select {
+  padding: 6px 12px;
+  font-size: 0.82rem;
+  border: 1px solid #D8D1C4;
+  border-radius: 4px;
+  background-color: #FAF8F5;
+  color: #181512;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* Product Grid (Normal Full-Page Webpage) */
+.category-products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.category-product-card {
+  display: flex;
+  flex-direction: column;
+  background-color: #FFFFFF;
+  border: 1px solid #EAE4D8;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.category-product-card:hover {
+  transform: translateY(-4px);
+  border-color: #181512;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+}
+
+.category-card-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background-color: #F0ECE4;
+}
+
+.category-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.category-product-card:hover .category-card-media img {
+  transform: scale(1.05);
+}
+
+.category-card-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background-color: rgba(20, 18, 16, 0.75);
+  color: #FFFFFF;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 2px;
+  backdrop-filter: blur(4px);
+}
+
+.category-card-body {
+  display: flex;
+  flex-direction: column;
+  padding: 1.4rem;
+  flex: 1;
+}
+
+.category-card-title {
+  font-family: var(--font-serif, "Cormorant Garamond", serif);
+  font-size: 1.35rem;
+  font-weight: 500;
+  color: #181512;
+  margin: 0 0 0.4rem;
+}
+
+.category-card-material {
+  font-size: 0.78rem;
+  color: #7D746A;
+  margin: 0 0 0.8rem;
+  line-height: 1.4;
+  flex: 1;
+}
+
+.category-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 1rem;
+  border-top: 1px solid #F0ECE4;
+  margin-top: auto;
+}
+
+.category-card-price {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #181512;
+}
+
+.category-card-add-btn {
+  background-color: var(--color-noir, #181512);
+  color: #FAF8F5;
+  border: 1px solid var(--color-noir, #181512);
+  border-radius: 9999px;
+  padding: 6px 14px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.category-card-add-btn:hover {
+  background-color: var(--color-terracotta, #A8583B);
+  border-color: var(--color-terracotta, #A8583B);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .category-products-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .category-page-nav-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .category-nav-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+}

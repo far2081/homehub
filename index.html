@@ -18,6 +18,8 @@
   <!-- Stylesheets -->
   <link rel="stylesheet" href="css/main.css" />
   <link rel="stylesheet" href="css/components/navigation.css" />
+  <link rel="stylesheet" href="css/components/book-navigation.css" />
+  <link rel="stylesheet" href="css/components/category-page.css" />
   <link rel="stylesheet" href="css/components/magazine-3d.css" />
   <link rel="stylesheet" href="css/components/catalogue.css" />
   <link rel="stylesheet" href="css/components/product-detail.css" />
@@ -57,25 +59,25 @@
         <span class="hamburger-line"></span>
       </button>
 
-      <!-- Brand Identity Logo & Name -->
-      <a href="#" class="header-brand" aria-label="HomeHub Homepage">
-        <img src="assets/logo.svg" alt="HomeHub — SHOP • STYLE • SMART" class="header-logo-img" />
-      </a>
+      <!-- Brand Identity Logo & Name with Dedicated HOME Button -->
+      <div class="header-brand-wrap" style="display: flex; align-items: center; gap: 10px;">
+        <a href="#home" class="header-brand" id="header-brand-logo" aria-label="HomeHub Homepage">
+          <img src="assets/logo.svg" alt="HomeHub — SHOP • STYLE • SMART" class="header-logo-img" />
+        </a>
+        <button class="header-home-btn" id="header-home-btn" title="Return to HomeHub Homepage">
+          <span class="home-icon">🏠</span>
+          <span class="home-text">HOME</span>
+        </button>
+      </div>
 
-      <!-- Simple Magazine Books Navigation -->
-      <nav class="header-nav" role="navigation" aria-label="Digital Books Navigation">
-        <a href="#book-living-edit" class="nav-book-link active" data-target-book="living-edit">
-          The Living Edit
-        </a>
-        <a href="#book-objects-of-home" class="nav-book-link" data-target-book="objects-of-home">
-          Objects of Home
-        </a>
-        <a href="#book-light-life" class="nav-book-link" data-target-book="light-life">
-          Light / Life
-        </a>
-        <a href="#book-small-spaces" class="nav-book-link" data-target-book="small-spaces">
-          Small Spaces
-        </a>
+      <!-- Book-Style Header Navigation: Every button opens its own book-like window -->
+      <nav class="header-nav" role="navigation" aria-label="Book Navigation">
+        <button class="nav-book-trigger" data-nav-book="furniture" title="Open Furniture Book">Furniture</button>
+        <button class="nav-book-trigger" data-nav-book="decor" title="Open Décor Book">Décor</button>
+        <button class="nav-book-trigger" data-nav-book="lighting" title="Open Lighting Book">Lighting</button>
+        <button class="nav-book-trigger" data-nav-book="living-room" title="Open Living Room Book">Living Room</button>
+        <button class="nav-book-trigger" data-nav-book="bedroom" title="Open Bedroom Book">Bedroom</button>
+        <button class="nav-book-trigger" data-nav-book="magazines" title="Open Magazines Book">Magazines</button>
       </nav>
 
       <!-- Header Utilities -->
@@ -128,38 +130,46 @@
     </div>
 
     <div class="mobile-nav-body">
-      <div class="mobile-nav-group-title">The Four Digital Books</div>
-      <div class="mobile-nav-links">
-        <a href="#book-living-edit" class="mobile-nav-link mobile-book-link" data-target-book="living-edit">
-          <span>The Living Edit</span>
+      <!-- Prominent Mobile HOME Button -->
+      <div class="mobile-nav-home-wrap">
+        <button class="mobile-nav-home-btn" id="mobile-drawer-home-btn">
+          <span>🏠 HOME (Library Homepage)</span>
           <span class="arrow">→</span>
-        </a>
-        <a href="#book-objects-of-home" class="mobile-nav-link mobile-book-link" data-target-book="objects-of-home">
-          <span>Objects of Home</span>
-          <span class="arrow">→</span>
-        </a>
-        <a href="#book-light-life" class="mobile-nav-link mobile-book-link" data-target-book="light-life">
-          <span>Light / Life</span>
-          <span class="arrow">→</span>
-        </a>
-        <a href="#book-small-spaces" class="mobile-nav-link mobile-book-link" data-target-book="small-spaces">
-          <span>Small Spaces</span>
-          <span class="arrow">→</span>
-        </a>
+        </button>
       </div>
 
-      <div class="mobile-nav-group-title">Atelier & Exploration</div>
+      <div class="mobile-nav-group-title">Book-Style Navigation Windows</div>
       <div class="mobile-nav-links">
-        <a href="#catalogue-section" class="mobile-nav-link" onclick="document.getElementById('mobile-nav-close').click()">
-          <span>Product Catalogue</span>
+        <button class="mobile-nav-link nav-book-trigger" data-nav-book="furniture">
+          <span>📖 Furniture Atelier Book</span>
           <span class="arrow">→</span>
-        </a>
-        <a href="#video-section" class="mobile-nav-link" onclick="document.getElementById('mobile-nav-close').click()">
-          <span>Video Masterclasses</span>
+        </button>
+        <button class="mobile-nav-link nav-book-trigger" data-nav-book="decor">
+          <span>📖 Décor Objects Book</span>
           <span class="arrow">→</span>
-        </a>
+        </button>
+        <button class="mobile-nav-link nav-book-trigger" data-nav-book="lighting">
+          <span>📖 Lighting & Life Book</span>
+          <span class="arrow">→</span>
+        </button>
+        <button class="mobile-nav-link nav-book-trigger" data-nav-book="living-room">
+          <span>📖 Living Room Salon Book</span>
+          <span class="arrow">→</span>
+        </button>
+        <button class="mobile-nav-link nav-book-trigger" data-nav-book="bedroom">
+          <span>📖 Bedroom Sanctuary Book</span>
+          <span class="arrow">→</span>
+        </button>
+        <button class="mobile-nav-link nav-book-trigger" data-nav-book="magazines">
+          <span>📖 3D Magazines Book</span>
+          <span class="arrow">→</span>
+        </button>
+      </div>
+
+      <div class="mobile-nav-group-title">Atelier & Utilities</div>
+      <div class="mobile-nav-links">
         <a href="#admin" class="mobile-nav-link admin-open-trigger" onclick="document.getElementById('mobile-nav-close').click()">
-          <span>Admin Portal</span>
+          <span>🔑 Admin Portal</span>
           <span class="arrow">→</span>
         </a>
       </div>
@@ -296,6 +306,11 @@
       </div>
     </section>
 
+    <!-- Full-page Category and Collection Webpage View -->
+    <section class="category-page-view" id="category-page-view" aria-label="Category & Collection Products" style="display: none;">
+      <div class="container" id="category-page-container"></div>
+    </section>
+
   </main>
 
   <!-- Offscreen Mount Points (Preserves all underlying features and data integrity) -->
@@ -322,6 +337,9 @@
 
   <!-- Client Atelier Account Modal Container -->
   <div class="account-modal-wrap" id="account-modal-container" role="dialog" aria-modal="true" aria-hidden="true"></div>
+
+  <!-- Book Navigation Modal Container -->
+  <div class="book-nav-modal" id="book-nav-modal" role="dialog" aria-modal="true" aria-hidden="true" style="display: none;"></div>
 
   <!-- SITE FOOTER (Clean Minimal Luxury Footer) -->
   <footer class="site-footer" role="contentinfo">
