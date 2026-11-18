@@ -225,6 +225,105 @@ console.log('\n[6] Testing Admin Security Gate & Product CRUD:');
   assert(storage.get('custom_products', []).length === INITIAL_PRODUCTS.length, 'Deleted product removed cleanly');
 }
 
+// --- 7. MODULAR PLUGIN ARCHITECTURE TESTS ---
+console.log('\n[7] Testing Modular Architecture & Plugin Registry:');
+{
+  const { pluginRegistry } = await import('./js/services/pluginRegistry.js');
+  const allModules = pluginRegistry.getAllModules();
+  assert(allModules.length === 15, `Plugin registry manages exactly 15 modules (got ${allModules.length})`);
+
+  // Core modules present and enabled
+  assert(pluginRegistry.isEnabled('catalogue') === true, 'Catalogue core module is active');
+  assert(pluginRegistry.isEnabled('commerce') === true, 'Commerce core module is active');
+  assert(pluginRegistry.isEnabled('settings') === true, 'Settings core module is active');
+
+  // Attempting to disable core module should be rejected
+  const tryDisableCore = pluginRegistry.toggleModule('catalogue', false);
+  assert(tryDisableCore === false, 'Disabling core module "catalogue" is strictly protected');
+  assert(pluginRegistry.isEnabled('catalogue') === true, 'Catalogue remains enabled');
+
+  // Toggling non-core module
+  const wasReviews = pluginRegistry.isEnabled('reviews');
+  pluginRegistry.toggleModule('reviews', false);
+  assert(pluginRegistry.isEnabled('reviews') === false, 'Non-core module "reviews" toggled off');
+  pluginRegistry.toggleModule('reviews', true);
+  assert(pluginRegistry.isEnabled('reviews') === true, 'Non-core module "reviews" toggled back on');
+
+  // Config updates
+  pluginRegistry.updateConfig('coupons', { allowStacking: true });
+  assert(pluginRegistry.getModule('coupons').config.allowStacking === true, 'Module config update persists');
+  pluginRegistry.updateConfig('coupons', { allowStacking: false });
+}
+
+// --- 8. PROMOTIONAL COUPON ENGINE TESTS ---
+console.log('\n[8] Testing Promotional Coupon Engine:');
+{
+  const { couponService } = await import('./js/services/couponService.js');
+  const coupons = couponService.getAllCoupons();
+  assert(coupons.length >= 4, `At least 4 default coupons present (got ${coupons.length})`);
+
+  // Validate HOMEHUB10 (10% percentage discount)
+  const res10 = couponService.validateCoupon('HOMEHUB10', 100000);
+  assert(res10.valid === true, 'HOMEHUB10 is recognized as valid');
+  assert(res10.discount === 10000, `HOMEHUB10 yields ₨ 10,000 on ₨ 100,000 subtotal (got ${res10.discount})`);
+
+  // Validate WELCOME5000 (Fixed ₨ 5,000 with min spend ₨ 50,000)
+  const underMin = couponService.validateCoupon('WELCOME5000', 30000);
+  assert(underMin.valid === false, 'WELCOME5000 rejected when order subtotal is below ₨ 50,000 min requirement');
+
+  const overMin = couponService.validateCoupon('WELCOME5000', 80000);
+  assert(overMin.valid === true, 'WELCOME5000 accepted when order subtotal meets min requirement');
+  assert(overMin.discount === 5000, `WELCOME5000 yields exact ₨ 5,000 discount (got ${overMin.discount})`);
+
+  // Validate nonexistent coupon
+  const fakeRes = couponService.validateCoupon('FAKEECOMMERCE99', 100000);
+  assert(fakeRes.valid === false, 'Nonexistent coupon code is rejected');
+
+  // Test custom coupon creation, toggle, and delete
+  const newCoupon = couponService.createCoupon({
+    code: 'TESTSUMMER',
+    type: 'percentage',
+    value: 25,
+    minOrder: 150000,
+    description: '25% test VIP discount'
+  });
+  assert(newCoupon.code === 'TESTSUMMER', 'Custom coupon TESTSUMMER created');
+  assert(couponService.getCoupon('TESTSUMMER') !== null, 'Custom coupon retrieved from registry');
+
+  // Toggle active/inactive
+  couponService.toggleCouponStatus('TESTSUMMER');
+  const inactiveCheck = couponService.validateCoupon('TESTSUMMER', 200000);
+  assert(inactiveCheck.valid === false, 'Inactive coupon cannot be redeemed');
+
+  // Clean up
+  couponService.deleteCoupon('TESTSUMMER');
+  assert(couponService.getCoupon('TESTSUMMER') === null, 'Test coupon deleted cleanly');
+}
+
+// --- 9. CLIENT DIRECTORY & CRM SERVICE TESTS ---
+console.log('\n[9] Testing Client Directory & CRM Service:');
+{
+  const { customerService } = await import('./js/services/customerService.js');
+  const baseClients = customerService.getAllCustomers();
+  assert(baseClients.length >= 3, `Initial customer directory contains established clientele (got ${baseClients.length})`);
+
+  // Simulate registering a new customer order
+  const testOrder = {
+    customer_email: 'newpatron@atelier.com',
+    customer_name: 'Faraz Ahmed',
+    customer_phone: '+92 301 5557788',
+    shipping_city: 'Rawalpindi',
+    total_amount: 350000
+  };
+  customerService.recordCustomer(testOrder);
+
+  const updatedClients = customerService.getAllCustomers();
+  const createdClient = updatedClients.find(c => c.email === 'newpatron@atelier.com');
+  assert(Boolean(createdClient), 'New customer profile created from checkout order');
+  assert(createdClient.totalSpent === 350000, `Customer lifetime spend calculated accurately (got ₨ ${createdClient.totalSpent})`);
+  assert(createdClient.tier.includes('Platinum'), `Tier elevated to Platinum based on spend volume (got ${createdClient.tier})`);
+}
+
 console.log('\n======================================================');
 console.log(`  E2E TEST SUMMARY: ${passed} PASSED, ${failed} FAILED`);
 console.log('======================================================\n');

@@ -185,7 +185,7 @@
   font-size: 0.65rem;
   letter-spacing: 0.15em;
   font-weight: 700;
-  color: var(--color-terracotta);
+  color: var(--color-muted-olive);
 }
 
 .demo-creds-info code {
@@ -640,3 +640,342 @@
   font-size: 0.78rem;
   margin-top: 6px;
 }
+
+/* ==========================================================================
+   HomeHub SaaS Admin Additions: Plugins, Analytics, CRM, Coupons
+   ========================================================================== */
+
+/* Category Filter Tabs in Admin */
+.admin-subfilter-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.subfilter-pill {
+  padding: 6px 14px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: var(--radius-pill);
+  background-color: #FFFFFF;
+  border: 1px solid var(--color-border);
+  color: var(--color-muted-earth);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+}
+
+.subfilter-pill:hover {
+  border-color: var(--color-noir);
+  color: var(--color-noir);
+}
+
+.subfilter-pill.active {
+  background-color: var(--color-noir);
+  color: var(--color-soft-ivory);
+  border-color: var(--color-noir);
+}
+
+/* 1. Modular Plugin Engine Grid */
+.plugin-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.25rem;
+}
+
+.plugin-card {
+  background-color: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+}
+
+.plugin-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: #D6BC91;
+}
+
+.plugin-card.is-disabled {
+  background-color: #FAFAF9;
+  opacity: 0.7;
+}
+
+.plugin-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 0.8rem;
+}
+
+.plugin-title-row {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.plugin-cat-badge {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 3px;
+  width: fit-content;
+}
+
+.plugin-cat-core { background-color: #E6F4EA; color: #137333; }
+.plugin-cat-commerce { background-color: #E8F0FE; color: #1A73E8; }
+.plugin-cat-operations { background-color: #FEF7E0; color: #B06000; }
+.plugin-cat-marketing { background-color: #FCE8E6; color: #C5221F; }
+.plugin-cat-crm { background-color: #F3E8FD; color: #7627BB; }
+.plugin-cat-content { background-color: #E0F2F1; color: #00796B; }
+.plugin-cat-analytics { background-color: #EDE7F6; color: #5E35B1; }
+
+.plugin-card-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--color-noir);
+}
+
+.plugin-version-tag {
+  font-size: 0.7rem;
+  font-family: monospace;
+  color: var(--color-muted-earth);
+}
+
+.plugin-card-desc {
+  font-size: 0.82rem;
+  color: var(--color-charcoal);
+  line-height: 1.5;
+  margin-bottom: 1.2rem;
+}
+
+.plugin-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.8rem;
+  border-top: 1px solid #F0EEE9;
+}
+
+.plugin-toggle-btn {
+  padding: 5px 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  border: none;
+  transition: all var(--transition-fast);
+}
+
+.plugin-toggle-btn.btn-active {
+  background-color: #E6F4EA;
+  color: #137333;
+}
+
+.plugin-toggle-btn.btn-inactive {
+  background-color: #F1F3F4;
+  color: #5F6368;
+}
+
+.plugin-toggle-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 2. SaaS Analytics & KPI Cards */
+.analytics-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.analytics-kpi-card {
+  background-color: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 1.4rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.kpi-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-muted-earth);
+}
+
+.kpi-number {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--color-noir);
+  line-height: 1.1;
+}
+
+.kpi-sub {
+  font-size: 0.75rem;
+  color: #137333;
+}
+
+.analytics-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 900px) {
+  .analytics-two-col {
+    grid-template-columns: 1fr;
+  }
+}
+
+.analytics-panel-card {
+  background-color: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.analytics-panel-card h4 {
+  font-size: 1.05rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.category-bar-row {
+  margin-bottom: 0.85rem;
+}
+
+.category-bar-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.category-bar-track {
+  height: 8px;
+  background-color: #F1F3F4;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.category-bar-fill {
+  height: 100%;
+  background-color: var(--color-noir);
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+
+/* 3. Client Directory CRM */
+.client-tier-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+}
+
+.client-tier-platinum {
+  background-color: #EDE7F6;
+  color: #5E35B1;
+  border: 1px solid #D1C4E9;
+}
+
+.client-tier-gold {
+  background-color: #FFF8E1;
+  color: #F57F17;
+  border: 1px solid #FFE082;
+}
+
+.client-tier-silver {
+  background-color: #ECEFF1;
+  color: #455A64;
+  border: 1px solid #CFD8DC;
+}
+
+/* 4. Coupons & Promotions Engine */
+.coupons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.2rem;
+}
+
+.coupon-card {
+  background-color: #FFFFFF;
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+}
+
+.coupon-card.is-inactive {
+  background-color: #F9F9F8;
+  opacity: 0.65;
+}
+
+.coupon-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.6rem;
+}
+
+.coupon-code-badge {
+  font-family: monospace;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--color-noir);
+  background-color: #F8F7F4;
+  padding: 4px 10px;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--color-border);
+}
+
+.coupon-discount-val {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #137333;
+  margin: 0.5rem 0;
+}
+
+.coupon-card-desc {
+  font-size: 0.78rem;
+  color: var(--color-charcoal);
+  margin-bottom: 1rem;
+}
+
+.coupon-footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #F0EEE9;
+  padding-top: 0.8rem;
+}
+
+.coupon-usage-pill {
+  font-size: 0.72rem;
+  color: var(--color-muted-earth);
+}
+

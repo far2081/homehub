@@ -8,49 +8,84 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
 
 :root {
-  /* Official Brand Palette */
-  --color-soft-ivory: #F8F5EF;
-  --color-sage-mist: #DDE8DF;
-  --color-warm-beige: #EADCCB;
+  /* ========================================================================
+     HOMEHUB DESIGN SYSTEM — EDITORIAL LUXURY TOKENS
+     ======================================================================== */
+  
+  /* 1. Core Color Palette */
+  --color-warm-ivory: #F8F5EF;
+  --color-cream: #FBF9F5;
+  --color-sage: #DDE8DF;
+  --color-muted-olive: #899581;
+  --color-warm-taupe: #B8AA98;
+  --color-natural-beige: #EADCCB;
   --color-dusty-blush: #E9D8D0;
   --color-soft-champagne: #D6BC91;
+  --color-deep-charcoal: #302E2A;
 
-  /* Typography & Neutral Accents */
-  --color-noir: #201D1A;
-  --color-charcoal: #383431;
-  --color-muted-earth: #6E6863;
-  --color-border: #E5DDD3;
-  --color-border-subtle: #EFE9E0;
+  /* Aliases & Semantic Extensions */
+  --color-soft-ivory: var(--color-warm-ivory);
+  --color-sage-mist: var(--color-sage);
+  --color-warm-beige: var(--color-natural-beige);
+  --color-noir: var(--color-deep-charcoal);
+  --color-charcoal: #3A3733;
+  --color-muted-earth: #6E6860;
+  --color-border: #E8E1D7;
+  --color-border-subtle: #F1ECE4;
   --color-surface-pure: #FFFFFF;
-  --color-surface-subtle: #FAF8F4;
-  --color-terracotta: #C87D65;
+  --color-surface-subtle: var(--color-cream);
+  --color-surface-tint: #F4EFE7;
+  --color-terracotta: var(--color-muted-olive);
 
-  /* Typography */
-  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  /* 2. Editorial Typography */
+  --font-serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
-  /* Elevation Shadows */
-  --shadow-sm: 0 2px 8px rgba(32, 29, 26, 0.04);
-  --shadow-md: 0 8px 24px rgba(32, 29, 26, 0.07);
-  --shadow-lg: 0 16px 40px rgba(32, 29, 26, 0.11);
-  --shadow-book: 0 24px 56px -12px rgba(25, 22, 19, 0.22);
-  --shadow-spine: inset 24px 0 32px -12px rgba(0, 0, 0, 0.15);
+  /* Typographic Hierarchy Scale */
+  --font-size-hero: clamp(2.6rem, 5.2vw, 4.4rem);
+  --font-size-h1: clamp(2rem, 3.8vw, 3.2rem);
+  --font-size-h2: clamp(1.5rem, 2.6vw, 2.2rem);
+  --font-size-h3: clamp(1.2rem, 1.8vw, 1.55rem);
+  --font-size-h4: 1.15rem;
+  --font-size-body: 0.95rem;
+  --font-size-small: 0.82rem;
+  --font-size-caption: 0.72rem;
+  --font-size-eyebrow: 0.68rem;
 
-  /* Transitions */
-  --transition-fast: 0.18s cubic-bezier(0.2, 0, 0.2, 1);
-  --transition-smooth: 0.35s cubic-bezier(0.25, 1, 0.5, 1);
-  --transition-page: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  /* 3. Spacing Scale */
+  --space-2xs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 18px;
+  --space-lg: 28px;
+  --space-xl: 42px;
+  --space-2xl: 64px;
+  --space-section: clamp(3.5rem, 6.5vw, 7rem);
 
-  /* Spacing */
+  /* 4. Border Radius Rules */
   --radius-xs: 4px;
   --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 20px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
   --radius-pill: 9999px;
 
-  /* Layout */
-  --max-width: 1400px;
-  --header-height: 80px;
+  /* 5. Organic & Quiet Luxury Elevation Shadows */
+  --shadow-subtle: 0 4px 20px -2px rgba(48, 46, 42, 0.04);
+  --shadow-sm: 0 4px 16px rgba(48, 46, 42, 0.05);
+  --shadow-md: 0 10px 30px -4px rgba(48, 46, 42, 0.07);
+  --shadow-lg: 0 20px 48px -8px rgba(48, 46, 42, 0.10);
+  --shadow-book: 0 32px 64px -16px rgba(48, 46, 42, 0.18);
+  --shadow-spine: inset 24px 0 32px -12px rgba(48, 46, 42, 0.12);
+
+  /* 6. Transitions */
+  --transition-fast: 0.2s cubic-bezier(0.2, 0, 0.2, 1);
+  --transition-smooth: 0.38s cubic-bezier(0.25, 1, 0.5, 1);
+  --transition-luxury: 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-page: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* 7. Layout */
+  --max-width: 1440px;
+  --header-height: 84px;
 }
 
 /* Box Sizing & Reset */
@@ -208,7 +243,7 @@ img {
   font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  color: var(--color-terracotta);
+  color: var(--color-muted-olive);
   font-weight: 600;
   margin-bottom: 0.6rem;
 }
@@ -378,7 +413,7 @@ img {
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--color-terracotta);
+  color: var(--color-muted-olive);
 }
 
 /* Toast Notifications */
@@ -902,8 +937,8 @@ img {
    ========================================================================== */
 
 .home-hero-section {
-  padding: 4.5rem 0 3.5rem;
-  background: linear-gradient(180deg, #F8F5EF 0%, #FAF8F5 100%);
+  padding: clamp(3.5rem, 6vw, 5.5rem) 0 clamp(2.5rem, 4vw, 4rem);
+  background-color: var(--color-warm-ivory);
   border-bottom: 1px solid var(--color-border);
   text-align: center;
 }
@@ -917,39 +952,42 @@ img {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--color-terracotta, #A8583B);
-  background-color: rgba(168, 88, 59, 0.08);
-  padding: 6px 16px;
+  color: var(--color-muted-olive);
+  background-color: rgba(137, 149, 129, 0.12);
+  border: 1px solid rgba(137, 149, 129, 0.22);
+  padding: 6px 18px;
   border-radius: var(--radius-pill);
-  margin-bottom: 1.2rem;
+  margin-bottom: 1.4rem;
 }
 
 .home-hero-title {
   font-family: var(--font-serif);
-  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  font-size: var(--font-size-hero);
   font-weight: 400;
-  line-height: 1.15;
-  color: var(--color-noir);
+  line-height: 1.1;
+  color: var(--color-deep-charcoal);
   margin: 0 0 1.2rem;
+  letter-spacing: -0.015em;
 }
 
 .home-hero-deck {
-  font-size: 1.12rem;
+  font-size: clamp(1rem, 1.6vw, 1.15rem);
   color: var(--color-muted-earth);
   line-height: 1.7;
-  margin: 0 auto 2.2rem;
-  max-width: 720px;
+  margin: 0 auto 2.4rem;
+  max-width: 680px;
+  font-weight: 400;
 }
 
 .home-hero-actions {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
+  gap: 1.1rem;
   flex-wrap: wrap;
 }
 
@@ -957,41 +995,46 @@ img {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background-color: var(--color-noir);
-  color: #FFFFFF;
-  padding: 13px 28px;
+  background-color: var(--color-deep-charcoal);
+  color: var(--color-warm-ivory);
+  padding: 13px 30px;
   border-radius: var(--radius-pill);
-  font-size: 0.88rem;
+  font-size: 0.82rem;
   font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   text-decoration: none;
   transition: all var(--transition-fast);
-  box-shadow: 0 6px 18px rgba(32, 29, 26, 0.15);
+  box-shadow: var(--shadow-sm);
 }
 
 .home-action-btn-primary:hover {
-  background-color: var(--color-terracotta);
-  transform: translateY(-2px);
+  background-color: #45423C;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
 }
 
 .home-action-btn-secondary {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background-color: #FFFFFF;
-  color: var(--color-noir);
-  padding: 13px 26px;
+  background-color: var(--color-cream);
+  color: var(--color-deep-charcoal);
+  padding: 13px 28px;
   border-radius: var(--radius-pill);
-  font-size: 0.88rem;
+  font-size: 0.82rem;
   font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   text-decoration: none;
   border: 1px solid var(--color-border);
   transition: all var(--transition-fast);
 }
 
 .home-action-btn-secondary:hover {
-  border-color: var(--color-noir);
-  background-color: var(--color-surface-subtle);
-  transform: translateY(-2px);
+  border-color: var(--color-deep-charcoal);
+  background-color: var(--color-warm-ivory);
+  transform: translateY(-1px);
 }
 
 /* 9 Room Categories Exploration Rail */
@@ -1011,21 +1054,22 @@ img {
 }
 
 .home-section-kicker {
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.15em;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--color-terracotta);
+  color: var(--color-muted-olive);
   display: block;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.5rem;
 }
 
 .home-section-heading {
   font-family: var(--font-serif);
-  font-size: clamp(1.8rem, 3.5vw, 2.4rem);
-  font-weight: 500;
-  color: var(--color-noir);
+  font-size: var(--font-size-h2);
+  font-weight: 400;
+  color: var(--color-deep-charcoal);
   margin: 0;
+  letter-spacing: -0.01em;
 }
 
 .home-categories-grid {
@@ -1036,12 +1080,12 @@ img {
 
 .home-cat-card {
   position: relative;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   overflow: hidden;
   text-decoration: none;
-  background-color: #201D1A;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-  transition: transform 0.3s cubic-bezier(0.2, 0, 0.2, 1), box-shadow 0.3s ease;
+  background-color: var(--color-deep-charcoal);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-smooth), box-shadow var(--transition-smooth);
   aspect-ratio: 4 / 3;
   display: flex;
   flex-direction: column;
@@ -1050,7 +1094,7 @@ img {
 
 .home-cat-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.14);
+  box-shadow: var(--shadow-md);
 }
 
 .home-cat-card-media {
@@ -1058,28 +1102,28 @@ img {
   inset: 0;
   background-size: cover;
   background-position: center;
-  transition: transform 0.6s cubic-bezier(0.2, 0, 0.2, 1);
+  transition: transform var(--transition-luxury);
 }
 
 .home-cat-card:hover .home-cat-card-media {
-  transform: scale(1.06);
+  transform: scale(1.05);
 }
 
 .home-cat-card-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(20, 18, 16, 0.1) 0%, rgba(20, 18, 16, 0.8) 100%);
+  background: linear-gradient(180deg, rgba(48, 46, 42, 0.08) 0%, rgba(48, 46, 42, 0.82) 100%);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 1.5rem;
+  padding: 1.6rem;
   z-index: 2;
   color: #FFFFFF;
 }
 
 .home-cat-title {
   font-family: var(--font-serif);
-  font-size: 1.5rem;
+  font-size: 1.55rem;
   font-weight: 500;
   margin: 0 0 0.3rem;
   color: #FFFFFF;
@@ -1087,37 +1131,39 @@ img {
 
 .home-cat-subtitle {
   font-size: 0.82rem;
-  color: #D8D2C7;
+  color: #E8E2D8;
   margin: 0;
-  line-height: 1.35;
+  line-height: 1.4;
+  font-weight: 300;
 }
 
 .home-cat-arrow {
   position: absolute;
   top: 14px;
   right: 14px;
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(4px);
+  background: rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #FFFFFF;
-  font-size: 0.9rem;
-  transition: background-color 0.2s, transform 0.2s;
+  font-size: 0.85rem;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
 }
 
 .home-cat-card:hover .home-cat-arrow {
-  background: var(--color-terracotta);
+  background: var(--color-deep-charcoal);
+  color: var(--color-soft-champagne);
   transform: translateX(2px);
 }
 
 /* Featured Room Ideas & Makeovers */
 .home-featured-ideas-section {
-  padding: 4.5rem 0;
-  background-color: #FAF8F5;
+  padding: var(--space-section) 0;
+  background-color: var(--color-cream);
   border-bottom: 1px solid var(--color-border);
 }
 
@@ -1129,49 +1175,50 @@ img {
 
 .home-idea-card {
   background: #FFFFFF;
-  border: 1px solid #EADCCB;
-  border-radius: 8px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
   overflow: hidden;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-subtle);
   display: flex;
   flex-direction: column;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition: transform var(--transition-smooth), box-shadow var(--transition-smooth);
 }
 
 .home-idea-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-border);
 }
 
 .home-idea-thumb {
   position: relative;
   aspect-ratio: 16 / 10;
   overflow: hidden;
-  background: #201D1A;
+  background: var(--color-deep-charcoal);
 }
 
 .home-idea-thumb img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.5s ease;
+  transition: transform var(--transition-luxury);
 }
 
 .home-idea-card:hover .home-idea-thumb img {
-  transform: scale(1.05);
+  transform: scale(1.04);
 }
 
 .home-idea-badge {
   position: absolute;
   top: 12px;
   left: 12px;
-  background: rgba(20, 18, 16, 0.78);
-  color: #FAF8F5;
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  background: rgba(48, 46, 42, 0.78);
+  color: var(--color-warm-ivory);
+  padding: 4px 11px;
+  border-radius: var(--radius-xs);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   backdrop-filter: blur(4px);
 }
@@ -1184,11 +1231,11 @@ img {
 }
 
 .home-idea-category {
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--color-terracotta);
+  color: var(--color-muted-olive);
   margin-bottom: 0.4rem;
 }
 
@@ -1196,32 +1243,34 @@ img {
   font-family: var(--font-serif);
   font-size: 1.45rem;
   font-weight: 500;
-  color: var(--color-noir);
+  color: var(--color-deep-charcoal);
   margin: 0 0 0.6rem;
   line-height: 1.25;
 }
 
 .home-idea-desc {
   font-size: 0.88rem;
-  color: #6E6863;
+  color: var(--color-muted-earth);
   line-height: 1.6;
   margin: 0 0 1.2rem;
   flex: 1;
 }
 
 .home-idea-link {
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: var(--color-noir);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-deep-charcoal);
   text-decoration: none;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  transition: color 0.2s;
+  transition: color var(--transition-fast);
 }
 
 .home-idea-link:hover {
-  color: var(--color-terracotta);
+  color: var(--color-muted-olive);
 }
 
 /* View Section Wrapper Views */

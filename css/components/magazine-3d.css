@@ -31,11 +31,11 @@
 
 .book-badge {
   display: inline-block;
-  font-size: 0.65rem;
+  font-size: 0.68rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--color-terracotta);
-  font-weight: 700;
+  color: var(--color-muted-olive);
+  font-weight: 600;
   margin-bottom: 0.4rem;
 }
 
@@ -604,11 +604,11 @@
 }
 
 .flyleaf-volume {
-  font-size: 0.72rem;
-  letter-spacing: 0.2em;
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--color-terracotta);
-  font-weight: 700;
+  color: var(--color-muted-olive);
+  font-weight: 600;
   margin-bottom: 0.4rem;
 }
 
@@ -978,11 +978,11 @@
 }
 
 .page-kicker {
-  font-size: 0.65rem;
-  letter-spacing: 0.2em;
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--color-terracotta);
-  font-weight: 700;
+  color: var(--color-muted-olive);
+  font-weight: 600;
 }
 
 .page-number-folio {
@@ -1089,8 +1089,8 @@
   font-size: 0.55rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--color-terracotta);
-  font-weight: 700;
+  color: var(--color-muted-olive);
+  font-weight: 600;
   margin-bottom: 2px;
 }
 
@@ -1202,7 +1202,7 @@
 
 .provenance-num {
   font-size: 0.62rem;
-  color: var(--color-terracotta);
+  color: var(--color-warm-taupe);
   font-weight: 600;
 }
 
@@ -1418,7 +1418,7 @@
 }
 
 .shelf-card-lines .bullet {
-  color: var(--color-terracotta);
+  color: var(--color-muted-olive);
   font-size: 0.65rem;
 }
 
@@ -1714,8 +1714,8 @@
   font-size: 0.65rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  font-weight: 700;
-  color: var(--color-terracotta);
+  font-weight: 600;
+  color: var(--color-muted-olive);
   display: block;
   margin-bottom: 0.3rem;
 }
@@ -1887,7 +1887,7 @@
 }
 
 .layout-e-piece:hover .layout-e-piece-explore {
-  color: var(--color-terracotta);
+  color: var(--color-muted-olive);
 }
 
 /* Accessibility: Respect Reduced Motion */

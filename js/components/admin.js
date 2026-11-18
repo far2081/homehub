@@ -7,6 +7,9 @@
 
 import { formatPKR, showToast } from '../utils/helpers.js';
 import { storage } from '../utils/storage.js';
+import { pluginRegistry } from '../services/pluginRegistry.js';
+import { couponService } from '../services/couponService.js';
+import { customerService } from '../services/customerService.js';
 import {
   authenticateAdmin,
   getVerifiedAdminSession,
@@ -31,6 +34,8 @@ export class AdminPortal {
     this.products = options.products || [];
     this.categories = options.categories || [];
     this.activeTab = 'products';
+    this.pluginCategoryFilter = 'all';
+    this.customerFilter = '';
     this.onProductsUpdated = options.onProductsUpdated || (() => {});
     
     // Auth & Session state
@@ -117,28 +122,48 @@ export class AdminPortal {
   }
 
   async loadRemoteData() {
-    if (!isSupabaseConfigured()) return;
-
-    // Load live products from Supabase
-    try {
-      this.isProductsLoading = true;
-      const remoteProducts = await adminFetchAllProducts();
-      if (remoteProducts && remoteProducts.length > 0) {
-        this.products = remoteProducts;
-        this.onProductsUpdated(this.products);
+    // Load live products from Supabase if configured
+    if (isSupabaseConfigured()) {
+      try {
+        this.isProductsLoading = true;
+        const remoteProducts = await adminFetchAllProducts();
+        if (remoteProducts && remoteProducts.length > 0) {
+          this.products = remoteProducts;
+          this.onProductsUpdated(this.products);
+        }
+      } catch (err) {
+        console.warn('Admin: Supabase products fetch error:', err.message);
+      } finally {
+        this.isProductsLoading = false;
       }
-    } catch (err) {
-      console.warn('Admin: Supabase products fetch error:', err.message);
-    } finally {
-      this.isProductsLoading = false;
     }
 
-    // Load live orders from Supabase
+    // Load live orders (Supabase + Local persistent orders)
     try {
       this.isOrdersLoading = true;
-      this.orders = await adminFetchOrders();
+      let remoteOrders = [];
+      if (isSupabaseConfigured()) {
+        try {
+          remoteOrders = await adminFetchOrders();
+        } catch (err) {
+          console.warn('Admin: Supabase orders fetch error:', err.message);
+        }
+      }
+      const localOrders = storage.get('homehub_orders', []);
+      const orderMap = new Map();
+      (remoteOrders || []).forEach(o => {
+        const key = o.order_number || o.id;
+        orderMap.set(key, o);
+      });
+      (localOrders || []).forEach(o => {
+        const key = o.order_number || o.id;
+        if (!orderMap.has(key)) {
+          orderMap.set(key, o);
+        }
+      });
+      this.orders = Array.from(orderMap.values());
     } catch (err) {
-      console.warn('Admin: Supabase orders fetch error:', err.message);
+      console.warn('Admin: Orders aggregation error:', err.message);
     } finally {
       this.isOrdersLoading = false;
     }
@@ -274,6 +299,18 @@ export class AdminPortal {
           </button>
           <button class="admin-tab-btn ${this.activeTab === 'orders' ? 'active' : ''}" data-atab="orders">
             📑 Supabase Orders (${this.orders.length})
+          </button>
+          <button class="admin-tab-btn ${this.activeTab === 'analytics' ? 'active' : ''}" data-atab="analytics">
+            📈 Sales & Analytics
+          </button>
+          <button class="admin-tab-btn ${this.activeTab === 'plugins' ? 'active' : ''}" data-atab="plugins">
+            🧩 Modules & Plugins (15)
+          </button>
+          <button class="admin-tab-btn ${this.activeTab === 'customers' ? 'active' : ''}" data-atab="customers">
+            👥 Client Directory
+          </button>
+          <button class="admin-tab-btn ${this.activeTab === 'coupons' ? 'active' : ''}" data-atab="coupons">
+            🎟️ Promotions & Coupons
           </button>
           <button class="admin-tab-btn ${this.activeTab === 'banners' ? 'active' : ''}" data-atab="banners">
             📢 Editorial Banners
@@ -442,6 +479,10 @@ export class AdminPortal {
     if (this.activeTab === 'products') return this.renderProductsTab();
     if (this.activeTab === 'inventory') return this.renderInventoryTab();
     if (this.activeTab === 'orders') return this.renderOrdersTab();
+    if (this.activeTab === 'analytics') return this.renderAnalyticsTab();
+    if (this.activeTab === 'plugins') return this.renderPluginsTab();
+    if (this.activeTab === 'customers') return this.renderCustomersTab();
+    if (this.activeTab === 'coupons') return this.renderCouponsTab();
     if (this.activeTab === 'banners') return this.renderBannersTab();
     if (this.activeTab === 'supabase-settings') return this.renderSupabaseSettingsTab();
     return '';
@@ -772,6 +813,452 @@ export class AdminPortal {
     `;
   }
 
+  renderAnalyticsTab() {
+    const totalOrders = this.orders.length;
+    const totalRevenue = this.orders.reduce((sum, o) => {
+      return sum + Number(o.total_pkr || o.total || o.total_amount || 0);
+    }, 0);
+    const avgOrderValue = totalOrders > 0 ? Math.round(totalRevenue / totalOrders) : 0;
+
+    let totalStockUnits = 0;
+    const lowStockPieces = [];
+    this.products.forEach(p => {
+      const stock = p.inventory_count !== undefined ? p.inventory_count : (p.inventoryCount !== undefined ? p.inventoryCount : 5);
+      totalStockUnits += stock;
+      if (stock <= 2) {
+        lowStockPieces.push({ ...p, currentStock: stock });
+      }
+    });
+
+    // Category breakdown
+    const categoryCounts = {};
+    this.products.forEach(p => {
+      const cat = p.categoryLabel || p.category || 'Atelier';
+      categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+    });
+
+    // Order status counts
+    const statusCounts = { PENDING: 0, CONFIRMED: 0, PROCESSING: 0, SHIPPED: 0, DELIVERED: 0, CANCELLED: 0 };
+    this.orders.forEach(o => {
+      const st = (o.order_status || o.status || 'PENDING').toUpperCase();
+      if (statusCounts[st] !== undefined) {
+        statusCounts[st]++;
+      } else {
+        statusCounts.PENDING++;
+      }
+    });
+
+    return `
+      <div class="admin-tab-panel">
+        <div class="panel-header-actions">
+          <div>
+            <h3>SaaS Sales & Operational Analytics</h3>
+            <p>Real-time revenue metrics, order velocity, category performance, and inventory health.</p>
+          </div>
+          <button class="admin-btn-secondary" id="refresh-analytics-btn">
+            🔄 Refresh Metrics
+          </button>
+        </div>
+
+        <!-- KPI Grid -->
+        <div class="analytics-kpi-grid">
+          <div class="analytics-kpi-card">
+            <span class="kpi-label">Gross Revenue (PKR)</span>
+            <span class="kpi-number">${formatPKR(totalRevenue)}</span>
+            <span class="kpi-sub">Across all completed checkouts</span>
+          </div>
+          <div class="analytics-kpi-card">
+            <span class="kpi-label">Total Curated Orders</span>
+            <span class="kpi-number">${totalOrders}</span>
+            <span class="kpi-sub">Supabase PostgreSQL + Offline queue</span>
+          </div>
+          <div class="analytics-kpi-card">
+            <span class="kpi-label">Average Order Value</span>
+            <span class="kpi-number">${formatPKR(avgOrderValue)}</span>
+            <span class="kpi-sub">Per transaction average</span>
+          </div>
+          <div class="analytics-kpi-card">
+            <span class="kpi-label">Inventory Units on Hand</span>
+            <span class="kpi-number">${totalStockUnits}</span>
+            <span class="kpi-sub" style="color: ${lowStockPieces.length > 0 ? '#C5221F' : '#137333'};">
+              ${lowStockPieces.length} pieces low in stock
+            </span>
+          </div>
+        </div>
+
+        <!-- 2-Column Analytics Breakdown -->
+        <div class="analytics-two-col">
+          <!-- Room Categories -->
+          <div class="analytics-panel-card">
+            <h4><span>Room Category Representation</span> <small style="font-weight: normal; font-size: 0.75rem;">${this.products.length} Pieces Total</small></h4>
+            ${Object.keys(categoryCounts).map(cat => {
+              const count = categoryCounts[cat];
+              const pct = Math.round((count / (this.products.length || 1)) * 100);
+              return `
+                <div class="category-bar-row">
+                  <div class="category-bar-label">
+                    <span>${cat}</span>
+                    <span>${count} pieces (${pct}%)</span>
+                  </div>
+                  <div class="category-bar-track">
+                    <div class="category-bar-fill" style="width: ${pct}%;"></div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+
+          <!-- Order Status Breakdown -->
+          <div class="analytics-panel-card">
+            <h4><span>Order Fulfillment Pipeline</span> <small style="font-weight: normal; font-size: 0.75rem;">${totalOrders} Total Orders</small></h4>
+            ${Object.keys(statusCounts).map(st => {
+              const count = statusCounts[st];
+              const pct = totalOrders > 0 ? Math.round((count / totalOrders) * 100) : 0;
+              return `
+                <div class="category-bar-row">
+                  <div class="category-bar-label">
+                    <span>${st}</span>
+                    <span>${count} orders (${pct}%)</span>
+                  </div>
+                  <div class="category-bar-track">
+                    <div class="category-bar-fill" style="width: ${pct}%; background-color: ${st === 'DELIVERED' ? '#137333' : st === 'CANCELLED' ? '#C5221F' : 'var(--color-noir)'};"></div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+
+        <!-- Low Stock Alert Table -->
+        <div class="panel-header-actions" style="margin-top: 1.5rem; margin-bottom: 0.8rem;">
+          <h4>🚨 Low Stock Critical Alerts (Stock ≤ 2)</h4>
+        </div>
+        ${lowStockPieces.length === 0 ? `
+          <div style="background-color: #E6F4EA; border: 1px solid #A8DAB5; padding: 1rem 1.2rem; border-radius: var(--radius-sm); color: #137333; font-size: 0.85rem;">
+            ✓ All atelier pieces maintain healthy inventory above the safety threshold.
+          </div>
+        ` : `
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Piece</th>
+                  <th>SKU</th>
+                  <th>Room Category</th>
+                  <th>Current Stock</th>
+                  <th>Price in PKR</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${lowStockPieces.map(p => `
+                  <tr>
+                    <td>
+                      <div class="table-prod-cell">
+                        <img src="${(p.images && p.images[0]) ? p.images[0].url : 'assets/logo-dark.svg'}" alt="${p.name}" class="table-thumb" />
+                        <strong>${p.name}</strong>
+                      </div>
+                    </td>
+                    <td><code>${p.sku}</code></td>
+                    <td><span class="table-pill">${p.categoryLabel || p.category}</span></td>
+                    <td><span class="stock-badge stock-low">${p.currentStock} remaining</span></td>
+                    <td><strong>${formatPKR(p.price)}</strong></td>
+                    <td>
+                      <button class="admin-btn-secondary" data-quick-restock-sku="${p.sku}">
+                        + Restock (+5)
+                      </button>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        `}
+      </div>
+    `;
+  }
+
+  renderPluginsTab() {
+    const allModules = pluginRegistry.getAllModules();
+    const categories = ['all', 'core', 'commerce', 'operations', 'marketing', 'crm', 'content', 'analytics'];
+    const filtered = this.pluginCategoryFilter === 'all'
+      ? allModules
+      : allModules.filter(m => m.category === this.pluginCategoryFilter);
+
+    return `
+      <div class="admin-tab-panel">
+        <div class="panel-header-actions">
+          <div>
+            <h3>Modular Architecture & Plugin Registry (15)</h3>
+            <p>HomeHub operates on a custom, 100% WordPress-free and WooCommerce-free modular system. Enable or configure sub-systems independently.</p>
+          </div>
+        </div>
+
+        <!-- Filter pills -->
+        <div class="admin-subfilter-bar">
+          ${categories.map(cat => {
+            const count = cat === 'all' ? allModules.length : allModules.filter(m => m.category === cat).length;
+            return `
+              <button class="subfilter-pill ${this.pluginCategoryFilter === cat ? 'active' : ''}" data-plugin-cat="${cat}">
+                ${cat.toUpperCase()} (${count})
+              </button>
+            `;
+          }).join('')}
+        </div>
+
+        <!-- Plugins Grid -->
+        <div class="plugin-cards-grid">
+          ${filtered.map(mod => `
+            <div class="plugin-card ${mod.enabled ? '' : 'is-disabled'}">
+              <div>
+                <div class="plugin-card-header">
+                  <div class="plugin-title-row">
+                    <span class="plugin-cat-badge plugin-cat-${mod.category}">${mod.category}</span>
+                    <span class="plugin-card-title">${mod.name}</span>
+                  </div>
+                  <span class="plugin-version-tag">v${mod.version}</span>
+                </div>
+                <p class="plugin-card-desc">${mod.description}</p>
+              </div>
+
+              <div class="plugin-card-footer">
+                <span style="font-size: 0.72rem; color: var(--color-muted-earth);">
+                  ID: <code>${mod.id}</code>
+                </span>
+                <button 
+                  class="plugin-toggle-btn ${mod.enabled ? 'btn-active' : 'btn-inactive'}" 
+                  data-toggle-plugin="${mod.id}"
+                  ${mod.category === 'core' ? 'disabled title="Core atelier modules cannot be disabled"' : ''}
+                >
+                  ${mod.category === 'core' ? '🔒 CORE ACTIVE' : (mod.enabled ? '✓ ACTIVE' : '○ DISABLED')}
+                </button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  renderCustomersTab() {
+    const allCustomers = customerService.getAllCustomers(this.orders);
+    const filtered = this.customerFilter
+      ? allCustomers.filter(c => 
+          (c.name && c.name.toLowerCase().includes(this.customerFilter)) ||
+          (c.email && c.email.toLowerCase().includes(this.customerFilter)) ||
+          (c.city && c.city.toLowerCase().includes(this.customerFilter))
+        )
+      : allCustomers;
+
+    return `
+      <div class="admin-tab-panel">
+        <div class="panel-header-actions">
+          <div>
+            <h3>Client Directory & CRM Registry (${allCustomers.length})</h3>
+            <p>Aggregated profile records from guest checkout orders, purchase volume in PKR, and contact routing.</p>
+          </div>
+          <div class="panel-btn-group">
+            <input 
+              type="text" 
+              class="admin-search-input" 
+              id="customers-search-input" 
+              placeholder="Search patrons by name, email, or city..." 
+              value="${this.customerFilter}"
+            />
+          </div>
+        </div>
+
+        ${filtered.length === 0 ? `
+          <div class="admin-empty-table-state">
+            <div class="empty-icon">👥</div>
+            <h4>No patrons match your search filter.</h4>
+          </div>
+        ` : `
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Patron</th>
+                  <th>Privilege Tier</th>
+                  <th>Contact Details</th>
+                  <th>Destination City</th>
+                  <th>Orders</th>
+                  <th>Lifetime Spend (PKR)</th>
+                  <th>Last Order Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${filtered.map(c => `
+                  <tr>
+                    <td><strong>${c.name}</strong></td>
+                    <td>
+                      <span class="client-tier-badge ${c.tier && c.tier.includes('Platinum') ? 'client-tier-platinum' : c.tier && c.tier.includes('Gold') ? 'client-tier-gold' : 'client-tier-silver'}">
+                        ${c.tier || 'Patron'}
+                      </span>
+                    </td>
+                    <td>
+                      <small>📧 ${c.email}</small><br/>
+                      <small>📞 ${c.phone}</small>
+                    </td>
+                    <td><strong>${c.city}</strong></td>
+                    <td><span class="table-pill">${c.totalOrders} ${c.totalOrders === 1 ? 'order' : 'orders'}</span></td>
+                    <td><strong>${formatPKR(c.totalSpent)}</strong></td>
+                    <td><small>${new Date(c.lastOrderAt).toLocaleDateString('en-GB')}</small></td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        `}
+      </div>
+    `;
+  }
+
+  renderCouponsTab() {
+    const coupons = couponService.getAllCoupons();
+
+    return `
+      <div class="admin-tab-panel">
+        <div class="panel-header-actions">
+          <div>
+            <h3>Promotions & Coupon Engine</h3>
+            <p>Create and manage discount codes for guest checkout. Supports percentage (%) and fixed PKR (₨) vouchers.</p>
+          </div>
+          <button class="admin-btn-primary" id="open-add-coupon-btn">
+            + Create New Voucher
+          </button>
+        </div>
+
+        <div class="coupons-grid">
+          ${coupons.map(c => `
+            <div class="coupon-card ${c.active ? '' : 'is-inactive'}">
+              <div>
+                <div class="coupon-header-row">
+                  <span class="coupon-code-badge">${c.code}</span>
+                  <span class="plugin-cat-badge ${c.active ? 'plugin-cat-core' : 'plugin-cat-marketing'}">
+                    ${c.active ? 'ACTIVE' : 'INACTIVE'}
+                  </span>
+                </div>
+                
+                <div class="coupon-discount-val">
+                  ${c.type === 'percentage' ? `${c.value}% OFF` : `₨ ${c.value.toLocaleString()} OFF`}
+                </div>
+                
+                <p class="coupon-card-desc">${c.description}</p>
+                
+                ${c.minOrder ? `<p style="font-size: 0.72rem; color: var(--color-muted-earth); margin-bottom: 0.5rem;">Min. Spend: <strong>${formatPKR(c.minOrder)}</strong></p>` : ''}
+              </div>
+
+              <div class="coupon-footer-row">
+                <span class="coupon-usage-pill">Used ${c.timesUsed || 0} times</span>
+                <div style="display: flex; gap: 8px;">
+                  <button class="plugin-toggle-btn ${c.active ? 'btn-active' : 'btn-inactive'}" data-toggle-coupon="${c.code}">
+                    ${c.active ? 'Disable' : 'Enable'}
+                  </button>
+                  <button class="table-action-del" data-del-coupon="${c.code}" title="Delete coupon">✕</button>
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  openCouponFormModal() {
+    let modal = document.getElementById('coupon-form-modal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'coupon-form-modal';
+      modal.className = 'checkout-modal-wrap';
+      document.body.appendChild(modal);
+    }
+
+    modal.innerHTML = `
+      <div class="checkout-modal-backdrop"></div>
+      <div class="checkout-modal-card" role="dialog" aria-modal="true" style="max-width: 500px;">
+        <div class="checkout-status-header">
+          <span class="status-pill live">NEW PROMOTION</span>
+          <h3>Create Discount Voucher</h3>
+        </div>
+
+        <form id="create-coupon-form" class="guest-checkout-form">
+          <div class="form-group">
+            <label for="cp-code">Voucher Code * (e.g. SUMMER25)</label>
+            <input type="text" id="cp-code" required placeholder="SUMMER25" style="text-transform: uppercase; font-family: monospace;" />
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="cp-type">Discount Type</label>
+              <select id="cp-type">
+                <option value="percentage">Percentage (%)</option>
+                <option value="fixed">Fixed Amount in PKR (₨)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="cp-val">Discount Value *</label>
+              <input type="number" id="cp-val" required min="1" placeholder="e.g. 15 or 5000" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="cp-min">Minimum Order Value (PKR)</label>
+            <input type="number" id="cp-min" min="0" placeholder="0 for no minimum" />
+          </div>
+
+          <div class="form-group">
+            <label for="cp-desc">Description</label>
+            <input type="text" id="cp-desc" placeholder="e.g. 15% seasonal styling privilege" />
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="checkout-modal-close" id="close-coupon-modal-btn">Cancel</button>
+            <button type="submit" class="admin-btn-primary">Create Voucher</button>
+          </div>
+        </form>
+      </div>
+    `;
+
+    modal.classList.add('is-open');
+
+    const close = () => {
+      modal.classList.remove('is-open');
+    };
+
+    modal.querySelector('.checkout-modal-backdrop').addEventListener('click', close);
+    const closeBtn = modal.querySelector('#close-coupon-modal-btn');
+    if (closeBtn) closeBtn.addEventListener('click', close);
+
+    const form = modal.querySelector('#create-coupon-form');
+    if (form) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const code = modal.querySelector('#cp-code').value.trim();
+        const type = modal.querySelector('#cp-type').value;
+        const val = Number(modal.querySelector('#cp-val').value);
+        const minOrder = Number(modal.querySelector('#cp-min').value) || 0;
+        const desc = modal.querySelector('#cp-desc').value.trim();
+
+        try {
+          couponService.createCoupon({
+            code,
+            type,
+            value: val,
+            minOrder,
+            description: desc || `${val}${type === 'percentage' ? '%' : ' PKR'} off`,
+            active: true
+          });
+          showToast(`Voucher "${code.toUpperCase()}" created successfully!`, 'success');
+          close();
+          this.renderTabContentArea();
+        } catch (err) {
+          showToast(err.message, 'warning');
+        }
+      });
+    }
+  }
+
   bindTabSpecificEvents() {
     if (this.activeTab === 'products') {
       const addBtn = this.container.querySelector('#open-add-product-btn');
@@ -851,6 +1338,96 @@ export class AdminPortal {
           const orderId = e.currentTarget.dataset.editOrderId;
           const order = this.orders.find(o => o.id === orderId);
           if (order) this.openOrderShippingModal(order);
+        });
+      });
+    }
+
+    if (this.activeTab === 'analytics') {
+      const refreshBtn = this.container.querySelector('#refresh-analytics-btn');
+      if (refreshBtn) {
+        refreshBtn.addEventListener('click', async () => {
+          refreshBtn.disabled = true;
+          await this.loadRemoteData();
+          refreshBtn.disabled = false;
+          showToast('Analytics refreshed.', 'info');
+        });
+      }
+
+      // Quick restock buttons
+      this.container.querySelectorAll('[data-quick-restock-sku]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const sku = e.currentTarget.dataset.quickRestockSku;
+          const prod = this.products.find(p => p.sku === sku);
+          if (prod) {
+            prod.inventory_count = (prod.inventory_count !== undefined ? prod.inventory_count : (prod.inventoryCount || 5)) + 5;
+            this.saveLocalProductsBackup();
+            showToast(`Restocked ${prod.name} (+5 units)`, 'success');
+            this.renderTabContentArea();
+          }
+        });
+      });
+    }
+
+    if (this.activeTab === 'plugins') {
+      // Subfilter pills
+      this.container.querySelectorAll('[data-plugin-cat]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          this.pluginCategoryFilter = e.currentTarget.dataset.pluginCat;
+          this.renderTabContentArea();
+        });
+      });
+
+      // Toggle buttons
+      this.container.querySelectorAll('[data-toggle-plugin]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const modId = e.currentTarget.dataset.togglePlugin;
+          const newState = pluginRegistry.toggleModule(modId);
+          const mod = pluginRegistry.getModule(modId);
+          if (mod) {
+            showToast(`Module "${mod.name}" is now ${newState ? 'Active' : 'Disabled'}.`, newState ? 'success' : 'info');
+          }
+          this.renderTabContentArea();
+        });
+      });
+    }
+
+    if (this.activeTab === 'customers') {
+      const searchInput = this.container.querySelector('#customers-search-input');
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+          this.customerFilter = e.target.value.toLowerCase().trim();
+          this.renderTabContentArea();
+        });
+      }
+    }
+
+    if (this.activeTab === 'coupons') {
+      const addBtn = this.container.querySelector('#open-add-coupon-btn');
+      if (addBtn) {
+        addBtn.addEventListener('click', () => {
+          this.openCouponFormModal();
+        });
+      }
+
+      // Toggle coupon status
+      this.container.querySelectorAll('[data-toggle-coupon]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const code = e.currentTarget.dataset.toggleCoupon;
+          const active = couponService.toggleCouponStatus(code);
+          showToast(`Voucher "${code}" is now ${active ? 'Active' : 'Inactive'}.`, active ? 'success' : 'info');
+          this.renderTabContentArea();
+        });
+      });
+
+      // Delete coupon
+      this.container.querySelectorAll('[data-del-coupon]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const code = e.currentTarget.dataset.delCoupon;
+          if (confirm(`Are you sure you want to delete voucher code ${code}?`)) {
+            couponService.deleteCoupon(code);
+            showToast(`Voucher "${code}" deleted.`, 'info');
+            this.renderTabContentArea();
+          }
         });
       });
     }
@@ -1008,18 +1585,18 @@ export class AdminPortal {
               <input 
                 type="file" 
                 id="f-img-file" 
-                accept="image/jpeg,image/png,image/webp,image/avif" 
+                accept="image/*,.jfif,.jpg,.jpeg,.png,.webp,.avif,.gif,.bmp,.svg" 
                 class="file-upload-input"
               />
               <span class="upload-status" id="upload-status-indicator"></span>
             </div>
             <div class="url-input-wrap">
               <input 
-                type="url" 
+                type="text" 
                 id="f-img-url" 
                 required 
                 value="${isEdit && existingProduct.images && existingProduct.images[0] ? existingProduct.images[0].url : 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1200&q=85'}" 
-                placeholder="Or paste image URL"
+                placeholder="Image URL, /assets/uploads/... or uploaded file"
               />
             </div>
             <div class="image-preview-box">
@@ -1056,7 +1633,7 @@ export class AdminPortal {
       });
     }
 
-    // Direct Supabase Storage File Upload
+    // Direct File Upload with Seamless Fallback (Supabase Storage -> Local Server -> Base64)
     const fileInput = modalWrap.querySelector('#f-img-file');
     const statusIndicator = modalWrap.querySelector('#upload-status-indicator');
     if (fileInput) {
@@ -1064,24 +1641,64 @@ export class AdminPortal {
         const file = e.target.files && e.target.files[0];
         if (!file) return;
 
-        if (!isSupabaseConfigured()) {
-          showToast('Supabase not configured. Using local preview only.', 'info');
-          const localUrl = URL.createObjectURL(file);
-          if (urlInput) urlInput.value = localUrl;
-          if (previewImg) previewImg.src = localUrl;
-          return;
+        // 1. Immediately read file as Data URL for instant user feedback and offline safety
+        const base64Data = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () => resolve(null);
+          reader.readAsDataURL(file);
+        });
+
+        if (base64Data && previewImg) {
+          previewImg.src = base64Data;
         }
 
+        // 2. Try Supabase Storage first if configured
+        if (isSupabaseConfigured()) {
+          try {
+            if (statusIndicator) statusIndicator.textContent = '⏳ Uploading to Supabase Storage...';
+            const publicUrl = await adminUploadProductImage(file);
+            if (urlInput) urlInput.value = publicUrl;
+            if (previewImg) previewImg.src = publicUrl;
+            if (statusIndicator) statusIndicator.textContent = '✓ Uploaded to product-images bucket!';
+            showToast('Image uploaded successfully to Supabase Storage!', 'success');
+            return;
+          } catch (err) {
+            console.warn('Supabase storage upload failed, activating local storage fallback:', err);
+          }
+        }
+
+        // 3. Fallback: Upload to local server /api/upload
         try {
-          if (statusIndicator) statusIndicator.textContent = '⏳ Uploading to Supabase Storage...';
-          const publicUrl = await adminUploadProductImage(file);
-          if (urlInput) urlInput.value = publicUrl;
-          if (previewImg) previewImg.src = publicUrl;
-          if (statusIndicator) statusIndicator.textContent = '✓ Uploaded to product-images bucket!';
-          showToast('Image uploaded successfully to Supabase Storage!', 'success');
-        } catch (err) {
+          if (statusIndicator) statusIndicator.textContent = '⏳ Saving to Atelier local storage...';
+          const uploadRes = await fetch('/api/upload', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ filename: file.name, data: base64Data })
+          });
+
+          if (uploadRes.ok) {
+            const data = await uploadRes.json();
+            if (data.url) {
+              if (urlInput) urlInput.value = data.url;
+              if (previewImg) previewImg.src = data.url;
+              if (statusIndicator) statusIndicator.textContent = '✓ Saved to Atelier local storage!';
+              showToast('Image saved to Atelier storage successfully!', 'success');
+              return;
+            }
+          }
+        } catch (serverErr) {
+          console.warn('Server upload failed, using Data URL fallback:', serverErr);
+        }
+
+        // 4. Ultimate fallback: Use high-res Data URL so admin is NEVER blocked
+        if (base64Data) {
+          if (urlInput) urlInput.value = base64Data;
+          if (statusIndicator) statusIndicator.textContent = '✓ Image ready (Saved in piece preview)';
+          showToast('Image attached successfully! You can now save the piece.', 'info');
+        } else {
           if (statusIndicator) statusIndicator.textContent = '❌ Upload failed';
-          showToast(`Storage error: ${err.message}`, 'warning');
+          showToast('Could not read image file. Please try another image.', 'warning');
         }
       });
     }

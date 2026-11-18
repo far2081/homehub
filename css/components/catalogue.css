@@ -246,7 +246,8 @@
 }
 
 .card-wishlist-btn.is-active svg {
-  stroke: var(--color-terracotta);
+  stroke: var(--color-muted-olive);
+  fill: rgba(137, 149, 129, 0.15);
 }
 
 /* Card Badges */
@@ -261,7 +262,7 @@
 }
 
 .badge-featured {
-  background-color: var(--color-noir);
+  background-color: var(--color-deep-charcoal);
   color: var(--color-soft-champagne);
   font-size: 0.62rem;
   letter-spacing: 0.12em;
@@ -273,7 +274,7 @@
 
 .badge-sku {
   background-color: rgba(255, 255, 255, 0.9);
-  color: var(--color-charcoal);
+  color: var(--color-deep-charcoal);
   font-size: 0.62rem;
   font-weight: 600;
   padding: 3px 6px;
@@ -288,7 +289,7 @@
   left: 0;
   right: 0;
   padding: 1rem;
-  background: linear-gradient(180deg, transparent 0%, rgba(20, 18, 16, 0.65) 100%);
+  background: linear-gradient(180deg, transparent 0%, rgba(48, 46, 42, 0.65) 100%);
   display: flex;
   justify-content: center;
   opacity: 0;
@@ -304,7 +305,7 @@
 
 .quick-view-btn {
   background-color: var(--color-surface-pure);
-  color: var(--color-noir);
+  color: var(--color-deep-charcoal);
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.1em;
@@ -315,7 +316,7 @@
 }
 
 .quick-view-btn:hover {
-  background-color: var(--color-soft-ivory);
+  background-color: var(--color-warm-ivory);
 }
 
 /* Card Body */
@@ -328,9 +329,9 @@
 
 .card-cat {
   font-size: 0.68rem;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--color-muted-earth);
+  color: var(--color-warm-taupe);
   font-weight: 600;
   margin-bottom: 0.35rem;
 }
@@ -339,14 +340,14 @@
   font-family: var(--font-serif);
   font-size: 1.35rem;
   font-weight: 600;
-  color: var(--color-noir);
+  color: var(--color-deep-charcoal);
   margin-bottom: 0.45rem;
   cursor: pointer;
   transition: color var(--transition-fast);
 }
 
 .card-title:hover {
-  color: var(--color-terracotta);
+  color: var(--color-muted-olive);
 }
 
 .card-desc {

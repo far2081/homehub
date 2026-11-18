@@ -97,9 +97,9 @@
 .nav-books-label {
   font-size: 0.65rem;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
-  color: var(--color-terracotta);
-  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--color-muted-olive);
+  font-weight: 600;
   padding-right: 0.5rem;
   border-right: 1px solid var(--color-border);
 }
@@ -172,7 +172,7 @@
 }
 
 .util-btn:hover {
-  background-color: rgba(32, 29, 26, 0.06);
+  background-color: rgba(48, 46, 42, 0.06);
 }
 
 .util-badge {
@@ -183,8 +183,8 @@
   height: 18px;
   padding: 0 4px;
   border-radius: var(--radius-pill);
-  background-color: var(--color-terracotta);
-  color: #fff;
+  background-color: var(--color-deep-charcoal);
+  color: var(--color-soft-champagne);
   font-size: 0.65rem;
   font-weight: 700;
   display: flex;
@@ -263,10 +263,10 @@
 
 .mobile-nav-group-title {
   font-size: 0.68rem;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--color-terracotta);
-  font-weight: 700;
+  color: var(--color-muted-olive);
+  font-weight: 600;
   margin-bottom: 1rem;
 }
 
@@ -313,9 +313,10 @@
 
 .nav-item-link {
   font-family: var(--font-sans);
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   font-weight: 500;
-  color: #2D2925;
+  letter-spacing: 0.04em;
+  color: var(--color-deep-charcoal);
   text-decoration: none;
   padding: 6px 0;
   position: relative;
@@ -330,7 +331,8 @@
 
 .nav-item-link:hover,
 .nav-item-link.active {
-  color: var(--color-terracotta, #A8583B);
+  color: var(--color-deep-charcoal);
+  font-weight: 600;
 }
 
 .nav-item-link::after {
@@ -339,8 +341,8 @@
   bottom: 0;
   left: 0;
   width: 0%;
-  height: 2px;
-  background-color: var(--color-terracotta, #A8583B);
+  height: 1.5px;
+  background-color: var(--color-deep-charcoal);
   transition: width 0.2s ease;
 }
 
@@ -403,7 +405,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: var(--color-terracotta, #A8583B);
+  color: var(--color-muted-olive);
 }
 
 .categories-dropdown-header a.view-all-link {

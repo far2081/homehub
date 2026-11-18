@@ -562,6 +562,7 @@ GRANT EXECUTE ON FUNCTION public.create_homehub_order TO anon, authenticated;
 
 -- --------------------------------------------------------------------
 -- 11. SUPABASE STORAGE BUCKET FOR PRODUCT PHOTOGRAPHY
+-- (Configured to accept ALL image extensions: .jfif, .jpg, .jpeg, .png, .webp, .avif, .gif, .bmp, .svg)
 -- --------------------------------------------------------------------
 INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 VALUES (
@@ -569,12 +570,12 @@ VALUES (
     'product-images',
     TRUE,
     10485760, -- 10MB limit per image
-    ARRAY['image/jpeg', 'image/png', 'image/webp', 'image/avif', 'image/svg+xml']
+    NULL -- NULL allows all image and media extensions without restriction
 )
 ON CONFLICT (id) DO UPDATE SET
     public = TRUE,
     file_size_limit = 10485760,
-    allowed_mime_types = ARRAY['image/jpeg', 'image/png', 'image/webp', 'image/avif', 'image/svg+xml'];
+    allowed_mime_types = NULL;
 
 -- Storage RLS Policies
 DROP POLICY IF EXISTS "Public can view product images" ON storage.objects;

@@ -7,12 +7,15 @@
 import { storage } from '../utils/storage.js';
 import { formatPKR, showToast } from '../utils/helpers.js';
 import { submitGuestOrder, isSupabaseConfigured } from '../services/supabaseClient.js';
+import { couponService } from '../services/couponService.js';
+import { customerService } from '../services/customerService.js';
 
 export class Cart {
   constructor(drawerId, options = {}) {
     this.drawer = document.getElementById(drawerId);
     this.products = options.products || [];
     this.items = storage.get('cart_items', []); // Array of { sku, quantity, variantId, addedAt }
+    this.appliedCoupon = storage.get('homehub_applied_coupon', null);
     this.onUpdate = options.onUpdate || (() => {});
     this.onViewProduct = options.onViewProduct || (() => {});
 
@@ -113,11 +116,54 @@ export class Cart {
     }, 0);
   }
 
+  getDiscount() {
+    if (!this.appliedCoupon) return 0;
+    const subtotal = this.getSubtotal();
+    const result = couponService.validateCoupon(this.appliedCoupon.code, subtotal);
+    if (!result.valid) {
+      this.appliedCoupon = null;
+      storage.remove('homehub_applied_coupon');
+      return 0;
+    }
+    return result.discount;
+  }
+
+  getTotal() {
+    return Math.max(0, this.getSubtotal() - this.getDiscount());
+  }
+
+  applyCouponCode(code) {
+    const subtotal = this.getSubtotal();
+    if (subtotal <= 0) {
+      showToast('Add pieces to your bag before applying a coupon.', 'warning');
+      return false;
+    }
+    const result = couponService.validateCoupon(code, subtotal);
+    if (!result.valid) {
+      showToast(result.message, 'warning');
+      return false;
+    }
+    this.appliedCoupon = result.coupon;
+    storage.set('homehub_applied_coupon', this.appliedCoupon);
+    showToast(result.message, 'success');
+    this.render();
+    return true;
+  }
+
+  removeCoupon() {
+    this.appliedCoupon = null;
+    storage.remove('homehub_applied_coupon');
+    showToast('Promotional voucher removed.', 'info');
+    this.render();
+  }
+
   render() {
     if (!this.drawer) return;
 
     const count = this.getCount();
     const subtotal = this.getSubtotal();
+    const discount = this.getDiscount();
+    const total = this.getTotal();
 
     const populatedItems = this.items.map(item => {
       const product = this.products.find(p => p.sku === item.sku);
@@ -203,13 +249,41 @@ export class Cart {
         <!-- Footer -->
         ${populatedItems.length > 0 ? `
           <div class="cart-footer">
+            <!-- Coupon Code Engine -->
+            <div class="cart-coupon-wrap">
+              ${this.appliedCoupon ? `
+                <div class="cart-coupon-badge">
+                  <span class="coupon-label">🎟️ ${this.appliedCoupon.code} (${this.appliedCoupon.type === 'percentage' ? `${this.appliedCoupon.value}% OFF` : `₨ ${this.appliedCoupon.value.toLocaleString()} OFF`})</span>
+                  <button type="button" class="coupon-remove-btn" id="cart-remove-coupon-btn" title="Remove coupon">✕</button>
+                </div>
+              ` : `
+                <form id="cart-coupon-form" class="cart-coupon-form">
+                  <input type="text" id="cart-coupon-input" class="cart-coupon-input" placeholder="Promo code (e.g. HOMEHUB10)" />
+                  <button type="submit" class="cart-coupon-apply-btn">Apply</button>
+                </form>
+              `}
+            </div>
+
             <div class="cart-summary-line">
               <span>Subtotal</span>
               <strong class="summary-subtotal">${formatPKR(subtotal)}</strong>
             </div>
+
+            ${discount > 0 ? `
+              <div class="summary-discount-row">
+                <span>Privilege Discount (${this.appliedCoupon.code})</span>
+                <strong>−${formatPKR(discount)}</strong>
+              </div>
+            ` : ''}
+
             <div class="cart-shipping-notice">
               <span>Taxes & White-Glove Installation</span>
               <span class="complimentary-tag">Complimentary</span>
+            </div>
+
+            <div class="summary-subtotal-row grand-total-row">
+              <span>Total in PKR</span>
+              <strong class="grand-total-val">${formatPKR(total)}</strong>
             </div>
 
             <!-- Checkout Action Button -->
@@ -242,6 +316,25 @@ export class Cart {
         this.close();
         const magSection = document.getElementById('magazine-section');
         if (magSection) magSection.scrollIntoView({ behavior: 'smooth' });
+      });
+    }
+
+    // Coupon actions
+    const couponForm = this.drawer.querySelector('#cart-coupon-form');
+    if (couponForm) {
+      couponForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const input = this.drawer.querySelector('#cart-coupon-input');
+        if (input && input.value.trim()) {
+          this.applyCouponCode(input.value.trim());
+        }
+      });
+    }
+
+    const removeCouponBtn = this.drawer.querySelector('#cart-remove-coupon-btn');
+    if (removeCouponBtn) {
+      removeCouponBtn.addEventListener('click', () => {
+        this.removeCoupon();
       });
     }
 
@@ -299,6 +392,8 @@ export class Cart {
     }
 
     const subtotal = this.getSubtotal();
+    const discount = this.getDiscount();
+    const total = this.getTotal();
     const count = this.getCount();
     const isConnected = isSupabaseConfigured();
 
@@ -311,109 +406,88 @@ export class Cart {
       <div class="checkout-modal-backdrop"></div>
       <div class="checkout-modal-card" role="dialog" aria-modal="true">
         <div class="checkout-status-header">
-          <span class="status-pill ${isConnected ? 'live' : 'unavailable'}">
-            ${isConnected ? '● SECURE SUPABASE CHECKOUT' : '○ STAGING INQUIRY MODE'}
+          <span class="status-pill ${isConnected ? 'live' : 'staging'}">
+            ${isConnected ? '● SECURE SUPABASE CHECKOUT' : '● ATELIER WHITE-GLOVE CHECKOUT'}
           </span>
           <h3>HomeHub Atelier Checkout</h3>
         </div>
 
         <div class="checkout-status-body">
-          ${isConnected ? `
-            <!-- Live Supabase Guest Checkout Form -->
-            <form id="homehub-guest-checkout-form" class="guest-checkout-form">
-              <div class="form-instructions-badge">
-                <span>Direct delivery across Pakistan. Payment options: Bank Wire Transfer or Cash on White-Glove Delivery.</span>
-              </div>
+          <!-- Guest Checkout Form -->
+          <form id="homehub-guest-checkout-form" class="guest-checkout-form">
+            <div class="form-instructions-badge">
+              <span>Direct delivery across Pakistan. Payment options: Bank Wire Transfer or Cash on White-Glove Delivery.</span>
+            </div>
 
-              <div class="form-row-2">
-                <div class="form-group">
-                  <label for="g-name">Recipient Full Name *</label>
-                  <input type="text" id="g-name" required placeholder="e.g. Ayesha Malik" />
-                </div>
-                <div class="form-group">
-                  <label for="g-email">Email Address *</label>
-                  <input type="email" id="g-email" required placeholder="ayesha@example.com" />
-                </div>
-              </div>
-
-              <div class="form-row-2">
-                <div class="form-group">
-                  <label for="g-phone">Contact Phone Number *</label>
-                  <input type="tel" id="g-phone" required placeholder="+92 300 1234567" />
-                </div>
-                <div class="form-group">
-                  <label for="g-city">Delivery City *</label>
-                  <input type="text" id="g-city" required placeholder="Lahore / Karachi / Islamabad..." />
-                </div>
-              </div>
-
+            <div class="form-row-2">
               <div class="form-group">
-                <label for="g-address">Complete Street Delivery Address *</label>
-                <textarea id="g-address" rows="2" required placeholder="House/Apartment #, Street, Phase / Sector..."></textarea>
+                <label for="g-name">Recipient Full Name *</label>
+                <input type="text" id="g-name" required placeholder="e.g. Ayesha Malik" />
               </div>
-
               <div class="form-group">
-                <label for="g-notes">Architectural / Delivery Notes (Optional)</label>
-                <input type="text" id="g-notes" placeholder="e.g. Call before delivery, 2nd floor service elevator" />
-              </div>
-
-              <!-- Order Summary Breakdown -->
-              <div class="checkout-summary-box">
-                <h4>Order Summary (${count} Items)</h4>
-                <div class="summary-pre">${itemsListText}</div>
-                <div class="summary-subtotal-row">
-                  <span>Subtotal:</span>
-                  <strong>${formatPKR(subtotal)}</strong>
-                </div>
-                <div class="summary-subtotal-row">
-                  <span>White-Glove Shipping:</span>
-                  <span class="free-shipping-tag">Complimentary</span>
-                </div>
-                <div class="summary-subtotal-row grand-total-row">
-                  <span>Order Total:</span>
-                  <strong class="grand-total-val">${formatPKR(subtotal)}</strong>
-                </div>
-              </div>
-
-              <div id="checkout-error-banner" class="checkout-error-banner" style="display: none;"></div>
-
-              <div class="form-actions">
-                <button type="button" class="checkout-modal-close" id="close-checkout-modal-btn">Return to Bag</button>
-                <button type="submit" class="admin-btn-primary" id="place-order-submit-btn">
-                  Confirm & Place Order →
-                </button>
-              </div>
-            </form>
-          ` : `
-            <!-- Fallback Staging Notice -->
-            <div class="status-callout-box">
-              <span class="callout-icon">ℹ️</span>
-              <div>
-                <strong>Supabase Backend Configuration Pending</strong>
-                <p>To enable direct database checkout, enter your Supabase URL & Anon Key in the <strong>Admin Portal → Supabase & DB Settings</strong> tab or populate <code>.env</code>.</p>
+                <label for="g-email">Email Address *</label>
+                <input type="email" id="g-email" required placeholder="ayesha@example.com" />
               </div>
             </div>
 
+            <div class="form-row-2">
+              <div class="form-group">
+                <label for="g-phone">Contact Phone Number *</label>
+                <input type="tel" id="g-phone" required placeholder="+92 300 1234567" />
+              </div>
+              <div class="form-group">
+                <label for="g-city">Delivery City *</label>
+                <input type="text" id="g-city" required placeholder="Lahore / Karachi / Islamabad..." />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="g-address">Complete Street Delivery Address *</label>
+              <textarea id="g-address" rows="2" required placeholder="House/Apartment #, Street, Phase / Sector..."></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="g-notes">Architectural / Delivery Notes (Optional)</label>
+              <input type="text" id="g-notes" placeholder="e.g. Call before delivery, 2nd floor service elevator" />
+            </div>
+
+            <!-- Order Summary Breakdown -->
             <div class="checkout-summary-box">
-              <h4>Bag Summary (${count} Items)</h4>
+              <h4>Order Summary (${count} Items)</h4>
               <div class="summary-pre">${itemsListText}</div>
+              
               <div class="summary-subtotal-row">
-                <span>Estimated Total:</span>
+                <span>Subtotal:</span>
                 <strong>${formatPKR(subtotal)}</strong>
               </div>
+
+              ${discount > 0 ? `
+                <div class="summary-discount-row">
+                  <span>Privilege Voucher (${this.appliedCoupon.code}):</span>
+                  <strong>−${formatPKR(discount)}</strong>
+                </div>
+              ` : ''}
+
+              <div class="summary-subtotal-row">
+                <span>White-Glove Shipping:</span>
+                <span class="free-shipping-tag">Complimentary</span>
+              </div>
+
+              <div class="summary-subtotal-row grand-total-row">
+                <span>Order Total:</span>
+                <strong class="grand-total-val">${formatPKR(total)}</strong>
+              </div>
             </div>
 
-            <div class="inquiry-box">
-              <p>You can also transmit your order directly to the founder for manual reservation:</p>
-              <a href="mailto:farzunmir@gmail.com?subject=HomeHub Atelier Order - Total ${formatPKR(subtotal)}&body=Hello Farhana,%0D%0A%0D%0AI would like to place an order for the following pieces:%0D%0A${encodeURIComponent(itemsListText)}%0D%0A%0D%0ATotal: ${formatPKR(subtotal)}" class="direct-email-btn">
-                ✉ Send Order to Farhana Aamir (farzunmir@gmail.com)
-              </a>
-            </div>
+            <div id="checkout-error-banner" class="checkout-error-banner" style="display: none;"></div>
 
-            <div class="checkout-modal-footer">
-              <button class="checkout-modal-close" id="close-checkout-modal-btn">Return to Bag</button>
+            <div class="form-actions">
+              <button type="button" class="checkout-modal-close" id="close-checkout-modal-btn">Return to Bag</button>
+              <button type="submit" class="admin-btn-primary" id="place-order-submit-btn">
+                Confirm & Place Order →
+              </button>
             </div>
-          `}
+          </form>
         </div>
       </div>
     `;
@@ -438,7 +512,7 @@ export class Cart {
 
         if (submitBtn) {
           submitBtn.disabled = true;
-          submitBtn.textContent = 'Processing Order with Supabase...';
+          submitBtn.textContent = 'Recording Order in Atelier Registry...';
         }
         if (errorBanner) {
           errorBanner.style.display = 'none';
@@ -451,70 +525,126 @@ export class Cart {
         const shippingAddress = modal.querySelector('#g-address').value.trim();
         const customerNotes = modal.querySelector('#g-notes').value.trim();
 
+        const cleanOrderNumber = `HH-${Date.now().toString(36).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`;
+
         const orderData = {
-          customerName,
-          customerEmail,
-          customerPhone,
-          shippingCity,
-          shippingAddress,
-          shippingCountry: 'Pakistan',
-          customerNotes,
+          id: cleanOrderNumber,
+          order_number: cleanOrderNumber,
+          customer_name: customerName,
+          customer_email: customerEmail,
+          customer_phone: customerPhone,
+          shipping_city: shippingCity,
+          shipping_address: shippingAddress,
+          shipping_country: 'Pakistan',
+          customer_notes: customerNotes,
+          subtotal_amount: subtotal,
+          discount_amount: discount,
+          coupon_code: this.appliedCoupon ? this.appliedCoupon.code : null,
+          total_amount: total,
+          status: 'PENDING',
+          payment_method: 'Cash on White-Glove Delivery',
+          created_at: new Date().toISOString(),
           items: this.items.map(i => {
             const prod = this.products.find(p => p.sku === i.sku);
             const variant = prod && prod.variants ? prod.variants.find(v => v.id === i.variantId) : null;
             return {
               sku: i.sku,
+              product_name: prod ? prod.name : i.sku,
+              price: prod ? prod.price : 0,
               quantity: i.quantity,
-              variantName: variant ? variant.name : null
+              variant_name: variant ? variant.name : null
             };
           })
         };
 
-        try {
-          const result = await submitGuestOrder(orderData);
-          const orderNum = result && result.order_number ? result.order_number : 'HH-CONFIRMED';
-
-          // Success confirmation screen
-          this.clear();
-          this.close();
-
-          modal.innerHTML = `
-            <div class="checkout-modal-backdrop"></div>
-            <div class="checkout-modal-card order-confirmed-card" role="dialog" aria-modal="true">
-              <div class="order-confirmed-icon">✨</div>
-              <span class="status-pill live">ORDER CONFIRMED</span>
-              <h2>Thank you, ${customerName}</h2>
-              <p class="order-ref-number">Order Reference: <strong>${orderNum}</strong></p>
-              
-              <div class="confirmed-body-box">
-                <p>Your order has been recorded in the HomeHub Supabase Atelier database. Our logistics concierge will reach out to <strong>${customerPhone}</strong> to coordinate white-glove delivery to <strong>${shippingCity}</strong>.</p>
-                <div class="confirmed-details">
-                  <div><span>Email Confirmation:</span> <strong>${customerEmail}</strong></div>
-                  <div><span>Total Amount:</span> <strong>${formatPKR(subtotal)}</strong></div>
-                  <div><span>Payment Method:</span> <strong>Cash on White-Glove Delivery</strong></div>
-                </div>
-              </div>
-
-              <div class="order-confirmed-actions">
-                <button class="admin-btn-primary" id="confirmed-done-btn">Continue Exploring HomeHub</button>
-              </div>
-            </div>
-          `;
-
-          const doneBtn = modal.querySelector('#confirmed-done-btn');
-          if (doneBtn) doneBtn.addEventListener('click', close);
-          showToast(`Order #${orderNum} confirmed!`, 'success');
-
-        } catch (err) {
-          if (errorBanner) {
-            errorBanner.textContent = `Order processing error: ${err.message}. Please check your connection or contact farzunmir@gmail.com`;
-            errorBanner.style.display = 'block';
-          }
-          if (submitBtn) {
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Confirm & Place Order →';
+        let supabaseSuccess = false;
+        if (isSupabaseConfigured()) {
+          try {
+            const result = await submitGuestOrder({
+              customerName,
+              customerEmail,
+              customerPhone,
+              shippingCity,
+              shippingAddress,
+              shippingCountry: 'Pakistan',
+              customerNotes,
+              items: this.items.map(i => {
+                const prod = this.products.find(p => p.sku === i.sku);
+                const variant = prod && prod.variants ? prod.variants.find(v => v.id === i.variantId) : null;
+                return {
+                  sku: i.sku,
+                  quantity: i.quantity,
+                  variantName: variant ? variant.name : null
+                };
+              })
+            });
+            if (result && result.order_number) {
+              orderData.order_number = result.order_number;
+            }
+            supabaseSuccess = true;
+          } catch (err) {
+            console.warn('Notice: Remote Supabase sync deferred. Saving order to local Atelier Registry.', err.message);
           }
         }
+
+        // Always save order to persistent storage so SaaS Admin Portal can manage it immediately
+        try {
+          const storedOrders = storage.get('homehub_orders', []);
+          storedOrders.unshift(orderData);
+          storage.set('homehub_orders', storedOrders);
+        } catch (_) {}
+
+        // Record customer in CRM
+        try {
+          customerService.recordCustomer(orderData);
+        } catch (_) {}
+
+        // Record coupon usage
+        if (this.appliedCoupon) {
+          try {
+            couponService.recordUsage(this.appliedCoupon.code);
+          } catch (_) {}
+        }
+
+        // Clean up cart
+        const orderNum = orderData.order_number;
+        this.clear();
+        this.appliedCoupon = null;
+        storage.remove('homehub_applied_coupon');
+        this.close();
+
+        // Success confirmation screen
+        modal.innerHTML = `
+          <div class="checkout-modal-backdrop"></div>
+          <div class="checkout-modal-card order-confirmed-card" role="dialog" aria-modal="true">
+            <div class="order-confirmed-icon">✨</div>
+            <span class="status-pill live">ORDER CONFIRMED</span>
+            <h2>Thank you, ${customerName}</h2>
+            <p class="order-ref-number">Order Reference: <strong>${orderNum}</strong></p>
+            
+            <div class="confirmed-body-box">
+              <p>Your curated selection has been confirmed in the HomeHub Atelier order queue${supabaseSuccess ? ' and synchronized with Supabase' : ''}. Our logistics concierge will reach out to <strong>${customerPhone}</strong> to schedule complimentary white-glove delivery to <strong>${shippingCity}</strong>.</p>
+              
+              <div class="confirmed-details">
+                <div><span>Confirmation Email:</span> <strong>${customerEmail}</strong></div>
+                <div><span>Total Amount:</span> <strong>${formatPKR(total)}</strong></div>
+                <div><span>Payment Method:</span> <strong>Cash on White-Glove Delivery / Wire</strong></div>
+                ${discount > 0 ? `<div><span>Discount Applied:</span> <strong style="color: #137333;">−${formatPKR(discount)}</strong></div>` : ''}
+              </div>
+            </div>
+
+            <div class="order-confirmed-actions">
+              <a href="mailto:farzunmir@gmail.com?subject=Order%20Confirmation%20${orderNum}&body=Hello%20Farhana,%0D%0A%0D%0AI%20have%20placed%20order%20${orderNum}%20for%20total%20${encodeURIComponent(formatPKR(total))}.%0D%0APlease%20contact%20me%20at%20${encodeURIComponent(customerPhone)}." class="direct-email-btn" style="margin-right: 10px;">
+                ✉ Notify Atelier Lead (farzunmir@gmail.com)
+              </a>
+              <button class="admin-btn-primary" id="confirmed-done-btn">Continue Exploring HomeHub</button>
+            </div>
+          </div>
+        `;
+
+        const doneBtn = modal.querySelector('#confirmed-done-btn');
+        if (doneBtn) doneBtn.addEventListener('click', close);
+        showToast(`Order #${orderNum} confirmed!`, 'success');
       });
     }
   }

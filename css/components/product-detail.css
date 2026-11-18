@@ -198,11 +198,11 @@
 }
 
 .pdp-category {
-  font-size: 0.75rem;
-  letter-spacing: 0.18em;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--color-terracotta);
-  font-weight: 700;
+  color: var(--color-muted-olive);
+  font-weight: 600;
 }
 
 .pdp-sku {
@@ -435,7 +435,8 @@
 }
 
 .pdp-wish-btn.is-active svg {
-  stroke: var(--color-terracotta);
+  stroke: var(--color-muted-olive);
+  fill: rgba(137, 149, 129, 0.15);
 }
 
 /* Guarantees Box */

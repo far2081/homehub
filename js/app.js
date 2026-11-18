@@ -148,6 +148,7 @@ class HomeHubApp {
   }
 
   init() {
+    this.initServiceWorker();
     this.initCart();
     this.initWishlist();
     this.initProductDetail();
@@ -160,6 +161,20 @@ class HomeHubApp {
     this.handleInitialRouting();
     this.dismissPreloader();
     this.loadSupabaseProducts();
+  }
+
+  initServiceWorker() {
+    if (typeof window !== 'undefined' && 'serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then((reg) => {
+            console.log('HomeHub PWA ServiceWorker registered with scope:', reg.scope);
+          })
+          .catch((err) => {
+            console.warn('ServiceWorker registration skipped:', err.message);
+          });
+      });
+    }
   }
 
   async loadSupabaseProducts() {

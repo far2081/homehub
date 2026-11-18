@@ -98,8 +98,8 @@
 }
 
 .book-nav-volume {
-  font-weight: 700;
-  color: var(--color-terracotta, #A8583B);
+  font-weight: 600;
+  color: var(--color-muted-olive);
 }
 
 .book-nav-close-btn {
@@ -210,11 +210,11 @@
 }
 
 .book-nav-section-title {
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--color-terracotta, #A8583B);
+  color: var(--color-muted-olive);
   margin-bottom: 0.8rem;
 }
 
@@ -268,7 +268,7 @@
 }
 
 .book-nav-action-link:hover .link-name {
-  color: var(--color-terracotta, #A8583B);
+  color: var(--color-deep-charcoal);
 }
 
 .link-desc {
@@ -279,7 +279,7 @@
 .link-num {
   font-family: var(--font-serif, serif);
   font-size: 0.85rem;
-  color: var(--color-terracotta, #A8583B);
+  color: var(--color-warm-taupe);
   font-weight: 600;
   margin-right: 10px;
 }
@@ -291,7 +291,7 @@
 }
 
 .book-nav-action-link:hover .link-arrow {
-  color: var(--color-terracotta, #A8583B);
+  color: var(--color-muted-olive);
   transform: translateX(3px);
 }
 

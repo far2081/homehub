@@ -446,21 +446,34 @@ export async function adminDeleteProduct(id) {
 
 /**
  * Upload image file to Supabase Storage bucket 'product-images'
+ * Supports ALL formats: .jfif, .jpg, .jpeg, .png, .webp, .avif, .gif, .bmp, .svg
  */
 export async function adminUploadProductImage(file) {
   await initSupabase();
   if (!_supabase) throw new Error('Supabase not connected');
 
-  const fileExt = (file.name || 'image.jpg').split('.').pop();
-  const cleanExt = fileExt.toLowerCase().replace(/[^a-z0-9]/g, '');
-  const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}.${cleanExt || 'jpg'}`;
+  const rawExt = (file.name || 'image.jpg').split('.').pop().toLowerCase().replace(/[^a-z0-9]/g, '');
+  const cleanExt = (rawExt === 'jfif' || rawExt === 'pjpeg') ? 'jpg' : (rawExt || 'jpg');
+  const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}.${cleanExt}`;
   const filePath = `products/${fileName}`;
+
+  // Normalize MIME type for all image formats
+  let contentType = 'image/jpeg';
+  if (cleanExt === 'png') contentType = 'image/png';
+  else if (cleanExt === 'webp') contentType = 'image/webp';
+  else if (cleanExt === 'avif') contentType = 'image/avif';
+  else if (cleanExt === 'gif') contentType = 'image/gif';
+  else if (cleanExt === 'svg') contentType = 'image/svg+xml';
+  else if (cleanExt === 'bmp') contentType = 'image/bmp';
+  else if (cleanExt === 'tiff' || cleanExt === 'tif') contentType = 'image/tiff';
+  else if (file.type && file.type.startsWith('image/')) contentType = file.type;
 
   const { data, error } = await _supabase.storage
     .from('product-images')
     .upload(filePath, file, {
+      contentType,
       cacheControl: '3600',
-      upsert: false
+      upsert: true
     });
 
   if (error) throw error;

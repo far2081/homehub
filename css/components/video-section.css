@@ -24,11 +24,11 @@
 }
 
 .video-badge {
-  font-size: 0.65rem;
+  font-size: 0.68rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--color-terracotta);
-  font-weight: 700;
+  color: var(--color-muted-olive);
+  font-weight: 600;
   display: inline-block;
   margin-bottom: 0.4rem;
 }
@@ -173,9 +173,9 @@
 
 .video-author {
   font-size: 0.68rem;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--color-terracotta);
+  color: var(--color-warm-taupe);
   font-weight: 600;
   margin-bottom: 0.35rem;
 }
@@ -304,10 +304,10 @@
 }
 
 .vmodal-cat {
-  font-size: 0.75rem;
-  letter-spacing: 0.15em;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--color-terracotta);
+  color: var(--color-muted-olive);
   font-weight: 600;
   display: block;
   margin-bottom: 0.4rem;
@@ -392,6 +392,6 @@
 }
 
 .vpiece-arrow {
-  color: var(--color-terracotta);
+  color: var(--color-muted-olive);
   font-size: 0.85rem;
 }

@@ -48,7 +48,13 @@ const MIME_TYPES = {
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
   '.jpeg': 'image/jpeg',
+  '.jfif': 'image/jpeg',
   '.webp': 'image/webp',
+  '.avif': 'image/avif',
+  '.gif': 'image/gif',
+  '.bmp': 'image/bmp',
+  '.tiff': 'image/tiff',
+  '.tif': 'image/tiff',
   '.svg': 'image/svg+xml',
   '.ico': 'image/x-icon',
   '.mp4': 'video/mp4',
@@ -74,6 +80,50 @@ const server = http.createServer((req, res) => {
       supabaseUrl: process.env.SUPABASE_URL || '',
       supabaseAnonKey: process.env.SUPABASE_ANON_KEY || ''
     }));
+    return;
+  }
+
+  // Local image upload endpoint (Guarantees upload success if Supabase Storage is paused/offline)
+  if (pathname === '/api/upload' && req.method === 'POST') {
+    let body = '';
+    req.on('data', chunk => {
+      body += chunk;
+      if (body.length > 25 * 1024 * 1024) {
+        req.destroy();
+      }
+    });
+    req.on('end', () => {
+      try {
+        const parsed = JSON.parse(body);
+        if (!parsed.data) {
+          res.writeHead(400, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+          res.end(JSON.stringify({ error: 'Missing image data' }));
+          return;
+        }
+
+        const ext = (parsed.filename || 'image.jpg').split('.').pop().toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
+        const cleanExt = (ext === 'jfif' || ext === 'pjpeg') ? 'jpg' : ext;
+        const filename = `product-${Date.now()}-${Math.random().toString(36).substring(2, 7)}.${cleanExt}`;
+        const uploadDir = path.join(ROOT_DIR, 'assets', 'uploads');
+        if (!fs.existsSync(uploadDir)) {
+          fs.mkdirSync(uploadDir, { recursive: true });
+        }
+
+        const savePath = path.join(uploadDir, filename);
+        const base64Data = parsed.data.includes(',') ? parsed.data.split(',')[1] : parsed.data;
+        fs.writeFileSync(savePath, Buffer.from(base64Data, 'base64'));
+
+        const publicUrl = `/assets/uploads/${filename}`;
+        res.writeHead(200, {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        });
+        res.end(JSON.stringify({ url: publicUrl, success: true }));
+      } catch (e) {
+        res.writeHead(500, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+        res.end(JSON.stringify({ error: e.message }));
+      }
+    });
     return;
   }
 
