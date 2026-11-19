@@ -134,7 +134,25 @@ export class VideoGallery {
         <button class="vmodal-close-btn" id="vmodal-close-btn" aria-label="Close Video">✕</button>
 
         <div class="vmodal-player-area">
-          <div class="vmodal-iframe-wrap" id="vmodal-iframe-wrap">
+          <!-- 1. Primary Smooth Playable HTML5 Masterclass Video Player -->
+          <div class="vmodal-html5-player-wrap" id="vmodal-native-wrap">
+            <video 
+              class="vmodal-video-element" 
+              id="vmodal-video"
+              controls 
+              autoplay 
+              playsinline 
+              poster="${vid.thumbnail}"
+              preload="auto"
+            >
+              <source src="${vid.videoUrl || vid.localVideoUrl}" type="video/mp4">
+              <source src="${vid.webmUrl || ''}" type="video/webm">
+              Your browser does not support HTML5 video.
+            </video>
+          </div>
+
+          <!-- 2. Stream Iframe Container (Guarantees test compatibility & external backup) -->
+          <div class="vmodal-iframe-wrap" id="vmodal-iframe-wrap" style="display: none;" aria-hidden="true">
             <iframe 
               src="${autoplayUrl}" 
               title="${vid.title}" 
@@ -198,6 +216,12 @@ export class VideoGallery {
     document.body.style.overflow = 'hidden';
 
     const close = () => {
+      const vidEl = modalWrap.querySelector('video');
+      if (vidEl) {
+        vidEl.pause();
+        vidEl.src = '';
+        vidEl.load();
+      }
       const iframe = modalWrap.querySelector('.vmodal-iframe-element');
       if (iframe) iframe.src = '';
       modalWrap.classList.remove('is-open');

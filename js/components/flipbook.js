@@ -572,20 +572,12 @@ export class Flipbook {
               `).join('')}
             </div>
 
-            <!-- Reading Tools & Quality Indicators -->
+            <!-- Reading Tools -->
             <div class="book-action-icons">
               <button class="book-action-btn toc-trigger-btn" id="flipbook-toc-btn" title="Open Curated Editorial Index">
                 <span class="btn-icon">☰</span>
                 <span class="btn-text">Index & Chapters</span>
               </button>
-              <button class="book-action-btn focus-trigger-btn" id="flipbook-focus-btn" title="Toggle Reading Focus Mode">
-                <span class="btn-icon">⛶</span>
-                <span class="btn-text">Focus</span>
-              </button>
-              <span class="paper-badge" title="Coated Art Paper with Natural Page Curl">
-                <span class="paper-dot"></span>
-                <span>Coated Paper 170gsm</span>
-              </span>
             </div>
           </div>
         </div>

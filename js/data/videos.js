@@ -2,7 +2,7 @@
  * HomeHub - Interior Video Inspiration Content
  * Visual Direction: Soft Luxury Modern
  * Curated 6-Episode Masterclass Series (Complete 6-Item Row)
- * Real verified architectural home tours & styling guides
+ * Real verified local playback + architectural home tours & styling guides
  */
 
 export const INSPIRATION_VIDEOS = [
@@ -15,10 +15,12 @@ export const INSPIRATION_VIDEOS = [
     author: "HomeHub Editorial Studio",
     description: "Discover how low-slung bouclé seating, monolithic travertine tables, and linen drapery compose a tranquil sanctuary for modern living.",
     thumbnail: "assets/minh-pham-OtXADkUh3-I-unsplash.jpg",
+    videoUrl: "assets/videos/vid-living-styling.mp4",
+    localVideoUrl: "assets/videos/vid-living-styling.mp4",
+    webmUrl: "assets/videos/vid-living-styling.webm",
     embedType: "youtube",
     youtubeId: "g38H61z2ZJ0",
     embedUrl: "https://www.youtube-nocookie.com/embed/g38H61z2ZJ0?autoplay=1&rel=0&modestbranding=1&playsinline=1",
-    videoUrl: "",
     featuredSkus: ["HH-FUR-001", "HH-FUR-002", "HH-DEC-003"],
     keyTakeaways: [
       "Keep primary seating heights under 45cm for continuous eye level.",
@@ -35,10 +37,12 @@ export const INSPIRATION_VIDEOS = [
     author: "Urban Architecture Collective",
     description: "Clever spatial layout strategies for compact bedrooms: floating nightstands, recessed platform beds, and diffuse bedside illumination.",
     thumbnail: "assets/magazines/3ffa9485-4bd9-4392-a47d-7010d339117d.webp",
+    videoUrl: "assets/videos/vid-bedroom-sanctuary.mp4",
+    localVideoUrl: "assets/videos/vid-bedroom-sanctuary.mp4",
+    webmUrl: "assets/videos/vid-bedroom-sanctuary.webm",
     embedType: "youtube",
     youtubeId: "zW8S_C3C_o0",
     embedUrl: "https://www.youtube-nocookie.com/embed/zW8S_C3C_o0?autoplay=1&rel=0&modestbranding=1&playsinline=1",
-    videoUrl: "",
     featuredSkus: ["HH-FUR-004", "HH-LGT-003", "HH-DEC-004"],
     keyTakeaways: [
       "A platform bed with recessed plinth creates the optical illusion of continuous floor space.",
@@ -55,10 +59,12 @@ export const INSPIRATION_VIDEOS = [
     author: "Lumina Architectural Labs",
     description: "Layering three tiers of 2700K illumination to eliminate ceiling glare and create an intimate, cocooning atmospheric temperature.",
     thumbnail: "assets/pexels-pixabay-276746.jpg",
+    videoUrl: "assets/videos/vid-lighting-insp.mp4",
+    localVideoUrl: "assets/videos/vid-lighting-insp.mp4",
+    webmUrl: "assets/videos/vid-lighting-insp.webm",
     embedType: "youtube",
     youtubeId: "hFZFjoX2cGg",
     embedUrl: "https://www.youtube-nocookie.com/embed/hFZFjoX2cGg?autoplay=1&rel=0&modestbranding=1&playsinline=1",
-    videoUrl: "",
     featuredSkus: ["HH-LGT-001", "HH-LGT-002", "HH-LGT-004"],
     keyTakeaways: [
       "Avoid single-source central downlights; distribute light at three distinct eye-height levels.",
@@ -75,10 +81,12 @@ export const INSPIRATION_VIDEOS = [
     author: "Atelier Nord Culinary Spaces",
     description: "Architectural dining spaces designed around monolithic natural stone tables, ergonomic timber seating, and suspended warm glass illumination.",
     thumbnail: "assets/clay-banks-BnDI_MVomAI-unsplash.jpg",
+    videoUrl: "assets/videos/vid-dining-styling.mp4",
+    localVideoUrl: "assets/videos/vid-dining-styling.mp4",
+    webmUrl: "assets/videos/vid-dining-styling.webm",
     embedType: "youtube",
     youtubeId: "5aK_a7kP4g0",
     embedUrl: "https://www.youtube-nocookie.com/embed/5aK_a7kP4g0?autoplay=1&rel=0&modestbranding=1&playsinline=1",
-    videoUrl: "",
     featuredSkus: ["HH-FUR-002", "HH-LGT-001", "HH-DEC-001"],
     keyTakeaways: [
       "Suspend pendant fixtures 75–85cm above table surfaces for intimate dining conversations.",
@@ -95,10 +103,12 @@ export const INSPIRATION_VIDEOS = [
     author: "Compact Living Studio",
     description: "Watch how compact telescoping desks and floating storage adapt seamlessly between work hours and evening relaxation.",
     thumbnail: "assets/magazines/4aa14b31-2e83-4baa-8af8-a1112955006d.webp",
+    videoUrl: "assets/videos/vid-space-saving.mp4",
+    localVideoUrl: "assets/videos/vid-space-saving.mp4",
+    webmUrl: "assets/videos/vid-space-saving.webm",
     embedType: "youtube",
     youtubeId: "aJ4A1a71zYc",
     embedUrl: "https://www.youtube-nocookie.com/embed/aJ4A1a71zYc?autoplay=1&rel=0&modestbranding=1&playsinline=1",
-    videoUrl: "",
     featuredSkus: ["HH-SSS-001", "HH-SSS-002", "HH-FUR-003"],
     keyTakeaways: [
       "Telescoping console desks offer full work ergonomics without consuming permanent floor footprint.",
@@ -115,10 +125,12 @@ export const INSPIRATION_VIDEOS = [
     author: "HomeHub Master Artisans",
     description: "A deep dive into heirloom timber joinery, solid Roman travertine stone selection, and hand-tailored Italian bouclé upholstery.",
     thumbnail: "assets/pexels-fotografiagmazg-12420730.jpg",
+    videoUrl: "assets/videos/vid-furniture-craft.mp4",
+    localVideoUrl: "assets/videos/vid-furniture-craft.mp4",
+    webmUrl: "assets/videos/vid-furniture-craft.webm",
     embedType: "youtube",
     youtubeId: "4wW8yM8Vb0k",
     embedUrl: "https://www.youtube-nocookie.com/embed/4wW8yM8Vb0k?autoplay=1&rel=0&modestbranding=1&playsinline=1",
-    videoUrl: "",
     featuredSkus: ["HH-FUR-001", "HH-FUR-003", "HH-DEC-003"],
     keyTakeaways: [
       "Kiln-dried European ash mortise-and-tenon joints outlast screw-based construction by decades.",
