@@ -296,7 +296,7 @@ export const CATEGORY_INSPIRATION_DATA = {
     name: 'Lighting',
     title: 'Light / Life Architectural Illumination',
     subtitle: 'Warm 2700K Temperatures, Diffused Sconces & Arc Profiles',
-    heroImage: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=1600&q=85',
+    heroImage: 'assets/pexels-pixabay-276746.jpg',
     deck: 'Illumination is the brush that paints spatial depth. We craft three-tier 2700K illumination systems that eliminate glare and soothe evening rhythm.',
     stylingPrinciples: [
       {
@@ -321,7 +321,7 @@ export const CATEGORY_INSPIRATION_DATA = {
       duration: '5:20',
       author: 'Lumina Architectural Labs',
       description: 'Layering three tiers of 2700K illumination to eliminate ceiling glare and create an intimate, cocooning atmospheric temperature.',
-      thumbnail: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=1200&q=85',
+      thumbnail: 'assets/pexels-pixabay-276746.jpg',
       embedUrl: 'https://www.youtube-nocookie.com/embed/Q5aQ9mE5u9Q?rel=0&modestbranding=1&playsinline=1',
       takeaways: [
         'Avoid single-source central downlights; distribute light at three distinct eye-height levels.',

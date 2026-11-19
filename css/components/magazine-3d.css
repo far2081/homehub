@@ -170,7 +170,7 @@
   min-height: 640px;
   height: 640px;
   transform-style: preserve-3d;
-  background-color: #FAF8F5;
+  background-color: #F5F1E8;
   border-radius: 4px;
   cursor: default;
   /* Multi-layered soft ambient and physical book drop-shadow */
@@ -373,7 +373,7 @@
 .magazine-page {
   position: relative;
   flex: 1;
-  background-color: #FAF8F5;
+  background-color: #F5F1E8;
   overflow-y: auto;
   overflow-x: hidden;
   display: flex;

@@ -30,23 +30,23 @@ export const INITIAL_PRODUCTS = [
     ],
     images: [
       {
-        url: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1200&q=85",
-        caption: "Main Product View - Sculptural curved silhouette",
+        url: "assets/minh-pham-OtXADkUh3-I-unsplash.jpg",
+        caption: "Main Product View - Sculptural curved silhouette in light Scandinavian salon",
         type: "main"
       },
       {
-        url: "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&w=1200&q=85",
-        caption: "Alternate Angle - Low profile architectural back",
+        url: "assets/pexels-pixabay-276746.jpg",
+        caption: "Alternate Angle - Comfortable cream salon setting",
         type: "alternate"
       },
       {
-        url: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=1200&q=85",
+        url: "assets/minh-pham-OtXADkUh3-I-unsplash.jpg",
         caption: "Material Detail - Tactile Italian bouclé weave",
         type: "detail"
       },
       {
-        url: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=85",
-        caption: "Lifestyle Interior - Soft luxury salon setting",
+        url: "assets/pexels-fotografiagmazg-12420730.jpg",
+        caption: "Lifestyle Interior - Soft luxury artisan salon setting",
         type: "lifestyle"
       }
     ],
@@ -72,22 +72,22 @@ export const INITIAL_PRODUCTS = [
     ],
     images: [
       {
-        url: "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&w=1200&q=85",
-        caption: "Main Product View - Honed stone surface with organic edge",
+        url: "assets/clay-banks-BnDI_MVomAI-unsplash.jpg",
+        caption: "Main Product View - Monolithic travertine table setting",
         type: "main"
       },
       {
-        url: "https://images.unsplash.com/photo-1538688525198-9b88f6f53126?auto=format&fit=crop&w=1200&q=85",
-        caption: "Alternate Angle - Grounded monolithic plinth base",
+        url: "assets/pexels-fotografiagmazg-12420730.jpg",
+        caption: "Alternate Angle - Architectural living room anchor",
         type: "alternate"
       },
       {
-        url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85",
+        url: "assets/clay-banks-BnDI_MVomAI-unsplash.jpg",
         caption: "Material Detail - Natural travertine sediment veining",
         type: "detail"
       },
       {
-        url: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=85",
+        url: "assets/minh-pham-OtXADkUh3-I-unsplash.jpg",
         caption: "Lifestyle Interior - Paired with CloudCurve sofa and low ceramics",
         type: "lifestyle"
       }
@@ -115,22 +115,22 @@ export const INITIAL_PRODUCTS = [
     ],
     images: [
       {
-        url: "https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?auto=format&fit=crop&w=1200&q=85",
-        caption: "Main Product View - Sculptural shearling armchair",
+        url: "assets/minh-pham-OtXADkUh3-I-unsplash.jpg",
+        caption: "Main Product View - Sculptural shearling armchair in light salon",
         type: "main"
       },
       {
-        url: "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&w=1200&q=85",
-        caption: "Alternate Angle - 360° Champagne bronze pivot mechanism",
+        url: "assets/pexels-pixabay-276746.jpg",
+        caption: "Alternate Angle - 360° pivot armchair in comfortable salon setting",
         type: "alternate"
       },
       {
-        url: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=1200&q=85",
+        url: "assets/minh-pham-OtXADkUh3-I-unsplash.jpg",
         caption: "Material Detail - Tactile shearling wool pile",
         type: "detail"
       },
       {
-        url: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=85",
+        url: "assets/pexels-fotografiagmazg-12420730.jpg",
         caption: "Lifestyle Interior - Sunlit reading sanctuary",
         type: "lifestyle"
       }
@@ -158,22 +158,22 @@ export const INITIAL_PRODUCTS = [
     ],
     images: [
       {
-        url: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1200&q=85",
-        caption: "Main Product View - Clean horizontal bedframe and cushioned wings",
+        url: "assets/magazines/3ffa9485-4bd9-4392-a47d-7010d339117d.webp",
+        caption: "Main Product View - Clean horizontal bedframe in 76 sq ft bedroom sanctuary",
         type: "main"
       },
       {
-        url: "https://images.unsplash.com/photo-1592078615290-033ee584e267?auto=format&fit=crop&w=1200&q=85",
-        caption: "Alternate Angle - Recessed oak floating effect",
+        url: "assets/magazines/7589a24a-202a-49a0-99c9-5e49e7eb5da5.webp",
+        caption: "Alternate Angle - Recessed oak floating effect and architectural joinery",
         type: "alternate"
       },
       {
-        url: "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=1200&q=85",
+        url: "assets/magazines/3ffa9485-4bd9-4392-a47d-7010d339117d.webp",
         caption: "Material Detail - Hand-tailored linen seam stitching",
         type: "detail"
       },
       {
-        url: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1200&q=85",
+        url: "assets/magazines/3ffa9485-4bd9-4392-a47d-7010d339117d.webp",
         caption: "Lifestyle Interior - Monochromatic restful bedroom sanctuary",
         type: "lifestyle"
       }
@@ -203,23 +203,23 @@ export const INITIAL_PRODUCTS = [
     ],
     images: [
       {
-        url: "https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?auto=format&fit=crop&w=1200&q=85",
-        caption: "Main Product View - Sculptural wheel-thrown silhouette",
+        url: "assets/magazines/923e4bb3-ccc1-4efb-806a-bfc42fdd3565.webp",
+        caption: "Main Product View - Sculptural wheel-thrown stoneware vessels",
         type: "main"
       },
       {
-        url: "https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=1200&q=85",
-        caption: "Alternate Angle - Dramatic vessel profile with dried florals",
+        url: "assets/clay-banks-BnDI_MVomAI-unsplash.jpg",
+        caption: "Alternate Angle - Dramatic vessel profile with dried florals on wood table",
         type: "alternate"
       },
       {
-        url: "https://images.unsplash.com/photo-1581783342308-f792dbdd27c5?auto=format&fit=crop&w=1200&q=85",
+        url: "assets/magazines/923e4bb3-ccc1-4efb-806a-bfc42fdd3565.webp",
         caption: "Material Detail - Fine matte stoneware glaze texture",
         type: "detail"
       },
       {
-        url: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=85",
-        caption: "Lifestyle Interior - Styled atop Noma travertine table",
+        url: "assets/pexels-fotografiagmazg-12420730.jpg",
+        caption: "Lifestyle Interior - Styled in artisan living room setting",
         type: "lifestyle"
       }
     ],
@@ -245,23 +245,23 @@ export const INITIAL_PRODUCTS = [
     ],
     images: [
       {
-        url: "https://images.unsplash.com/photo-1577083552431-6e5fd01aa342?auto=format&fit=crop&w=1200&q=85",
-        caption: "Main Product View - Minimalist textured relief artwork",
+        url: "assets/magazines/7589a24a-202a-49a0-99c9-5e49e7eb5da5.webp",
+        caption: "Main Product View - Sculptural plaster relief artwork and timber framing",
         type: "main"
       },
       {
-        url: "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&w=1200&q=85",
-        caption: "Alternate Angle - Shadow casting on sculptural plaster folds",
+        url: "assets/magazines/1309dd06-a468-4f6b-a84a-17d6546b6966.webp",
+        caption: "Alternate Angle - Architectural gallery placement and raking natural light",
         type: "alternate"
       },
       {
-        url: "https://images.unsplash.com/photo-1581783342308-f792dbdd27c5?auto=format&fit=crop&w=1200&q=85",
-        caption: "Material Detail - Natural ash timber frame and textured gesso",
+        url: "assets/magazines/7589a24a-202a-49a0-99c9-5e49e7eb5da5.webp",
+        caption: "Material Detail - Natural ash timber frame and textured mineral gesso",
         type: "detail"
       },
       {
-        url: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=85",
-        caption: "Lifestyle Interior - Centered above CloudCurve Sofa",
+        url: "assets/minh-pham-OtXADkUh3-I-unsplash.jpg",
+        caption: "Lifestyle Interior - Centered in Scandinavian salon above CloudCurve Sofa",
         type: "lifestyle"
       }
     ],
@@ -289,23 +289,23 @@ export const INITIAL_PRODUCTS = [
     ],
     images: [
       {
-        url: "https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?auto=format&fit=crop&w=1200&q=85",
-        caption: "Main Product View - Washed linen cushion with natural relaxed hand",
+        url: "assets/pexels-fotografiagmazg-12420730.jpg",
+        caption: "Main Product View - Natural textured linen cushions in artisan living room",
         type: "main"
       },
       {
-        url: "https://images.unsplash.com/photo-1554995207-c18c203602cb?auto=format&fit=crop&w=1200&q=85",
-        caption: "Alternate Angle - Stacked cushion colour palette",
+        url: "assets/pexels-pixabay-276746.jpg",
+        caption: "Alternate Angle - Arranged on comfortable cream living room sofa",
         type: "alternate"
       },
       {
-        url: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=1200&q=85",
+        url: "assets/minh-pham-OtXADkUh3-I-unsplash.jpg",
         caption: "Material Detail - Fine weave French flax texture and flange hem",
         type: "detail"
       },
       {
-        url: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1200&q=85",
-        caption: "Lifestyle Interior - Arranged on CloudCurve Sofa",
+        url: "assets/minh-pham-OtXADkUh3-I-unsplash.jpg",
+        caption: "Lifestyle Interior - Arranged on CloudCurve Sofa in Scandinavian salon",
         type: "lifestyle"
       }
     ],
@@ -331,23 +331,23 @@ export const INITIAL_PRODUCTS = [
     ],
     images: [
       {
-        url: "https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?auto=format&fit=crop&w=1200&q=85",
-        caption: "Main Product View - Asymmetric pebble silhouette and brass rim",
+        url: "assets/magazines/7589a24a-202a-49a0-99c9-5e49e7eb5da5.webp",
+        caption: "Main Product View - Asymmetric pebble silhouette and champagne brass bezel",
         type: "main"
       },
       {
-        url: "https://images.unsplash.com/photo-1616046229478-9901c5536a45?auto=format&fit=crop&w=1200&q=85",
-        caption: "Alternate Angle - Side profile showing deep recessed rim",
+        url: "assets/magazines/de179757-6ab3-4cb0-9b56-84039d2ba4dc.webp",
+        caption: "Alternate Angle - Side profile showing deep recessed rim in warm interior",
         type: "alternate"
       },
       {
-        url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85",
+        url: "assets/magazines/7589a24a-202a-49a0-99c9-5e49e7eb5da5.webp",
         caption: "Material Detail - Satin brushed champagne metal edge",
         type: "detail"
       },
       {
-        url: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=85",
-        caption: "Lifestyle Interior - Reflected ambient light in grand foyer",
+        url: "assets/clay-banks-BnDI_MVomAI-unsplash.jpg",
+        caption: "Lifestyle Interior - Reflected ambient light in grand architectural room",
         type: "lifestyle"
       }
     ],
@@ -375,23 +375,23 @@ export const INITIAL_PRODUCTS = [
     ],
     images: [
       {
-        url: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=1200&q=85",
-        caption: "Main Product View - Handblown opal glass orb illuminated",
+        url: "assets/clay-banks-BnDI_MVomAI-unsplash.jpg",
+        caption: "Main Product View - Suspended opal glass illumination above dining table",
         type: "main"
       },
       {
-        url: "https://images.unsplash.com/photo-1540932239986-30128078f3c5?auto=format&fit=crop&w=1200&q=85",
-        caption: "Alternate Angle - Brushed brass canopy and clean drop rod",
+        url: "assets/magazines/de179757-6ab3-4cb0-9b56-84039d2ba4dc.webp",
+        caption: "Alternate Angle - Brushed brass canopy and warm ambient drop illumination",
         type: "alternate"
       },
       {
-        url: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=1200&q=85",
+        url: "assets/clay-banks-BnDI_MVomAI-unsplash.jpg",
         caption: "Material Detail - Satin matte finish on etched glass",
         type: "detail"
       },
       {
-        url: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=85",
-        caption: "Lifestyle Interior - Clustered above dining table setting",
+        url: "assets/clay-banks-BnDI_MVomAI-unsplash.jpg",
+        caption: "Lifestyle Interior - Clustered above Noma Table setting in conservatory",
         type: "lifestyle"
       }
     ],
@@ -417,23 +417,23 @@ export const INITIAL_PRODUCTS = [
     ],
     images: [
       {
-        url: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=1200&q=85",
-        caption: "Main Product View - Sweeping architectural cantilever",
+        url: "assets/pexels-pixabay-276746.jpg",
+        caption: "Main Product View - Cantilevered champagne floor illumination in evening salon",
         type: "main"
       },
       {
-        url: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=1200&q=85",
-        caption: "Alternate Angle - Heavy sculpted marble floor anchor",
+        url: "assets/minh-pham-OtXADkUh3-I-unsplash.jpg",
+        caption: "Alternate Angle - Sculptural arc profile spanning across open salon",
         type: "alternate"
       },
       {
-        url: "https://images.unsplash.com/photo-1540932239986-30128078f3c5?auto=format&fit=crop&w=1200&q=85",
-        caption: "Material Detail - Spun champagne brass shade dome",
+        url: "assets/pexels-pixabay-276746.jpg",
+        caption: "Material Detail - Spun champagne brass shade and honed stone pedestal",
         type: "detail"
       },
       {
-        url: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=1200&q=85",
-        caption: "Lifestyle Interior - Hovering serenely over Aura Lounge Chair",
+        url: "assets/minh-pham-OtXADkUh3-I-unsplash.jpg",
+        caption: "Lifestyle Interior - Hovering serenely over Aura Lounge Chair in salon",
         type: "lifestyle"
       }
     ],
@@ -460,23 +460,23 @@ export const INITIAL_PRODUCTS = [
     ],
     images: [
       {
-        url: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=1200&q=85",
-        caption: "Main Product View - Warm glowing mushroom dome",
+        url: "assets/pexels-pixabay-276746.jpg",
+        caption: "Main Product View - Warm diffused glowing table lamp in comfortable salon",
         type: "main"
       },
       {
-        url: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=1200&q=85",
-        caption: "Alternate Angle - Compact bedside profile",
+        url: "assets/magazines/de179757-6ab3-4cb0-9b56-84039d2ba4dc.webp",
+        caption: "Alternate Angle - Fluted stone pedestal in sunlit travertine reading alcove",
         type: "alternate"
       },
       {
-        url: "https://images.unsplash.com/photo-1540932239986-30128078f3c5?auto=format&fit=crop&w=1200&q=85",
-        caption: "Material Detail - Fluted natural stone base texture",
+        url: "assets/pexels-pixabay-276746.jpg",
+        caption: "Material Detail - Solid fluted natural travertine stone base",
         type: "detail"
       },
       {
-        url: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1200&q=85",
-        caption: "Lifestyle Interior - Placed on Haven Bed nightstand",
+        url: "assets/magazines/3ffa9485-4bd9-4392-a47d-7010d339117d.webp",
+        caption: "Lifestyle Interior - Placed on bedside plinth in Haven master suite",
         type: "lifestyle"
       }
     ],
@@ -502,23 +502,23 @@ export const INITIAL_PRODUCTS = [
     ],
     images: [
       {
-        url: "https://images.unsplash.com/photo-1540932239986-30128078f3c5?auto=format&fit=crop&w=1200&q=85",
-        caption: "Main Product View - Illuminated eclipse halo on textured wall",
+        url: "assets/magazines/de179757-6ab3-4cb0-9b56-84039d2ba4dc.webp",
+        caption: "Main Product View - Illuminated eclipse halo on textured architectural wall",
         type: "main"
       },
       {
-        url: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=1200&q=85",
-        caption: "Alternate Angle - Ultra slim architectural projection",
+        url: "assets/magazines/ca22619b-3da0-49d0-9829-0146c7dcc909.webp",
+        caption: "Alternate Angle - Ultra slim architectural projection flanking entryway",
         type: "alternate"
       },
       {
-        url: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=1200&q=85",
-        caption: "Material Detail - Brushed champagne metal edge finish",
+        url: "assets/magazines/de179757-6ab3-4cb0-9b56-84039d2ba4dc.webp",
+        caption: "Material Detail - Brushed champagne metal edge and seamless diffuser",
         type: "detail"
       },
       {
-        url: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=85",
-        caption: "Lifestyle Interior - Flanking hallway art gallery",
+        url: "assets/magazines/1309dd06-a468-4f6b-a84a-17d6546b6966.webp",
+        caption: "Lifestyle Interior - Flanking grand living room gallery wall",
         type: "lifestyle"
       }
     ],
@@ -546,22 +546,22 @@ export const INITIAL_PRODUCTS = [
     ],
     images: [
       {
-        url: "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&w=1200&q=85",
-        caption: "Main Product View - Closed minimalist console configuration",
+        url: "assets/magazines/4aa14b31-2e83-4baa-8af8-a1112955006d.webp",
+        caption: "Main Product View - Compact modular desk & integrated workspace solution",
         type: "main"
       },
       {
-        url: "https://images.unsplash.com/photo-1507652313519-d4e9174996dd?auto=format&fit=crop&w=1200&q=85",
-        caption: "Alternate Angle - Extended work surface for compact living",
+        url: "assets/magazines/4f5d0ae3-01f3-41ad-b9df-0624121da53a.webp",
+        caption: "Alternate Angle - Extended work surface for compact study sanctum",
         type: "alternate"
       },
       {
-        url: "https://images.unsplash.com/photo-1538688525198-9b88f6f53126?auto=format&fit=crop&w=1200&q=85",
-        caption: "Material Detail - Fluted ash drawer front and soft glides",
+        url: "assets/magazines/4aa14b31-2e83-4baa-8af8-a1112955006d.webp",
+        caption: "Material Detail - Fluted ash drawer front and concealed soft-close glides",
         type: "detail"
       },
       {
-        url: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=85",
+        url: "assets/magazines/4aa14b31-2e83-4baa-8af8-a1112955006d.webp",
         caption: "Lifestyle Interior - Nook office styled in light-filled alcove",
         type: "lifestyle"
       }
@@ -588,23 +588,23 @@ export const INITIAL_PRODUCTS = [
     ],
     images: [
       {
-        url: "https://images.unsplash.com/photo-1538688525198-9b88f6f53126?auto=format&fit=crop&w=1200&q=85",
-        caption: "Main Product View - Clean floating wall mount profile",
+        url: "assets/magazines/ca22619b-3da0-49d0-9829-0146c7dcc909.webp",
+        caption: "Main Product View - Wall-hung floating console in light hallway",
         type: "main"
       },
       {
-        url: "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&w=1200&q=85",
-        caption: "Alternate Angle - Tambour door opening detail",
+        url: "assets/magazines/a3ab6983-e2aa-4589-94ff-b0ce24f9dea1.webp",
+        caption: "Alternate Angle - Tambour door opening detail and hidden storage",
         type: "alternate"
       },
       {
-        url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85",
-        caption: "Material Detail - Tactile vertical flute wood grooves",
+        url: "assets/magazines/a3ab6983-e2aa-4589-94ff-b0ce24f9dea1.webp",
+        caption: "Material Detail - Tactile vertical flute wood grooves and champagne rim",
         type: "detail"
       },
       {
-        url: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=85",
-        caption: "Lifestyle Interior - Elevated entryway storage setting",
+        url: "assets/magazines/ca22619b-3da0-49d0-9829-0146c7dcc909.webp",
+        caption: "Lifestyle Interior - Elevated entryway storage and wall gallery",
         type: "lifestyle"
       }
     ],

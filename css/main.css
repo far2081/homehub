@@ -1397,7 +1397,7 @@ button:active,
 .ideas-view-wrapper {
   min-height: 80vh;
   padding: 2.5rem 0 5rem;
-  background-color: #FAF8F5;
+  background-color: #F5F1E8;
 }
 
 .view-nav-breadcrumb-bar {
@@ -1405,7 +1405,7 @@ button:active,
   align-items: center;
   justify-content: space-between;
   padding-bottom: 1.5rem;
-  border-bottom: 1px solid #E5DFD2;
+  border-bottom: 1px solid #DDD5C5;
   margin-bottom: 2.5rem;
   flex-wrap: wrap;
   gap: 1rem;
