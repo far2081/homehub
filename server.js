@@ -289,3 +289,4 @@ if (isDirectRun && !process.env.VERCEL) {
 }
 
 export { server };
+export default server;
