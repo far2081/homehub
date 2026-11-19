@@ -30,9 +30,30 @@ import {
 } from '../services/supabaseClient.js';
 
 export class AdminPortal {
+  getStoredProducts() {
+    let stored = null;
+    try {
+      stored = storage.get('custom_products', null) || storage.get('homehub_products', null);
+    } catch (_) {}
+    if (!Array.isArray(stored) || stored.length === 0) {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        try {
+          const raw1 = window.localStorage.getItem('homehub_custom_products');
+          const raw2 = window.localStorage.getItem('homehub_products');
+          const raw3 = window.localStorage.getItem('custom_products');
+          if (raw1) stored = JSON.parse(raw1);
+          else if (raw2) stored = JSON.parse(raw2);
+          else if (raw3) stored = JSON.parse(raw3);
+        } catch (_) {}
+      }
+    }
+    return (Array.isArray(stored) && stored.length > 0) ? stored : null;
+  }
+
   constructor(containerId, options = {}) {
     this.container = document.getElementById(containerId);
-    this.products = options.products || [];
+    const stored = this.getStoredProducts();
+    this.products = stored || options.products || [];
     this.categories = options.categories || [];
     this.activeTab = 'products';
     this.pluginCategoryFilter = 'all';
@@ -145,9 +166,15 @@ export class AdminPortal {
   async open() {
     await this.checkSessionAuth();
     // Synchronize active product state with storage backup
-    const stored = storage.get('custom_products', storage.get('homehub_products', null));
-    if (Array.isArray(stored) && stored.length > 0) {
-      this.products = stored;
+    const stored = this.getStoredProducts();
+    if (stored && stored.length > 0) {
+      const existingSkus = new Set((this.products || []).map(p => p.sku));
+      const newItems = stored.filter(p => !existingSkus.has(p.sku));
+      if (stored.length >= (this.products || []).length) {
+        this.products = stored;
+      } else {
+        this.products = [...newItems, ...(this.products || [])];
+      }
     }
     await this.render();
     if (this.container) {
@@ -182,6 +209,9 @@ export class AdminPortal {
           const localOnly = (this.products || []).filter(p => !remoteSkus.has(p.sku));
           this.products = [...localOnly, ...remoteProducts];
           this.saveLocalProductsBackup();
+          if (this.isOpen() && this.activeTab === 'products') {
+            this.renderTabContentArea();
+          }
         }
       } catch (err) {
         console.warn('Admin: Supabase products fetch error:', err.message);
@@ -346,6 +376,7 @@ export class AdminPortal {
       try {
         window.localStorage.setItem('homehub_products', JSON.stringify(this.products));
         window.localStorage.setItem('homehub_custom_products', JSON.stringify(this.products));
+        window.localStorage.setItem('custom_products', JSON.stringify(this.products));
       } catch (_) {}
     }
     if (typeof window !== 'undefined' && window.homehub) {
@@ -1960,7 +1991,7 @@ export class AdminPortal {
             } else {
               const created = await adminCreateProduct(productPayload);
               const itemToAdd = { ...productPayload, ...(created || {}) };
-              this.products.unshift(itemToAdd);
+              this.products = [itemToAdd, ...this.products.filter(p => p.sku !== sku)];
               cloudSynced = true;
               showToast(`New piece "${name}" saved to Supabase!`, 'success');
             }
@@ -1976,7 +2007,7 @@ export class AdminPortal {
             if (idx > -1) this.products[idx] = { ...this.products[idx], ...productPayload };
             showToast(`Piece ${sku} updated (Local Atelier storage).`, 'info');
           } else {
-            this.products.unshift(productPayload);
+            this.products = [productPayload, ...this.products.filter(p => p.sku !== sku)];
             showToast(`Piece "${name}" created (Local Atelier storage).`, 'info');
           }
         }

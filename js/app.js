@@ -147,7 +147,16 @@ class HomeHubApp {
     }
 
     // Load products from storage if modified via Admin, else initial concept catalogue
-    this.products = storage.get('custom_products', INITIAL_PRODUCTS);
+    let storedProducts = storage.get('custom_products', null);
+    if (!storedProducts || !Array.isArray(storedProducts) || storedProducts.length === 0) {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        try {
+          const raw = window.localStorage.getItem('homehub_custom_products') || window.localStorage.getItem('homehub_products') || window.localStorage.getItem('custom_products');
+          if (raw) storedProducts = JSON.parse(raw);
+        } catch (_) {}
+      }
+    }
+    this.products = (Array.isArray(storedProducts) && storedProducts.length > 0) ? storedProducts : INITIAL_PRODUCTS;
     this.categories = CATEGORIES;
 
     this.flipbook = null;
@@ -196,12 +205,20 @@ class HomeHubApp {
     try {
       const res = await fetchStorefrontProducts();
       if (res && res.data && res.data.length > 0 && !res.isFallback) {
-        this.products = res.data;
+        // Merge with local creations so user-added products are never wiped out
+        const remoteSkus = new Set(res.data.map(p => p.sku));
+        const localOnly = (this.products || []).filter(p => !remoteSkus.has(p.sku));
+        this.products = [...localOnly, ...res.data];
         if (this.catalogue) this.catalogue.setProducts(this.products);
         if (this.productDetail) this.productDetail.products = this.products;
         if (this.cart) this.cart.setProducts(this.products);
         if (this.wishlist) this.wishlist.setProducts(this.products);
-        if (this.adminPortal) this.adminPortal.products = this.products;
+        if (this.adminPortal) {
+          this.adminPortal.products = this.products;
+          if (this.adminPortal.isOpen() && this.adminPortal.activeTab === 'products') {
+            this.adminPortal.renderTabContentArea();
+          }
+        }
       }
     } catch (err) {
       console.warn('Could not load products from Supabase, using local catalogue:', err);
