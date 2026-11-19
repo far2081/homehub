@@ -80,19 +80,24 @@ const P = {
   boucleHeadboard: 'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&w=1200&q=85',
   studioPenthouse: 'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&w=1400&q=85',
 
-  // Clean Full-Bleed Panoramic Interior Photography (Zero UI Elements)
-  compactCover: 'assets/magazines/spread-cover.png',
-  galleyKitchenPanoramic: 'assets/image_8.png',
-  kitchenDetails: 'assets/magazines/spread-02-kitchen-details.png',
-  doubleLivingPanoramic: 'assets/magazines/spread-03-living-99sqft.png',
-  livingNook: 'assets/magazines/spread-04-living-nook.png',
-  doubleBedroomPanoramic: 'assets/magazines/spread-05-bedroom-76sqft.png',
-  workspaceDetails: 'assets/magazines/spread-06-workspace.png',
-  doubleDiningPanoramic: 'assets/magazines/spread-07-entryway-30sqft.png',
-  hallwayStorage: 'assets/magazines/spread-08-hallway-storage.png',
-  studyCorner: 'assets/magazines/spread-09-study-corner.png',
-  hiddenStorage: 'assets/magazines/spread-10-hidden-storage.png',
-  lookbookGalleryPanoramic: 'assets/magazines/spread-11-lookbook.png'
+  // Clean Full-Bleed Panoramic Interior Photography (Exclusively from assets/magazines/*.webp)
+  compactCover: 'assets/magazines/1aa74f5d-417b-4fed-ad3d-3f05fce90ac1.webp',
+  galleyKitchenPanoramic: 'assets/magazines/1aa74f5d-417b-4fed-ad3d-3f05fce90ac1.webp',
+  kitchenDetails: 'assets/magazines/15db50fe-f290-462b-ae89-457ee3ab948a.webp',
+  kitchenPantry: 'assets/magazines/f7b8e266-e96a-4ec0-aaea-d5e15b1942ad.webp',
+  doubleLivingPanoramic: 'assets/magazines/1309dd06-a468-4f6b-a84a-17d6546b6966.webp',
+  livingNook: 'assets/magazines/de179757-6ab3-4cb0-9b56-84039d2ba4dc.webp',
+  doubleBedroomPanoramic: 'assets/magazines/3ffa9485-4bd9-4392-a47d-7010d339117d.webp',
+  workspaceDetails: 'assets/magazines/4aa14b31-2e83-4baa-8af8-a1112955006d.webp',
+  doubleDiningPanoramic: 'assets/magazines/7a542e2d-ed2f-4a41-a70e-048a0f5d9961.webp',
+  hallwayStorage: 'assets/magazines/ca22619b-3da0-49d0-9829-0146c7dcc909.webp',
+  compactLaundry: 'assets/magazines/5e2712ee-dbef-4576-b2e8-73fcba75db23.webp',
+  studyCorner: 'assets/magazines/4f5d0ae3-01f3-41ad-b9df-0624121da53a.webp',
+  bedroomSuite: 'assets/magazines/7589a24a-202a-49a0-99c9-5e49e7eb5da5.webp',
+  hiddenStorage: 'assets/magazines/a3ab6983-e2aa-4589-94ff-b0ce24f9dea1.webp',
+  sunroomBanquette: 'assets/magazines/5b9b473d-4663-476b-8e12-a682c2e662da.webp',
+  lookbookGalleryPanoramic: 'assets/magazines/923e4bb3-ccc1-4efb-806a-bfc42fdd3565.webp',
+  bunkModular: 'assets/magazines/6153f7aa-dd19-4669-86f9-0624e3fd51ec.webp'
 };
 
 export const MAGAZINE_BOOKS = {
@@ -1186,7 +1191,7 @@ export const MAGAZINE_BOOKS = {
       },
 
       // Spread 1 (Pages 2-3) — Panoramic 52 sq ft Galley Kitchen
-      // Custom panoramic view split across the center bind (image_8.png) with natural gutter shading in the fold.
+      // Custom panoramic view split across the center bind with natural gutter shading in the fold.
       {
         pageNumber: 2,
         type: "layout-a",
@@ -1215,7 +1220,7 @@ export const MAGAZINE_BOOKS = {
       },
 
       // Spread 2 (Pages 4-5) — Kitchen closeups & Wall-Grid Systems
-      // Distinct, candid detailed collage of open drawers, stacked spice jars, and roll-out storage cart close-ups without repeating image_8.png.
+      // Distinct, candid detailed collage of open drawers, stacked spice jars, and roll-out storage cart close-ups.
       {
         pageNumber: 4,
         type: "layout-b",
@@ -1237,7 +1242,7 @@ export const MAGAZINE_BOOKS = {
         headline: "Roll-Out Carts & Wall-Grid Systems",
         deck: "Stacked spice jars, hanging wire baskets, and roll-out utility carts that glide under worktops.",
         note: "Perforated powder-coated steel with heavy-duty locking ball-bearing castors.",
-        heroImage: P.kitchenDetails,
+        heroImage: P.kitchenPantry,
         products: [
           { sku: "HH-SSS-002", label: "Flute Floating Console", price: "₨ 64,000", badge: "Storage System", hotspot: { x: 52, y: 58 } }
         ]
@@ -1418,7 +1423,7 @@ export const MAGAZINE_BOOKS = {
         deck: "Over-the-door hanging rails, felt organizing bins, and stacking shoe modules.",
         collectionItems: [
           { sku: "HH-SSS-001", label: "Modula Nested Desk", price: "₨ 88,500", specs: "Dual-Height Oak • Roll-Out Worktop", image: P.workspaceDetails },
-          { sku: "HH-SSS-002", label: "Flute Floating Console", price: "₨ 64,000", specs: "160 × 35 × 28 cm • Wall-Mounted", image: P.hallwayStorage }
+          { sku: "HH-SSS-002", label: "Flute Floating Console", price: "₨ 64,000", specs: "160 × 35 × 28 cm • Wall-Mounted", image: P.compactLaundry }
         ],
         products: [
           { sku: "HH-SSS-001", label: "Modula Storage Organizer", price: "₨ 88,500", badge: "Organizer", hotspot: { x: 40, y: 50 } },
@@ -1455,7 +1460,7 @@ export const MAGAZINE_BOOKS = {
           "Directional table illumination creates a warm light cone that isolates the workspace without flooding the rest of the dark apartment."
         ],
         materialNote: "Natural linen shades, machined brass pivots, solid timber joinery.",
-        heroImage: P.studyCorner,
+        heroImage: P.bedroomSuite,
         products: [
           { sku: "HH-LGT-001", label: "Luna Pendant Light", price: "₨ 42,000", badge: "Luna Light", hotspot: { x: 48, y: 60 } }
         ]
@@ -1484,7 +1489,7 @@ export const MAGAZINE_BOOKS = {
         headline: "Modular Shelf Dividers & Nested Tools",
         deck: "Removable acoustic dividers that allow wardrobe shelves to adapt between summer linens and winter coats.",
         note: "Eco-friendly pressed felt dividers with friction tabs.",
-        heroImage: P.hiddenStorage,
+        heroImage: P.sunroomBanquette,
         products: [
           { sku: "HH-DEC-003", label: "CloudSoft Dividers", price: "₨ 18,500", badge: "Felt Dividers", hotspot: { x: 52, y: 52 } }
         ]
@@ -1517,7 +1522,7 @@ export const MAGAZINE_BOOKS = {
         deck: "Complete dimensions, timber specifications, and verified prices with white-glove Cash on Delivery assembly.",
         collectionItems: [
           { sku: "HH-FUR-004", label: "Haven Low-Profile Bed", price: "₨ 285,000", specs: "King / Queen • Floating Base", image: P.doubleBedroomPanoramic },
-          { sku: "HH-DEC-004", label: "Halo Pebble Mirror", price: "₨ 38,000", specs: "75 × 110 cm • Solid Brass", image: P.hallwayStorage }
+          { sku: "HH-DEC-004", label: "Halo Pebble Mirror", price: "₨ 38,000", specs: "75 × 110 cm • Solid Brass", image: P.bunkModular }
         ],
         products: [
           { sku: "HH-FUR-004", label: "Haven Platform Bed", price: "₨ 285,000", badge: "Order Bed", hotspot: { x: 40, y: 50 } },
@@ -1533,7 +1538,7 @@ export const MAGAZINE_BOOKS = {
         kicker: "THE ART OF COMPACT LIVING • COMPLETED",
         deck: "An exploration of spatial agility, multi-functional joinery, and honest craft for modern urban homes.",
         colophon: "Published by HomeHub Atelier • Created by Farhana Aamir • farzunmir@gmail.com",
-        heroImage: P.compactCover,
+        heroImage: P.lookbookGalleryPanoramic,
         products: []
       }
     ]

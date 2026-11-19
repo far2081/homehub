@@ -136,6 +136,28 @@ async function run() {
     await sendCommand(ws, 'Page.navigate', { url: BASE_URL });
     await sleep(2500);
 
+    // Capture Storefront Homepage
+    console.log('[CDP] Capturing Desktop Storefront Homepage...');
+    await captureScreenshot(ws, 'preview_desktop_homepage.png');
+
+    // Capture Shop Full Catalogue with cards
+    console.log('[CDP] Navigating to Shop View...');
+    await evalInPage(ws, `
+      (() => {
+        window.location.hash = '#shop';
+      })()
+    `);
+    await sleep(1500);
+    await captureScreenshot(ws, 'preview_desktop_catalogue.png');
+
+    // Return to #home
+    await evalInPage(ws, `
+      (() => {
+        window.location.hash = '#home';
+      })()
+    `);
+    await sleep(1000);
+
     // Load 'small-spaces' (The Art of Compact Living)
     console.log('[CDP] Opening The Art of Compact Living (small-spaces)...');
     await evalInPage(ws, `
@@ -217,6 +239,7 @@ async function run() {
     console.log('[CDP] Navigating Mobile View...');
     await sendCommand(ws, 'Page.navigate', { url: BASE_URL });
     await sleep(2500);
+    await captureScreenshot(ws, 'preview_mobile_homepage.png');
 
     // Open small-spaces on mobile
     await evalInPage(ws, `

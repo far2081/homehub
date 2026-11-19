@@ -176,10 +176,10 @@
 
 /* Product Card */
 .product-card {
-  background-color: var(--color-surface-pure);
+  background-color: #FFFFFF;
   border-radius: var(--radius-sm);
   overflow: hidden;
-  border: 1px solid var(--color-border-subtle);
+  border: 1px solid #DDD5C5;
   transition: all var(--transition-smooth);
   display: flex;
   flex-direction: column;
@@ -188,7 +188,7 @@
 .product-card:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-md);
-  border-color: var(--color-border);
+  border-color: #C5BBA7;
 }
 
 .card-media {
@@ -196,7 +196,7 @@
   width: 100%;
   padding-top: 110%; /* Elegant luxury vertical ratio */
   overflow: hidden;
-  background-color: #F5F2EC;
+  background-color: #F5F1E8;
   cursor: pointer;
 }
 

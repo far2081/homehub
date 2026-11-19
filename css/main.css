@@ -10,48 +10,49 @@
 :root {
   /* ========================================================================
      HOMEHUB DESIGN SYSTEM — CLAUDE EDITORIAL LUXURY DESIGN SYSTEM
-     Warm terracotta/amber, tactile parchment alabaster, and quiet intelligence
+     Rich warm cream, deep charcoal/espresso, stone borders & rich terracotta
      ======================================================================== */
   
   /* 1. Claude Signature Editorial Palette */
-  --color-canvas: #FAF9F5;
-  --color-canvas-subtle: #F5F3EE;
-  --color-parchment: #FAF9F5;
-  --color-warm-ivory: #FAF9F5;
-  --color-cream: #F5F3EE;
-  --color-soft-ivory: #FAF9F5;
+  --color-canvas: #F5F1E8;
+  --color-canvas-subtle: #ECE6D8;
+  --color-parchment: #F5F1E8;
+  --color-warm-ivory: #F5F1E8;
+  --color-cream: #F5F1E8;
+  --color-soft-ivory: #F5F1E8;
 
   /* Ink & Typography Hierarchy */
-  --color-ink: #191918;
-  --color-noir: #191918;
-  --color-deep-charcoal: #191918;
-  --color-charcoal: #2B2824;
-  --color-muted-earth: #686259;
-  --color-ink-secondary: #5C574F;
-  --color-ink-muted: #8A8378;
+  --color-ink: #1C1B19;
+  --color-noir: #1C1B19;
+  --color-deep-charcoal: #1C1B19;
+  --color-charcoal: #2A2825;
+  --color-muted-earth: #6B645B;
+  --color-ink-secondary: #5C564E;
+  --color-ink-muted: #8E867B;
+  --color-dark-section: #1C1B19;
 
-  /* Hairline Stone Borders */
-  --color-border: #E6E2D8;
-  --color-border-subtle: #F0ECE4;
-  --color-border-hover: #D6D0C4;
+  /* Stone Borders */
+  --color-border: #DDD5C5;
+  --color-border-subtle: #DDD5C5;
+  --color-border-hover: #C5BBA7;
 
   /* Tactile Surfaces */
   --color-surface-pure: #FFFFFF;
   --color-surface-card: #FFFFFF;
-  --color-surface-elevated: #FCFBF8;
-  --color-surface-subtle: #FAF9F5;
-  --color-surface-tint: #F3EFE9;
+  --color-surface-elevated: #FFFFFF;
+  --color-surface-subtle: #F5F1E8;
+  --color-surface-tint: #ECE6D8;
 
-  /* Signature Warm Terracotta & Amber Accents */
-  --color-claude-terracotta: #D97757;
-  --color-claude-terracotta-hover: #C4623F;
-  --color-claude-terracotta-subtle: rgba(217, 119, 87, 0.08);
-  --color-claude-terracotta-border: rgba(217, 119, 87, 0.22);
-  --color-terracotta: #D97757;
-  --color-terracotta-hover: #C4623F;
-  --color-terracotta-subtle: rgba(217, 119, 87, 0.08);
-  --color-terracotta-border: rgba(217, 119, 87, 0.22);
-  --color-terracotta-glow: 0 4px 18px rgba(217, 119, 87, 0.28);
+  /* Signature Rich Terracotta & Amber Accents */
+  --color-claude-terracotta: #C85A32;
+  --color-claude-terracotta-hover: #B24E29;
+  --color-claude-terracotta-subtle: rgba(200, 90, 50, 0.08);
+  --color-claude-terracotta-border: rgba(200, 90, 50, 0.22);
+  --color-terracotta: #C85A32;
+  --color-terracotta-hover: #B24E29;
+  --color-terracotta-subtle: rgba(200, 90, 50, 0.08);
+  --color-terracotta-border: rgba(200, 90, 50, 0.22);
+  --color-terracotta-glow: 0 4px 18px rgba(200, 90, 50, 0.28);
 
   /* Muted Editorial Secondary Tones */
   --color-sage: #DCE5DD;
@@ -351,7 +352,8 @@ button:active,
   align-items: center;
   justify-content: center;
   padding: 4rem 1.5rem;
-  background: linear-gradient(180deg, var(--color-soft-ivory) 0%, var(--color-cream) 100%);
+  background: var(--color-deep-charcoal);
+  color: var(--color-canvas);
   overflow: hidden;
 }
 
@@ -361,8 +363,8 @@ button:active,
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: radial-gradient(circle at 10% 20%, rgba(217, 119, 87, 0.06) 0%, transparent 40%),
-                    radial-gradient(circle at 90% 80%, rgba(232, 215, 207, 0.35) 0%, transparent 45%);
+  background-image: radial-gradient(circle at 10% 20%, rgba(200, 90, 50, 0.12) 0%, transparent 40%),
+                    radial-gradient(circle at 90% 80%, rgba(30, 28, 25, 0.8) 0%, transparent 45%);
   pointer-events: none;
 }
 
@@ -377,7 +379,7 @@ button:active,
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.35em;
-  color: var(--color-muted-earth);
+  color: var(--color-soft-champagne);
   font-weight: 600;
   margin-bottom: 1.2rem;
 }
@@ -387,7 +389,7 @@ button:active,
   font-weight: 400;
   line-height: 1.05;
   margin-bottom: 1.4rem;
-  color: var(--color-noir);
+  color: #FFFFFF;
   letter-spacing: -0.02em;
 }
 
@@ -399,7 +401,7 @@ button:active,
 
 .hero-paragraph {
   font-size: clamp(1rem, 2vw, 1.2rem);
-  color: var(--color-charcoal);
+  color: #D8D2C7;
   margin-bottom: 2.5rem;
   max-width: 640px;
   margin-left: auto;
@@ -431,23 +433,27 @@ button:active,
 .hero-btn-primary:hover {
   background-color: var(--color-terracotta-hover);
   transform: translateY(-2px);
-  box-shadow: 0 6px 22px rgba(217, 119, 87, 0.4);
+  box-shadow: 0 6px 22px rgba(200, 90, 50, 0.4);
 }
 
 .hero-btn-secondary {
-  background-color: var(--color-surface-pure);
-  color: var(--color-noir);
+  background-color: transparent;
+  color: #FFFFFF;
   padding: 0.95rem 2rem;
   border-radius: var(--radius-pill);
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   font-weight: 600;
-  border: 1px solid var(--color-border);
+  border: 1px solid rgba(255, 255, 255, 0.28);
   box-shadow: var(--shadow-subtle);
 }
 
 .hero-btn-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+  border-color: rgba(255, 255, 255, 0.5);
+}
   background-color: var(--color-surface-subtle);
   border-color: var(--color-border-hover);
   transform: translateY(-2px);
@@ -1049,8 +1055,8 @@ button:active,
 
 .home-hero-section {
   padding: clamp(3.5rem, 6vw, 5.5rem) 0 clamp(2.5rem, 4vw, 4rem);
-  background-color: var(--color-warm-ivory);
-  border-bottom: 1px solid var(--color-border);
+  background-color: var(--color-deep-charcoal);
+  border-bottom: 1px solid #2B2824;
   text-align: center;
 }
 
@@ -1067,9 +1073,9 @@ button:active,
   font-weight: 600;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--color-muted-olive);
-  background-color: rgba(137, 149, 129, 0.12);
-  border: 1px solid rgba(137, 149, 129, 0.22);
+  color: var(--color-soft-champagne);
+  background-color: rgba(217, 195, 160, 0.12);
+  border: 1px solid rgba(217, 195, 160, 0.22);
   padding: 6px 18px;
   border-radius: var(--radius-pill);
   margin-bottom: 1.4rem;
@@ -1080,14 +1086,14 @@ button:active,
   font-size: var(--font-size-hero);
   font-weight: 400;
   line-height: 1.1;
-  color: var(--color-deep-charcoal);
+  color: #FFFFFF;
   margin: 0 0 1.2rem;
   letter-spacing: -0.015em;
 }
 
 .home-hero-deck {
   font-size: clamp(1rem, 1.6vw, 1.15rem);
-  color: var(--color-muted-earth);
+  color: #D8D2C7;
   line-height: 1.7;
   margin: 0 auto 2.4rem;
   max-width: 680px;
@@ -1106,8 +1112,8 @@ button:active,
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background-color: var(--color-deep-charcoal);
-  color: var(--color-warm-ivory);
+  background-color: var(--color-terracotta);
+  color: #FFFFFF;
   padding: 13px 30px;
   border-radius: var(--radius-pill);
   font-size: 0.82rem;
@@ -1116,12 +1122,14 @@ button:active,
   text-transform: uppercase;
   text-decoration: none;
   transition: all var(--transition-fast);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-terracotta);
 }
 
 .home-action-btn-primary:hover {
-  background-color: #45423C;
-  transform: translateY(-1px);
+  background-color: var(--color-terracotta-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(200, 90, 50, 0.4);
+}
   box-shadow: var(--shadow-md);
 }
 

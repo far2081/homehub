@@ -1672,8 +1672,8 @@
   letter-spacing: 0.14em;
   text-transform: uppercase;
   font-weight: 600;
-  color: #FAF9F5;
-  background: rgba(217, 119, 87, 0.92); /* Terracotta */
+  color: #FFFFFF;
+  background: rgba(200, 90, 50, 0.92); /* Rich Terracotta #C85A32 */
   padding: 0.28rem 0.75rem;
   border-radius: 9999px;
   margin-bottom: 0.5rem;
@@ -2249,7 +2249,7 @@
   bottom: 0;
   width: 90vw;
   max-width: 420px;
-  background-color: #FAF9F5;
+  background-color: #F5F1E8;
   border-left: 1px solid var(--color-border);
   box-shadow: -10px 0 35px rgba(25, 25, 24, 0.15);
   z-index: 12000;
