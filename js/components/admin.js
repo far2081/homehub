@@ -1730,12 +1730,12 @@ export class AdminPortal {
                 type="text" 
                 id="f-img-url" 
                 required 
-                value="${isEdit && existingProduct.images && existingProduct.images[0] ? existingProduct.images[0].url : 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1200&q=85'}" 
+                value="${isEdit && existingProduct.images && existingProduct.images[0] ? existingProduct.images[0].url : 'assets/minh-pham-OtXADkUh3-I-unsplash.jpg'}" 
                 placeholder="Image URL, /assets/uploads/... or uploaded file"
               />
             </div>
             <div class="image-preview-box">
-              <img id="form-img-preview" src="${isEdit && existingProduct.images && existingProduct.images[0] ? existingProduct.images[0].url : 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1200&q=85'}" alt="Preview" />
+              <img id="form-img-preview" src="${isEdit && existingProduct.images && existingProduct.images[0] ? existingProduct.images[0].url : 'assets/minh-pham-OtXADkUh3-I-unsplash.jpg'}" alt="Preview" />
             </div>
           </div>
 
@@ -1884,26 +1884,35 @@ export class AdminPortal {
       };
 
       try {
+        let cloudSynced = false;
         if (isSupabaseConfigured()) {
-          if (isEdit) {
-            const updated = await adminUpdateProduct(productPayload.id, productPayload);
-            const idx = this.products.findIndex(p => p.sku === sku);
-            if (idx > -1) this.products[idx] = updated;
-            showToast(`Piece ${sku} updated in Supabase database.`, 'success');
-          } else {
-            const created = await adminCreateProduct(productPayload);
-            this.products.unshift(created);
-            showToast(`New piece "${name}" saved to Supabase!`, 'success');
+          try {
+            if (isEdit) {
+              const updated = await adminUpdateProduct(productPayload.id, productPayload);
+              const idx = this.products.findIndex(p => p.sku === sku);
+              if (idx > -1) this.products[idx] = updated;
+              cloudSynced = true;
+              showToast(`Piece ${sku} updated in Supabase database.`, 'success');
+            } else {
+              const created = await adminCreateProduct(productPayload);
+              this.products.unshift(created);
+              cloudSynced = true;
+              showToast(`New piece "${name}" saved to Supabase!`, 'success');
+            }
+          } catch (cloudErr) {
+            console.warn('Supabase cloud sync failed, activating local persistence fallback:', cloudErr);
           }
-        } else {
-          // Offline fallback
+        }
+
+        if (!cloudSynced) {
+          // Local persistence fallback
           if (isEdit) {
             const idx = this.products.findIndex(p => p.sku === sku);
             if (idx > -1) this.products[idx] = { ...this.products[idx], ...productPayload };
-            showToast(`Piece ${sku} updated (Local).`, 'info');
+            showToast(`Piece ${sku} updated (Local Atelier storage).`, 'info');
           } else {
             this.products.unshift(productPayload);
-            showToast(`Piece ${name} created (Local).`, 'info');
+            showToast(`Piece "${name}" created (Local Atelier storage).`, 'info');
           }
         }
 
@@ -1911,6 +1920,7 @@ export class AdminPortal {
         closeForm();
         this.render();
       } catch (err) {
+        console.error('Save product error:', err);
         showToast(`Save error: ${err.message}`, 'warning');
       } finally {
         if (submitBtn) {

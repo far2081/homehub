@@ -300,12 +300,6 @@
             <p class="hero-deck">
               An architectural exploration of small-space ingenuity, quiet proportions, and the calm beauty of considered negative space.
             </p>
-            <div class="hero-actions">
-              <a href="#magazine-section" class="hero-btn-primary" id="hero-btn-read-magazine">
-                <span class="btn-icon">📖</span>
-                <span>Open Publication</span>
-              </a>
-            </div>
           </div>
 
           <div class="hero-media-wrapper">
@@ -342,25 +336,231 @@
         </div>
       </section>
 
-      <!-- 3. CURATED PIECES FOR COMPACT LIVING (Uncrowded, calm 4-item grid) -->
+      <!-- 3. CURATED PIECES FOR COMPACT LIVING (4 Categories, 10 Slide Images with Add to Cart) -->
       <section class="home-curated-section" aria-label="Curated Pieces for Compact Living" data-plugin-slot="curated-showcase">
         <div class="container">
           <div class="curated-header-row">
             <div>
               <span class="section-kicker">ATELIER HIGHLIGHTS</span>
               <h2 class="section-serif-title">Curated for Considered Spaces</h2>
-              <p class="section-subtext">Four essential handcrafted pieces designed to maximize living volume without visual clutter.</p>
+              <p class="section-subtext">Four core living categories, ten handcrafted pieces engineered for spatial intelligence and unhurried calm.</p>
             </div>
-            <a href="#shop" class="curated-view-all-btn" id="home-curated-view-all">
-              <span>View Full 14-Piece Atelier Collection →</span>
-            </a>
+            <div class="curated-controls-group">
+              <div class="curated-carousel-nav" aria-label="Slide navigation">
+                <button class="curated-nav-arrow" id="curated-slide-prev" aria-label="Previous slide" title="Previous Piece">←</button>
+                <button class="curated-nav-arrow" id="curated-slide-next" aria-label="Next slide" title="Next Piece">→</button>
+              </div>
+              <a href="#shop" class="curated-view-all-btn" id="home-curated-view-all">
+                <span>View Full 14-Piece Atelier Collection →</span>
+              </a>
+            </div>
           </div>
 
-          <div class="home-curated-grid">
-            <!-- Piece 1: Modula Nested Desk -->
-            <article class="home-piece-card" data-sku="HH-SSS-001">
+          <!-- 4 Categories Filter Tabs with Corresponding Image Thumbnails -->
+          <div class="curated-category-tabs" role="tablist" aria-label="Curated categories">
+            <button class="curated-cat-tab active" data-category="all" role="tab" aria-selected="true">
+              <img src="assets/minh-pham-OtXADkUh3-I-unsplash.jpg" alt="All Collections" class="curated-cat-thumb" />
+              <span class="curated-cat-info">
+                <span class="curated-cat-name">All Pieces</span>
+                <span class="curated-cat-count">10 Pieces</span>
+              </span>
+            </button>
+            <button class="curated-cat-tab" data-category="furniture" role="tab" aria-selected="false">
+              <img src="assets/clay-banks-BnDI_MVomAI-unsplash.jpg" alt="Furniture collection thumbnail" class="curated-cat-thumb" />
+              <span class="curated-cat-info">
+                <span class="curated-cat-name">Furniture</span>
+                <span class="curated-cat-count">3 Pieces</span>
+              </span>
+            </button>
+            <button class="curated-cat-tab" data-category="decor" role="tab" aria-selected="false">
+              <img src="assets/magazines/923e4bb3-ccc1-4efb-806a-bfc42fdd3565.webp" alt="Home Décor collection thumbnail" class="curated-cat-thumb" />
+              <span class="curated-cat-info">
+                <span class="curated-cat-name">Home Décor</span>
+                <span class="curated-cat-count">3 Pieces</span>
+              </span>
+            </button>
+            <button class="curated-cat-tab" data-category="lighting" role="tab" aria-selected="false">
+              <img src="assets/pexels-pixabay-276746.jpg" alt="Lighting collection thumbnail" class="curated-cat-thumb" />
+              <span class="curated-cat-info">
+                <span class="curated-cat-name">Lighting</span>
+                <span class="curated-cat-count">2 Pieces</span>
+              </span>
+            </button>
+            <button class="curated-cat-tab" data-category="small-spaces" role="tab" aria-selected="false">
+              <img src="assets/magazines/4aa14b31-2e83-4baa-8af8-a1112955006d.webp" alt="Small Spaces collection thumbnail" class="curated-cat-thumb" />
+              <span class="curated-cat-info">
+                <span class="curated-cat-name">Small Spaces</span>
+                <span class="curated-cat-count">2 Pieces</span>
+              </span>
+            </button>
+          </div>
+
+          <!-- 10 Slide Cards with Add to Cart & View Details -->
+          <div class="curated-slide-track" id="curated-slide-track" tabindex="0" aria-label="Curated Pieces Carousel">
+            <!-- Piece 1: CloudCurve Sofa (Furniture) -->
+            <article class="home-piece-card" data-sku="HH-FUR-001" data-category="furniture">
               <div class="piece-media-wrap">
-                <img src="assets/magazines/4aa14b31-2e83-4baa-8af8-a1112955006d.webp" alt="Modula Nested Desk in compact study alcove" class="piece-img" />
+                <img src="assets/minh-pham-OtXADkUh3-I-unsplash.jpg" alt="CloudCurve Sofa in bright Scandinavian salon" class="piece-img" loading="lazy" />
+                <span class="piece-badge-corner">Furniture</span>
+              </div>
+              <div class="piece-body">
+                <div class="piece-cat">Furniture</div>
+                <h3 class="piece-title">CloudCurve Sofa</h3>
+                <p class="piece-desc">Organic curvilinear 3-seater in textured Italian bouclé with 42cm low datum.</p>
+                <div class="piece-footer">
+                  <span class="piece-price">₨ 345,000</span>
+                  <div class="piece-actions-group">
+                    <button class="piece-add-cart-btn" data-sku="HH-FUR-001" title="Add CloudCurve Sofa to cart">+ Add to Cart</button>
+                    <button class="piece-view-btn" data-sku="HH-FUR-001" title="View details">Details</button>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Piece 2: Noma Coffee Table (Furniture) -->
+            <article class="home-piece-card" data-sku="HH-FUR-002" data-category="furniture">
+              <div class="piece-media-wrap">
+                <img src="assets/clay-banks-BnDI_MVomAI-unsplash.jpg" alt="Noma Coffee Table in solid honed Roman travertine" class="piece-img" loading="lazy" />
+                <span class="piece-badge-corner">Furniture</span>
+              </div>
+              <div class="piece-body">
+                <div class="piece-cat">Furniture</div>
+                <h3 class="piece-title">Noma Coffee Table</h3>
+                <p class="piece-desc">Carved from solid honed Roman travertine with softened bullnose edges.</p>
+                <div class="piece-footer">
+                  <span class="piece-price">₨ 125,000</span>
+                  <div class="piece-actions-group">
+                    <button class="piece-add-cart-btn" data-sku="HH-FUR-002" title="Add Noma Coffee Table to cart">+ Add to Cart</button>
+                    <button class="piece-view-btn" data-sku="HH-FUR-002" title="View details">Details</button>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Piece 3: Aura Lounge Chair (Furniture) -->
+            <article class="home-piece-card" data-sku="HH-FUR-003" data-category="furniture">
+              <div class="piece-media-wrap">
+                <img src="assets/pexels-pixabay-276746.jpg" alt="Aura Lounge Chair with 360-degree brass swivel" class="piece-img" loading="lazy" />
+                <span class="piece-badge-corner">Furniture</span>
+              </div>
+              <div class="piece-body">
+                <div class="piece-cat">Furniture</div>
+                <h3 class="piece-title">Aura Lounge Chair</h3>
+                <p class="piece-desc">Cocooning club chair featuring champagne bronze 360-degree swivel base.</p>
+                <div class="piece-footer">
+                  <span class="piece-price">₨ 165,000</span>
+                  <div class="piece-actions-group">
+                    <button class="piece-add-cart-btn" data-sku="HH-FUR-003" title="Add Aura Lounge Chair to cart">+ Add to Cart</button>
+                    <button class="piece-view-btn" data-sku="HH-FUR-003" title="View details">Details</button>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Piece 4: Solis Ceramic Vase (Home Décor) -->
+            <article class="home-piece-card" data-sku="HH-DEC-001" data-category="decor">
+              <div class="piece-media-wrap">
+                <img src="assets/magazines/923e4bb3-ccc1-4efb-806a-bfc42fdd3565.webp" alt="Solis Ceramic Vase in wheel-thrown stoneware" class="piece-img" loading="lazy" />
+                <span class="piece-badge-corner">Home Décor</span>
+              </div>
+              <div class="piece-body">
+                <div class="piece-cat">Home Décor</div>
+                <h3 class="piece-title">Solis Ceramic Vase</h3>
+                <p class="piece-desc">Wheel-thrown earthenware vessel finished in tactile matte chalk mineral glaze.</p>
+                <div class="piece-footer">
+                  <span class="piece-price">₨ 28,500</span>
+                  <div class="piece-actions-group">
+                    <button class="piece-add-cart-btn" data-sku="HH-DEC-001" title="Add Solis Ceramic Vase to cart">+ Add to Cart</button>
+                    <button class="piece-view-btn" data-sku="HH-DEC-001" title="View details">Details</button>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Piece 5: Forma Wall Art (Home Décor) -->
+            <article class="home-piece-card" data-sku="HH-DEC-002" data-category="decor">
+              <div class="piece-media-wrap">
+                <img src="assets/magazines/7589a24a-202a-49a0-99c9-5e49e7eb5da5.webp" alt="Forma Wall Art mineral plaster bas-reliefs" class="piece-img" loading="lazy" />
+                <span class="piece-badge-corner">Home Décor</span>
+              </div>
+              <div class="piece-body">
+                <div class="piece-cat">Home Décor</div>
+                <h3 class="piece-title">Forma Wall Art</h3>
+                <p class="piece-desc">Triptych of tactile plaster relief compositions set in raw white ash frames.</p>
+                <div class="piece-footer">
+                  <span class="piece-price">₨ 45,000</span>
+                  <div class="piece-actions-group">
+                    <button class="piece-add-cart-btn" data-sku="HH-DEC-002" title="Add Forma Wall Art to cart">+ Add to Cart</button>
+                    <button class="piece-view-btn" data-sku="HH-DEC-002" title="View details">Details</button>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Piece 6: Halo Mirror (Home Décor) -->
+            <article class="home-piece-card" data-sku="HH-DEC-004" data-category="decor">
+              <div class="piece-media-wrap">
+                <img src="assets/magazines/de179757-6ab3-4cb0-9b56-84039d2ba4dc.webp" alt="Halo Mirror asymmetrical organic silhouette" class="piece-img" loading="lazy" />
+                <span class="piece-badge-corner">Home Décor</span>
+              </div>
+              <div class="piece-body">
+                <div class="piece-cat">Home Décor</div>
+                <h3 class="piece-title">Halo Mirror</h3>
+                <p class="piece-desc">Asymmetrical organic mirror framed in soft champagne brushed brass bezel.</p>
+                <div class="piece-footer">
+                  <span class="piece-price">₨ 58,000</span>
+                  <div class="piece-actions-group">
+                    <button class="piece-add-cart-btn" data-sku="HH-DEC-004" title="Add Halo Mirror to cart">+ Add to Cart</button>
+                    <button class="piece-view-btn" data-sku="HH-DEC-004" title="View details">Details</button>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Piece 7: Luna Pendant (Lighting) -->
+            <article class="home-piece-card" data-sku="HH-LGT-001" data-category="lighting">
+              <div class="piece-media-wrap">
+                <img src="assets/clay-banks-BnDI_MVomAI-unsplash.jpg" alt="Luna Pendant mouth blown opal glass sphere" class="piece-img" loading="lazy" />
+                <span class="piece-badge-corner">Lighting</span>
+              </div>
+              <div class="piece-body">
+                <div class="piece-cat">Lighting</div>
+                <h3 class="piece-title">Luna Pendant</h3>
+                <p class="piece-desc">Mouth-blown opal glass sphere suspended by brushed champagne brass stem.</p>
+                <div class="piece-footer">
+                  <span class="piece-price">₨ 62,000</span>
+                  <div class="piece-actions-group">
+                    <button class="piece-add-cart-btn" data-sku="HH-LGT-001" title="Add Luna Pendant to cart">+ Add to Cart</button>
+                    <button class="piece-view-btn" data-sku="HH-LGT-001" title="View details">Details</button>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Piece 8: Glow Table Lamp (Lighting) -->
+            <article class="home-piece-card" data-sku="HH-LGT-003" data-category="lighting">
+              <div class="piece-media-wrap">
+                <img src="assets/pexels-pixabay-276746.jpg" alt="Glow Table Lamp fluted travertine pedestal" class="piece-img" loading="lazy" />
+                <span class="piece-badge-corner">Lighting</span>
+              </div>
+              <div class="piece-body">
+                <div class="piece-cat">Lighting</div>
+                <h3 class="piece-title">Glow Table Lamp</h3>
+                <p class="piece-desc">Fluted travertine stone pedestal with a mushroom dome of warm 2700K glow.</p>
+                <div class="piece-footer">
+                  <span class="piece-price">₨ 36,000</span>
+                  <div class="piece-actions-group">
+                    <button class="piece-add-cart-btn" data-sku="HH-LGT-003" title="Add Glow Table Lamp to cart">+ Add to Cart</button>
+                    <button class="piece-view-btn" data-sku="HH-LGT-003" title="View details">Details</button>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Piece 9: Modula Nested Desk (Small Spaces) -->
+            <article class="home-piece-card" data-sku="HH-SSS-001" data-category="small-spaces">
+              <div class="piece-media-wrap">
+                <img src="assets/magazines/4aa14b31-2e83-4baa-8af8-a1112955006d.webp" alt="Modula Nested Desk in compact study alcove" class="piece-img" loading="lazy" />
                 <span class="piece-badge-corner">Small Spaces</span>
               </div>
               <div class="piece-body">
@@ -369,16 +569,19 @@
                 <p class="piece-desc">Compact 38cm console that glides open to reveal a full 72cm oak worktop.</p>
                 <div class="piece-footer">
                   <span class="piece-price">₨ 89,000</span>
-                  <button class="piece-view-btn" data-sku="HH-SSS-001">View Details</button>
+                  <div class="piece-actions-group">
+                    <button class="piece-add-cart-btn" data-sku="HH-SSS-001" title="Add Modula Nested Desk to cart">+ Add to Cart</button>
+                    <button class="piece-view-btn" data-sku="HH-SSS-001" title="View details">Details</button>
+                  </div>
                 </div>
               </div>
             </article>
 
-            <!-- Piece 2: Flute Floating Console -->
-            <article class="home-piece-card" data-sku="HH-SSS-002">
+            <!-- Piece 10: Flute Floating Console (Small Spaces) -->
+            <article class="home-piece-card" data-sku="HH-SSS-002" data-category="small-spaces">
               <div class="piece-media-wrap">
-                <img src="assets/magazines/ca22619b-3da0-49d0-9829-0146c7dcc909.webp" alt="Flute Floating Console wall mounted in hallway" class="piece-img" />
-                <span class="piece-badge-corner">Wall-Hung</span>
+                <img src="assets/magazines/ca22619b-3da0-49d0-9829-0146c7dcc909.webp" alt="Flute Floating Console wall mounted in hallway" class="piece-img" loading="lazy" />
+                <span class="piece-badge-corner">Small Spaces</span>
               </div>
               <div class="piece-body">
                 <div class="piece-cat">Small Space Solutions</div>
@@ -386,41 +589,10 @@
                 <p class="piece-desc">Wall-hung fluted oak tambour credenza with concealed magnetic drop doors.</p>
                 <div class="piece-footer">
                   <span class="piece-price">₨ 74,000</span>
-                  <button class="piece-view-btn" data-sku="HH-SSS-002">View Details</button>
-                </div>
-              </div>
-            </article>
-
-            <!-- Piece 3: CloudCurve Sofa -->
-            <article class="home-piece-card" data-sku="HH-FUR-001">
-              <div class="piece-media-wrap">
-                <img src="assets/minh-pham-OtXADkUh3-I-unsplash.jpg" alt="CloudCurve Sofa in bright Scandinavian salon" class="piece-img" />
-                <span class="piece-badge-corner">Flagship</span>
-              </div>
-              <div class="piece-body">
-                <div class="piece-cat">Furniture</div>
-                <h3 class="piece-title">CloudCurve Sofa</h3>
-                <p class="piece-desc">Organic curvilinear 3-seater in textured Italian bouclé with 42cm low datum.</p>
-                <div class="piece-footer">
-                  <span class="piece-price">₨ 345,000</span>
-                  <button class="piece-view-btn" data-sku="HH-FUR-001">View Details</button>
-                </div>
-              </div>
-            </article>
-
-            <!-- Piece 4: Luna Pendant -->
-            <article class="home-piece-card" data-sku="HH-LGT-001">
-              <div class="piece-media-wrap">
-                <img src="assets/clay-banks-BnDI_MVomAI-unsplash.jpg" alt="Luna Pendant mouth blown opal glass sphere" class="piece-img" />
-                <span class="piece-badge-corner">2700K Glow</span>
-              </div>
-              <div class="piece-body">
-                <div class="piece-cat">Lighting</div>
-                <h3 class="piece-title">Luna Pendant</h3>
-                <p class="piece-desc">Mouth-blown opal glass sphere suspended by brushed champagne brass stem.</p>
-                <div class="piece-footer">
-                  <span class="piece-price">₨ 62,000</span>
-                  <button class="piece-view-btn" data-sku="HH-LGT-001">View Details</button>
+                  <div class="piece-actions-group">
+                    <button class="piece-add-cart-btn" data-sku="HH-SSS-002" title="Add Flute Floating Console to cart">+ Add to Cart</button>
+                    <button class="piece-view-btn" data-sku="HH-SSS-002" title="View details">Details</button>
+                  </div>
                 </div>
               </div>
             </article>

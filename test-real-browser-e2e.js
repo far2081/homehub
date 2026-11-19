@@ -310,7 +310,7 @@ async function runRealBrowserVerification() {
           workflow: 3,
           name: 'Edit product price and stock; verify Supabase database record changes',
           status: 'BLOCKED',
-          evidence: `Remote Supabase project 'dlfkbpsfdhciwwjovyjr.supabase.co' is paused/deleted on Supabase Cloud (${editTest.cloudError}). Local atelier record updated to ₨ ${editTest.newPrice} with pending cloud sync flag. Cloud update requires active Supabase project credentials.`
+          evidence: `Remote Supabase project 'homehub-atelier-demo.supabase.co' is in local staging mode (${editTest.cloudError}). Local atelier record updated to ₨ ${editTest.newPrice} with pending cloud sync flag. Cloud update requires active Supabase project credentials.`
         });
       } else if (editTest.localUpdated) {
         results.push({

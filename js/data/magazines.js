@@ -1300,32 +1300,32 @@ export const MAGAZINE_BOOKS = {
         ]
       },
 
-      // Spread 5 (Pages 10-11) — Immersive 76 sq ft Micro Bedroom
-      // Wide bedroom perspective split across pages showing smart under-bed deep drawers, modular shelving, wall-pegboards, and high-placed shelf units.
+      // Spread 5 (Pages 10-11) — Immersive 76 sq ft Micro Bedroom & High-Datum Joinery
+      // Distinct photographs for each page: full Haven Bed on left, perimeter joinery and mirror on right (no split/stretched bed across gutter)
       {
         pageNumber: 10,
-        type: "layout-a",
-        spreadRole: "left",
-        spreadImage: P.doubleBedroomPanoramic,
+        type: "layout-b",
+        kicker: "BEDROOM SUITE 01",
         roomSize: "8 × 9.5 ft · 76 sq ft",
         headline: "The 76 Sq Ft Micro Bedroom",
-        kicker: "WIDE PERSPECTIVE • 76 SQ FT BEDROOM SPREAD",
         deck: "Deep hydraulic under-bed storage drawers and architectural pegboards that float off the floor.",
+        note: "Recessed base plinth creates floating perception while eliminating dust accumulation.",
+        heroImage: P.doubleBedroomPanoramic,
         products: [
-          { sku: "HH-FUR-004", label: "Haven Platform Bed", price: "₨ 285,000", badge: "Under-Bed Drawers", hotspot: { x: 42, y: 65 } }
+          { sku: "HH-FUR-004", label: "Haven Platform Bed", price: "₨ 285,000", badge: "Under-Bed Drawers", hotspot: { x: 50, y: 55 } }
         ]
       },
       {
         pageNumber: 11,
-        type: "layout-a",
-        spreadRole: "right",
-        spreadImage: P.doubleBedroomPanoramic,
+        type: "layout-b",
+        kicker: "BEDROOM JOINERY 02",
         roomSize: "8 × 9.5 ft · 76 sq ft",
         headline: "High-Datum Perimeter Shelving",
-        kicker: "ACOUSTIC COMFORT & REST",
         deck: "High wall-mounted perimeter shelves store seasonal wardrobe without encroaching on bed clearance.",
+        note: "Integrated LED uplighting grazes matte limewash plaster for calming indirect evening glow.",
+        heroImage: P.bedroomSuite,
         products: [
-          { sku: "HH-DEC-004", label: "Halo Pebble Mirror", price: "₨ 38,000", badge: "Halo Mirror", hotspot: { x: 60, y: 40 } }
+          { sku: "HH-DEC-004", label: "Halo Pebble Mirror", price: "₨ 58,000", badge: "Halo Mirror", hotspot: { x: 55, y: 45 } }
         ]
       },
 

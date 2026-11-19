@@ -1629,7 +1629,6 @@
   width: 100%;
   height: 100%;
   background-color: #FAF8F5;
-  background-repeat: no-repeat;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -1637,13 +1636,44 @@
   box-sizing: border-box;
 }
 
+.spread-panoramic-layer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 200%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.spread-left .spread-panoramic-layer {
+  left: 0;
+}
+
+.spread-right .spread-panoramic-layer {
+  left: -100%;
+}
+
+.spread-panoramic-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.mode-single .spread-panoramic-layer {
+  width: 100% !important;
+  left: 0 !important;
+}
+
 .page-layout-a.spread-left {
-  background-size: 200% 100%;
+  background-size: cover;
   background-position: left center;
 }
 
 .page-layout-a.spread-right {
-  background-size: 200% 100%;
+  background-size: cover;
   background-position: right center;
 }
 

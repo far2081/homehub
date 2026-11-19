@@ -421,9 +421,76 @@ class HomeHubApp {
       });
     }
 
-    // Curated Homepage Pieces PDP Trigger
+    // Curated Section Carousel Navigation Arrows
+    const curatedTrack = document.getElementById('curated-slide-track');
+    const curatedPrevBtn = document.getElementById('curated-slide-prev');
+    const curatedNextBtn = document.getElementById('curated-slide-next');
+    if (curatedPrevBtn && curatedTrack) {
+      curatedPrevBtn.addEventListener('click', () => {
+        curatedTrack.scrollBy({ left: -340, behavior: 'smooth' });
+      });
+    }
+    if (curatedNextBtn && curatedTrack) {
+      curatedNextBtn.addEventListener('click', () => {
+        curatedTrack.scrollBy({ left: 340, behavior: 'smooth' });
+      });
+    }
+
+    // Curated Section 4-Category Filter Tabs
+    const curatedTabs = document.querySelectorAll('.curated-cat-tab');
+    if (curatedTabs.length > 0 && curatedTrack) {
+      curatedTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          const selectedCat = tab.dataset.category;
+          curatedTabs.forEach(t => {
+            t.classList.remove('active');
+            t.setAttribute('aria-selected', 'false');
+          });
+          tab.classList.add('active');
+          tab.setAttribute('aria-selected', 'true');
+
+          const cards = curatedTrack.querySelectorAll('.home-piece-card');
+          cards.forEach(card => {
+            if (selectedCat === 'all' || card.dataset.category === selectedCat) {
+              card.style.display = 'flex';
+            } else {
+              card.style.display = 'none';
+            }
+          });
+          curatedTrack.scrollTo({ left: 0, behavior: 'smooth' });
+        });
+      });
+    }
+
+    // Curated Section Working Add to Cart Buttons
+    document.querySelectorAll('.piece-add-cart-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const sku = btn.dataset.sku;
+        if (!sku) return;
+
+        if (this.cart && typeof this.cart.addItem === 'function') {
+          this.cart.addItem(sku, 1);
+        }
+
+        btn.classList.add('added');
+        const origText = btn.textContent;
+        btn.textContent = 'Added ✓';
+        setTimeout(() => {
+          btn.classList.remove('added');
+          btn.textContent = origText;
+        }, 1800);
+
+        const prod = (this.products || []).find(p => p.sku === sku);
+        showToast(prod ? `${prod.name} added to your bag!` : 'Item added to your bag!', 'success');
+      });
+    });
+
+    // Curated Homepage Pieces PDP Trigger (Clicking Card or View Details)
     document.querySelectorAll('.home-piece-card, .piece-view-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
+        if (e.target.closest('.piece-add-cart-btn')) return;
         e.preventDefault();
         e.stopPropagation();
         const sku = btn.dataset.sku || btn.closest('.home-piece-card')?.dataset.sku;

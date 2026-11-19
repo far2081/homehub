@@ -1356,7 +1356,10 @@ export class Flipbook {
       const isLeft = (position === 'left' || page.spreadRole === 'left') && position !== 'single';
       const roleClass = isLeft ? 'spread-left' : 'spread-right';
       return `
-        <div class="page-layout-a ${roleClass}" style="background-image: url('${page.spreadImage}');">
+        <div class="page-layout-a ${roleClass}">
+          <div class="spread-panoramic-layer">
+            <img src="${page.spreadImage}" alt="${page.headline}" class="spread-panoramic-img" loading="lazy" />
+          </div>
           ${this.renderHotspots(page.products)}
           
           <div class="spread-overlay-meta">

@@ -86,8 +86,17 @@ export function getSupabase() {
   return _supabase;
 }
 
+export function isCloudConfiguredAndReachable() {
+  if (!_supabase || !_config.supabaseUrl || !_config.supabaseAnonKey) return false;
+  const url = _config.supabaseUrl.toLowerCase();
+  if (url.includes('demo.supabase.co') || url.includes('example.com') || url.includes('placeholder')) {
+    return false;
+  }
+  return true;
+}
+
 export function isSupabaseConfigured() {
-  return Boolean(_supabase && _config.supabaseUrl && _config.supabaseAnonKey);
+  return Boolean(_supabase && _config.supabaseUrl && _config.supabaseAnonKey && isCloudConfiguredAndReachable());
 }
 
 export function getSupabaseConfig() {
@@ -117,10 +126,10 @@ export function setSupabaseConfig(url, key) {
  */
 export async function testSupabaseConnection() {
   await initSupabase();
-  if (!_supabase) {
+  if (!_supabase || !isCloudConfiguredAndReachable()) {
     return {
       connected: false,
-      error: 'Supabase client is not initialized. Please verify SUPABASE_URL and SUPABASE_ANON_KEY.'
+      error: 'Supabase is in local staging mode. Live cloud sync requires active project credentials.'
     };
   }
 
@@ -178,7 +187,7 @@ export function dbProductToStorefront(row) {
       { id: 'default', name: 'Standard Finish', hex: '#EADCCB', isDefault: true }
     ],
     images: Array.isArray(row.images) && row.images.length > 0 ? row.images : [
-      { url: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1200&q=85', caption: row.name, type: 'main' }
+      { url: 'assets/minh-pham-OtXADkUh3-I-unsplash.jpg', caption: row.name, type: 'main' }
     ],
     relatedSkus: []
   };
@@ -213,7 +222,7 @@ export function storefrontToDbProduct(item) {
  */
 export async function fetchStorefrontProducts() {
   await initSupabase();
-  if (!_supabase) {
+  if (!_supabase || !isCloudConfiguredAndReachable()) {
     return { data: INITIAL_PRODUCTS, isFallback: true };
   }
 
@@ -242,7 +251,7 @@ export async function fetchStorefrontProducts() {
  */
 export async function fetchStorefrontCategories() {
   await initSupabase();
-  if (!_supabase) return null;
+  if (!_supabase || !isCloudConfiguredAndReachable()) return null;
 
   try {
     const { data, error } = await _supabase
@@ -450,7 +459,7 @@ export async function adminDeleteProduct(id) {
  */
 export async function adminUploadProductImage(file) {
   await initSupabase();
-  if (!_supabase) throw new Error('Supabase not connected');
+  if (!_supabase || !isCloudConfiguredAndReachable()) throw new Error('Supabase cloud storage not available in staging mode');
 
   const rawExt = (file.name || 'image.jpg').split('.').pop().toLowerCase().replace(/[^a-z0-9]/g, '');
   const cleanExt = (rawExt === 'jfif' || rawExt === 'pjpeg') ? 'jpg' : (rawExt || 'jpg');
