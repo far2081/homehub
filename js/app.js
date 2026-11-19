@@ -21,6 +21,8 @@ import { customerService } from './services/customerService.js';
 import { openPrintInvoice } from './utils/invoice.js';
 import { couponService } from './services/couponService.js';
 import { pluginRegistry } from './services/pluginRegistry.js';
+import { CURATED_SUBJECTS } from './data/curatedSubjects.js';
+import { SOCIAL_CHANNELS } from './data/socialChannels.js';
 
 // Curated Collection and Category Definitions for Full-Page Webpage Views
 const COLLECTIONS = {
@@ -487,10 +489,43 @@ class HomeHubApp {
       });
     });
 
-    // Curated Homepage Pieces PDP Trigger (Clicking Card or View Details)
-    document.querySelectorAll('.home-piece-card, .piece-view-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+    // Curated Section: Dedicated Single-Subject Archive Navigation
+    document.querySelectorAll('.curated-subject-card, .curated-explore-btn').forEach(elem => {
+      elem.addEventListener('click', (e) => {
         if (e.target.closest('.piece-add-cart-btn')) return;
+        e.preventDefault();
+        e.stopPropagation();
+        const subject = elem.dataset.curatedSubject || elem.dataset.subject || elem.closest('.curated-subject-card')?.dataset.curatedSubject;
+        if (subject) {
+          this.showCuratedSubjectView(subject);
+        }
+      });
+      if (elem.classList.contains('.curated-subject-card') || elem.hasAttribute('data-curated-subject')) {
+        elem.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            const subject = elem.dataset.curatedSubject;
+            if (subject) this.showCuratedSubjectView(subject);
+          }
+        });
+      }
+    });
+
+    // Footer Social Channel Buttons (Facebook, X/Twitter, YouTube, Instagram)
+    document.querySelectorAll('.footer-social-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const channelKey = btn.dataset.socialChannel;
+        if (channelKey) {
+          this.openSocialChannelModal(channelKey);
+        }
+      });
+    });
+
+    // Curated Homepage Pieces PDP Trigger (Clicking Card or View Details)
+    document.querySelectorAll('.home-piece-card:not(.curated-subject-card), .piece-view-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        if (e.target.closest('.piece-add-cart-btn') || e.target.closest('.curated-explore-btn')) return;
         e.preventDefault();
         e.stopPropagation();
         const sku = btn.dataset.sku || btn.closest('.home-piece-card')?.dataset.sku;
@@ -1155,11 +1190,13 @@ class HomeHubApp {
     const shopView = document.getElementById('shop-view');
     const ideasView = document.getElementById('ideas-view');
     const catPage = document.getElementById('category-page-view');
+    const curatedView = document.getElementById('curated-subject-view');
 
     if (homeView) homeView.style.display = 'block';
     if (shopView) shopView.style.display = 'none';
     if (ideasView) ideasView.style.display = 'none';
     if (catPage) catPage.style.display = 'none';
+    if (curatedView) curatedView.style.display = 'none';
 
     document.querySelectorAll('.nav-item-link').forEach(l => l.classList.remove('active'));
     const homeNav = document.getElementById('header-nav-home');
@@ -1178,11 +1215,13 @@ class HomeHubApp {
     const shopView = document.getElementById('shop-view');
     const ideasView = document.getElementById('ideas-view');
     const catPage = document.getElementById('category-page-view');
+    const curatedView = document.getElementById('curated-subject-view');
 
     if (homeView) homeView.style.display = 'none';
     if (shopView) shopView.style.display = 'block';
     if (ideasView) ideasView.style.display = 'none';
     if (catPage) catPage.style.display = 'none';
+    if (curatedView) curatedView.style.display = 'none';
 
     document.querySelectorAll('.nav-item-link').forEach(l => l.classList.remove('active'));
     const shopNav = document.getElementById('header-nav-shop');
@@ -1205,11 +1244,13 @@ class HomeHubApp {
     const shopView = document.getElementById('shop-view');
     const ideasView = document.getElementById('ideas-view');
     const catPage = document.getElementById('category-page-view');
+    const curatedView = document.getElementById('curated-subject-view');
 
     if (homeView) homeView.style.display = 'none';
     if (shopView) shopView.style.display = 'none';
     if (ideasView) ideasView.style.display = 'block';
     if (catPage) catPage.style.display = 'none';
+    if (curatedView) curatedView.style.display = 'none';
 
     document.querySelectorAll('.nav-item-link').forEach(l => l.classList.remove('active'));
     const ideasNav = document.getElementById('header-nav-ideas');
@@ -1231,11 +1272,13 @@ class HomeHubApp {
     const shopView = document.getElementById('shop-view');
     const ideasView = document.getElementById('ideas-view');
     const catPage = document.getElementById('category-page-view');
+    const curatedView = document.getElementById('curated-subject-view');
 
     if (homeView) homeView.style.display = 'block';
     if (shopView) shopView.style.display = 'none';
     if (ideasView) ideasView.style.display = 'none';
     if (catPage) catPage.style.display = 'none';
+    if (curatedView) curatedView.style.display = 'none';
 
     document.querySelectorAll('.nav-item-link').forEach(l => l.classList.remove('active'));
     const magNav = document.getElementById('header-nav-magazines');
@@ -1265,12 +1308,14 @@ class HomeHubApp {
     const shopView = document.getElementById('shop-view');
     const ideasView = document.getElementById('ideas-view');
     const catPage = document.getElementById('category-page-view');
+    const curatedView = document.getElementById('curated-subject-view');
     const container = document.getElementById('category-page-container');
 
     if (homeView) homeView.style.display = 'none';
     if (shopView) shopView.style.display = 'none';
     if (ideasView) ideasView.style.display = 'none';
     if (catPage) catPage.style.display = 'block';
+    if (curatedView) curatedView.style.display = 'none';
 
     if (!container) return;
 
@@ -1468,6 +1513,225 @@ class HomeHubApp {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  showCuratedSubjectView(subjectKey = 'sofa') {
+    if (this.bookNav) this.bookNav.close();
+    if (this.closeMobileDrawer) this.closeMobileDrawer();
+
+    const homeView = document.getElementById('home-view');
+    const shopView = document.getElementById('shop-view');
+    const ideasView = document.getElementById('ideas-view');
+    const catPage = document.getElementById('category-page-view');
+    const curatedView = document.getElementById('curated-subject-view');
+    const container = document.getElementById('curated-subject-container');
+
+    if (homeView) homeView.style.display = 'none';
+    if (shopView) shopView.style.display = 'none';
+    if (ideasView) ideasView.style.display = 'none';
+    if (catPage) catPage.style.display = 'none';
+    if (curatedView) curatedView.style.display = 'block';
+
+    if (!container) return;
+
+    const data = CURATED_SUBJECTS[subjectKey] || CURATED_SUBJECTS['sofa'];
+
+    container.innerHTML = `
+      <div class="subject-page-nav-bar">
+        <div class="category-breadcrumb">
+          <a href="#home" class="breadcrumb-home-link" id="subject-crumb-home">HomeHub</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>Curated Subjects</span>
+          <span class="breadcrumb-sep">/</span>
+          <span class="breadcrumb-current">${data.accentLabel}</span>
+        </div>
+        <div class="category-nav-actions">
+          <button class="page-home-btn" id="subject-page-home-btn" aria-label="Return to Homepage">
+            <span>🏠 Return to Atelier</span>
+          </button>
+          <button class="page-back-btn" id="subject-page-back-btn" aria-label="Go Back">
+            <span>← Back</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Single-Subject Editorial Header -->
+      <header class="subject-header-banner">
+        <span class="subject-header-kicker">${data.kicker}</span>
+        <h1 class="subject-header-title">${data.title}</h1>
+        <div class="subject-header-tagline">${data.tagline}</div>
+        <p class="subject-header-desc">${data.description}</p>
+      </header>
+
+      <!-- Strictly Single-Subject 4-Piece Grid -->
+      <div class="subject-pieces-grid">
+        ${data.items.map(item => `
+          <article class="subject-piece-card" data-sku="${item.sku}" data-item-id="${item.id}">
+            <div class="subject-piece-media">
+              <img src="${item.image}" alt="${item.name}" class="piece-img" loading="eager" />
+              <span class="piece-badge-corner">${item.badge}</span>
+            </div>
+            <div class="subject-piece-body">
+              <div class="piece-cat">${item.category}</div>
+              <h3 class="piece-title">${item.name}</h3>
+              <p class="piece-desc">${item.desc}</p>
+              <div class="subject-piece-specs">${item.specs}</div>
+              <div class="piece-footer">
+                <span class="piece-price">${formatPKR ? formatPKR(item.price) : `₨ ${item.price.toLocaleString()}`}</span>
+                <button class="piece-add-cart-btn" data-sku="${item.sku}" data-item-id="${item.id}" aria-label="Add ${item.name} to cart">
+                  <span>+ Add to Cart</span>
+                </button>
+              </div>
+            </div>
+          </article>
+        `).join('')}
+      </div>
+    `;
+
+    // Bind Home & Back buttons
+    const homeBtn = container.querySelector('#subject-page-home-btn');
+    if (homeBtn) homeBtn.addEventListener('click', (e) => { e.preventDefault(); this.showHomepage(); });
+
+    const crumbHome = container.querySelector('#subject-crumb-home');
+    if (crumbHome) crumbHome.addEventListener('click', (e) => { e.preventDefault(); this.showHomepage(); });
+
+    const backBtn = container.querySelector('#subject-page-back-btn');
+    if (backBtn) backBtn.addEventListener('click', (e) => { e.preventDefault(); this.showHomepage(); });
+
+    // Bind working Add to Cart buttons inside dedicated page
+    container.querySelectorAll('.piece-add-cart-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const sku = btn.dataset.sku;
+        const itemId = btn.dataset.itemId;
+        const matchedItem = data.items.find(i => i.id === itemId) || { name: 'Curated Atelier Piece' };
+
+        if (this.cart && typeof this.cart.addItem === 'function') {
+          this.cart.addItem(sku, 1);
+        }
+
+        btn.classList.add('added');
+        const origContent = btn.innerHTML;
+        btn.innerHTML = '<span>Added ✓</span>';
+        setTimeout(() => {
+          btn.classList.remove('added');
+          btn.innerHTML = origContent;
+        }, 1800);
+
+        showToast(`${matchedItem.name} added to your bag!`, 'success');
+        this.updateHeaderBadges();
+      });
+    });
+
+    window.history.pushState(null, '', `#curated-${subjectKey}`);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  openSocialChannelModal(channelKey) {
+    const modal = document.getElementById('social-modal-container');
+    if (!modal) return;
+
+    const channel = SOCIAL_CHANNELS[channelKey] || SOCIAL_CHANNELS['facebook'];
+
+    modal.innerHTML = `
+      <div class="social-modal-card" role="document">
+        <div class="social-modal-banner">
+          <img src="${channel.banner}" alt="${channel.name} Atelier Cover" />
+          <button class="social-modal-close-btn" id="social-modal-close-x" aria-label="Close modal">✕</button>
+        </div>
+
+        <div class="social-modal-header">
+          <div class="social-avatar-row">
+            <div class="social-modal-avatar">
+              <img src="${channel.avatar}" alt="${channel.name} Logo Mark" />
+            </div>
+            <button class="social-cta-btn" id="social-modal-cta-btn">${channel.ctaLabel}</button>
+          </div>
+
+          <div class="social-title-row">
+            <h3 class="social-channel-name">${channel.name}</h3>
+            ${channel.verified ? `<span class="social-verified-badge">✓ ${channel.badgeText}</span>` : ''}
+          </div>
+
+          <div class="social-channel-handle">${channel.handle} • ${channel.platform}</div>
+          <div class="social-channel-metrics">${channel.metrics}</div>
+          <p class="social-channel-bio">${channel.bio}</p>
+        </div>
+
+        <div class="social-feed-section">
+          <div class="social-feed-title">Recent Atelier Updates & Editorial Posts</div>
+          <div class="social-posts-list">
+            ${channel.posts.map(p => `
+              <article class="social-post-card">
+                <div class="social-post-meta">
+                  <span><strong>${channel.name}</strong> ${channel.handle}</span>
+                  <span>${p.date}</span>
+                </div>
+                <p class="social-post-text">${p.text}</p>
+                ${p.image ? `<img src="${p.image}" alt="Post image" class="social-post-img" loading="lazy" />` : ''}
+                <div class="social-post-stats">
+                  <span>♥ ${p.likes}</span>
+                  <span>💬 ${p.comments}</span>
+                  <span>↺ ${p.shares}</span>
+                </div>
+              </article>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="social-modal-footer">
+          <button class="page-back-btn" id="social-modal-return-btn" style="padding: 8px 18px; border-radius: 9999px;">
+            <span>← Return to HomeHub Storefront</span>
+          </button>
+          <span style="font-size: 0.76rem; color: #6B645B;">Official HomeHub Atelier Channel</span>
+        </div>
+      </div>
+    `;
+
+    modal.style.display = 'flex';
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+
+    const close = () => this.closeSocialChannelModal();
+
+    const closeBtn = modal.querySelector('#social-modal-close-x');
+    if (closeBtn) closeBtn.addEventListener('click', close);
+
+    const returnBtn = modal.querySelector('#social-modal-return-btn');
+    if (returnBtn) returnBtn.addEventListener('click', close);
+
+    const ctaBtn = modal.querySelector('#social-modal-cta-btn');
+    if (ctaBtn) {
+      ctaBtn.addEventListener('click', () => {
+        ctaBtn.textContent = 'Following ✓';
+        ctaBtn.style.backgroundColor = '#385E38';
+        showToast(`You are now following ${channel.name} on ${channel.platform}!`, 'success');
+      });
+    }
+
+    modal.onclick = (e) => {
+      if (e.target === modal) close();
+    };
+
+    this._socialEscHandler = (e) => {
+      if (e.key === 'Escape') close();
+    };
+    window.addEventListener('keydown', this._socialEscHandler);
+  }
+
+  closeSocialChannelModal() {
+    const modal = document.getElementById('social-modal-container');
+    if (modal) {
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden', 'true');
+      modal.innerHTML = '';
+    }
+    document.body.style.overflow = '';
+    if (this._socialEscHandler) {
+      window.removeEventListener('keydown', this._socialEscHandler);
+      this._socialEscHandler = null;
+    }
+  }
+
   handleBookNavigationTarget(target) {
     if (!target) return;
     if (target.startsWith('magazine:')) {
@@ -1515,6 +1779,12 @@ class HomeHubApp {
     } else if (hash.startsWith('#product-')) {
       const sku = hash.replace('#product-', '');
       this.openProduct(sku);
+    } else if (hash.startsWith('#curated-')) {
+      const subKey = hash.replace('#curated-', '');
+      this.showCuratedSubjectView(subKey);
+    } else if (hash.startsWith('#social-')) {
+      const chKey = hash.replace('#social-', '');
+      this.openSocialChannelModal(chKey);
     } else if (hash === '#admin') {
       this.showHomepage();
       if (this.adminPortal) this.adminPortal.open();
