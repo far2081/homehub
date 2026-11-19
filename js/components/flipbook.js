@@ -285,7 +285,24 @@ export class Flipbook {
     const duration = this.isDesktopSpread ? 480 : 420; // Natural hand-turn speed (ms)
     const startTime = performance.now();
 
+    let finished = false;
+    let safetyTimer = null;
+
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      if (safetyTimer) clearTimeout(safetyTimer);
+      callback();
+      if (turningLeaf && turningLeaf.parentNode) {
+        turningLeaf.parentNode.removeChild(turningLeaf);
+      }
+      this.isFlipping = false;
+    };
+
+    safetyTimer = setTimeout(finish, duration + 80);
+
     const frame = (now) => {
+      if (finished) return;
       const elapsed = now - startTime;
       const t = Math.min(1, elapsed / duration);
       // Continuous C2-smooth cosine ease-in-out (no sharp piecewise midpoint jerk)
@@ -296,11 +313,7 @@ export class Flipbook {
       if (t < 1) {
         requestAnimationFrame(frame);
       } else {
-        callback();
-        if (turningLeaf.parentNode) {
-          turningLeaf.parentNode.removeChild(turningLeaf);
-        }
-        this.isFlipping = false;
+        finish();
       }
     };
 
@@ -1447,6 +1460,7 @@ export class Flipbook {
             <span class="page-number-folio">N° ${page.pageNumber}</span>
           </div>
 
+          ${page.roomSize ? `<div class="story-room-size-badge">Room Size: ${page.roomSize}</div>` : ''}
           <h2 class="layout-d-headline">${page.headline}</h2>
           ${page.deck ? `<p class="layout-d-deck">${page.deck}</p>` : ''}
 
@@ -1502,6 +1516,7 @@ export class Flipbook {
           </div>
 
           <div class="layout-e-header">
+            ${page.roomSize ? `<div class="story-room-size-badge">Room Size: ${page.roomSize}</div>` : ''}
             <h2 class="layout-e-title">${page.headline}</h2>
             <p class="layout-e-deck">${page.deck || 'Architectural pieces designed in tonal and material harmony.'}</p>
           </div>

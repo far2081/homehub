@@ -14,7 +14,7 @@ export const CATEGORY_INSPIRATION_DATA = {
     name: 'Bedroom',
     title: 'The Bedroom Sanctuary',
     subtitle: 'Restful Joinery, Organic Linens & Circadian Glow',
-    heroImage: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1600&q=85',
+    heroImage: 'assets/magazines/3ffa9485-4bd9-4392-a47d-7010d339117d.webp',
     deck: 'A bedroom should be a sanctuary of restorative stillness, stripped of visual noise and enveloped in natural timber and breathable textiles.',
     stylingPrinciples: [
       {
@@ -39,7 +39,7 @@ export const CATEGORY_INSPIRATION_DATA = {
       duration: '3:45',
       author: 'Urban Architecture Collective',
       description: 'Clever spatial layout strategies for compact bedrooms: floating nightstands, recessed platform beds, and diffuse bedside illumination.',
-      thumbnail: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1200&q=85',
+      thumbnail: 'assets/magazines/7589a24a-202a-49a0-99c9-5e49e7eb5da5.webp',
       embedUrl: 'https://www.youtube-nocookie.com/embed/O6vYf5Z1jWg?rel=0&modestbranding=1&playsinline=1',
       takeaways: [
         'A platform bed with recessed plinth creates the optical illusion of continuous floor space.',
@@ -61,7 +61,7 @@ export const CATEGORY_INSPIRATION_DATA = {
     name: 'Living Room',
     title: 'The Living Room Salon',
     subtitle: 'Low Horizons, Monolithic Stone & Fluid Lounge Curves',
-    heroImage: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1600&q=85',
+    heroImage: 'assets/minh-pham-OtXADkUh3-I-unsplash.jpg',
     deck: 'Designed around grounded low seating and monolithic stone anchors, the living room balances fluid curves with architectural permanence.',
     stylingPrinciples: [
       {
@@ -86,7 +86,7 @@ export const CATEGORY_INSPIRATION_DATA = {
       duration: '4:12',
       author: 'HomeHub Editorial Studio',
       description: 'Discover how low-slung bouclé seating, monolithic travertine tables, and linen drapery compose a tranquil sanctuary for modern living.',
-      thumbnail: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=85',
+      thumbnail: 'assets/pexels-fotografiagmazg-12420730.jpg',
       embedUrl: 'https://www.youtube-nocookie.com/embed/2V1a44eBsp4?rel=0&modestbranding=1&playsinline=1',
       takeaways: [
         'Keep primary seating heights under 45cm for continuous eye level.',
@@ -108,7 +108,7 @@ export const CATEGORY_INSPIRATION_DATA = {
     name: 'Dining Room',
     title: 'The Dining Room Atelier',
     subtitle: 'Monolithic Gathering Surfaces & Sculpted Seating',
-    heroImage: 'https://images.unsplash.com/photo-1617806118233-18e1de247200?auto=format&fit=crop&w=1600&q=85',
+    heroImage: 'assets/clay-banks-BnDI_MVomAI-unsplash.jpg',
     deck: 'Gathering around honest natural materials: honed Roman travertine slabs, solid FSC European white oak, and intimate pendant illumination.',
     stylingPrinciples: [
       {
@@ -133,7 +133,7 @@ export const CATEGORY_INSPIRATION_DATA = {
       duration: '3:50',
       author: 'Atelier Dining Architecture',
       description: 'Composing a warm gathering space: balancing stone table proportions, acoustic seating upholstery, and focused pendant lighting.',
-      thumbnail: 'https://images.unsplash.com/photo-1617806118233-18e1de247200?auto=format&fit=crop&w=1200&q=85',
+      thumbnail: 'assets/clay-banks-BnDI_MVomAI-unsplash.jpg',
       embedUrl: 'https://www.youtube-nocookie.com/embed/2V1a44eBsp4?rel=0&modestbranding=1&playsinline=1',
       takeaways: [
         'Maintain at least 90cm clearance between table edge and walls for effortless chair egress.',
@@ -155,7 +155,7 @@ export const CATEGORY_INSPIRATION_DATA = {
     name: 'Furniture',
     title: 'The Furniture Atelier',
     subtitle: 'Heirloom Joinery, Solid Hardwoods & Monolithic Stone',
-    heroImage: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1600&q=85',
+    heroImage: 'assets/pexels-fotografiagmazg-12420730.jpg',
     deck: 'Handcrafted architectural pieces designed to age with dignity: solid white oak, Roman travertine, and Italian textured bouclé.',
     stylingPrinciples: [
       {
@@ -180,7 +180,7 @@ export const CATEGORY_INSPIRATION_DATA = {
       duration: '4:15',
       author: 'HomeHub Craft Workshop',
       description: 'Inside the atelier: how solid wood frames, double-density foam cores, and hand-finished stone slabs are crafted to last generations.',
-      thumbnail: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1200&q=85',
+      thumbnail: 'assets/pexels-pixabay-276746.jpg',
       embedUrl: 'https://www.youtube-nocookie.com/embed/1z48Yp95wls?rel=0&modestbranding=1&playsinline=1',
       takeaways: [
         'Inspect structural joint integrity rather than relying on surface finishes alone.',
@@ -202,7 +202,7 @@ export const CATEGORY_INSPIRATION_DATA = {
     name: 'Small Spaces',
     title: 'Small Spaces & Smart Living',
     subtitle: 'Space Intelligence, Nested Joinery & Micro-Living',
-    heroImage: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1600&q=85',
+    heroImage: 'assets/magazines/4f5d0ae3-01f3-41ad-b9df-0624121da53a.webp',
     deck: 'Compact living does not mean compromise. Space-intelligent nested engineering and wall-hung joinery preserve full freedom of movement.',
     stylingPrinciples: [
       {
@@ -227,7 +227,7 @@ export const CATEGORY_INSPIRATION_DATA = {
       duration: '4:40',
       author: 'Compact Living Studio',
       description: 'Watch how compact telescoping desks and floating storage adapt seamlessly between work hours and evening relaxation.',
-      thumbnail: 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&w=1200&q=85',
+      thumbnail: 'assets/magazines/de179757-6ab3-4cb0-9b56-84039d2ba4dc.webp',
       embedUrl: 'https://www.youtube-nocookie.com/embed/1z48Yp95wls?rel=0&modestbranding=1&playsinline=1',
       takeaways: [
         'Telescoping console desks offer full work ergonomics without consuming permanent floor footprint.',
@@ -249,7 +249,7 @@ export const CATEGORY_INSPIRATION_DATA = {
     name: 'Kitchen',
     title: 'Culinary Architecture & Kitchen Living',
     subtitle: 'Streamlined Stone, Fluted Timber & Warm Illumination',
-    heroImage: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=1600&q=85',
+    heroImage: 'assets/magazines/1aa74f5d-417b-4fed-ad3d-3f05fce90ac1.webp',
     deck: 'Elevating the culinary landscape into a serene living space with honed stone worktops, fluted timber cabinetry, and warm task illumination.',
     stylingPrinciples: [
       {
@@ -274,7 +274,7 @@ export const CATEGORY_INSPIRATION_DATA = {
       duration: '4:05',
       author: 'Atelier Culinary Architecture',
       description: 'Designing high-efficiency kitchen workstations with concealed pantries, acoustic timber paneling, and tactile ceramic storage.',
-      thumbnail: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=1200&q=85',
+      thumbnail: 'assets/magazines/15db50fe-f290-462b-ae89-457ee3ab948a.webp',
       embedUrl: 'https://www.youtube-nocookie.com/embed/kJQP7kiw5Fk?rel=0&modestbranding=1&playsinline=1',
       takeaways: [
         'Store everyday culinary tools within one arm’s reach using concealed modular drawers.',
@@ -343,7 +343,7 @@ export const CATEGORY_INSPIRATION_DATA = {
     name: 'Home Décor',
     title: 'Objects of Home & Curated Décor',
     subtitle: 'Wheel-Thrown Stoneware, Mineral Plaster & Raw Linens',
-    heroImage: 'https://images.unsplash.com/photo-1581783342308-f792dbdd27c5?auto=format&fit=crop&w=1600&q=85',
+    heroImage: 'assets/magazines/923e4bb3-ccc1-4efb-806a-bfc42fdd3565.webp',
     deck: 'Objects in the home should not demand attention; they should reward it with quiet texture, natural asymmetry, and shifting daylight.',
     stylingPrinciples: [
       {
@@ -368,7 +368,7 @@ export const CATEGORY_INSPIRATION_DATA = {
       duration: '3:18',
       author: 'Atelier Nord Ceramics',
       description: 'Styling coffee tables, mantels, and entryway consoles using the rule of odd numbers, asymmetric heights, and raw earthen vessels.',
-      thumbnail: 'https://images.unsplash.com/photo-1581783342308-f792dbdd27c5?auto=format&fit=crop&w=1200&q=85',
+      thumbnail: 'assets/magazines/923e4bb3-ccc1-4efb-806a-bfc42fdd3565.webp',
       embedUrl: 'https://www.youtube-nocookie.com/embed/kJQP7kiw5Fk?rel=0&modestbranding=1&playsinline=1',
       takeaways: [
         'Pair one tall ceramic vessel with one low flat stone tray or art monograph.',
@@ -390,7 +390,7 @@ export const CATEGORY_INSPIRATION_DATA = {
     name: 'Storage Solutions',
     title: 'Storage Solutions & Architectural Joinery',
     subtitle: 'Floating Consoles, Slatted Tambour & Concealed Cable Order',
-    heroImage: 'https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=1600&q=85',
+    heroImage: 'assets/magazines/ca22619b-3da0-49d0-9829-0146c7dcc909.webp',
     deck: 'Concealed storage joinery maintains peaceful domestic order. Floating credenzas, tambour slats, and integrated wire management keep surfaces pristine.',
     stylingPrinciples: [
       {
@@ -415,7 +415,7 @@ export const CATEGORY_INSPIRATION_DATA = {
       duration: '4:20',
       author: 'HomeHub Atelier Joinery',
       description: 'How floating consoles, recessed plinths, and concealed tambour doors transform chaotic rooms into serene, minimalist architecture.',
-      thumbnail: 'https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=1200&q=85',
+      thumbnail: 'assets/magazines/ca22619b-3da0-49d0-9829-0146c7dcc909.webp',
       embedUrl: 'https://www.youtube-nocookie.com/embed/1z48Yp95wls?rel=0&modestbranding=1&playsinline=1',
       takeaways: [
         'Concealed cable passages keep desktops and entertainment units free of visual clutter.',

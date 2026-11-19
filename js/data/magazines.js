@@ -1,26 +1,30 @@
 // High-resolution verified interior photography URLs (All tested & returning HTTP 200)
 const P = {
-  // Living Room & Furniture
-  livingCover: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1400&q=85',
-  livingBackcover: 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?auto=format&fit=crop&w=1400&q=85',
-  cloudcurveSofa: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1200&q=85',
-  livingDouble1: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1600&q=85',
+  // Living Room & Furniture (Root assets/ Native High-Res Photography)
+  livingCover: 'assets/minh-pham-OtXADkUh3-I-unsplash.jpg',
+  livingBackcover: 'assets/pexels-pixabay-276746.jpg',
+  cloudcurveSofa: 'assets/minh-pham-OtXADkUh3-I-unsplash.jpg',
+  livingDouble1: 'assets/clay-banks-BnDI_MVomAI-unsplash.jpg',
   auraArmchair: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=1200&q=85',
   nomaTable: 'https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&w=1200&q=85',
   cloudsoftCushions: 'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&w=1200&q=85',
   travertineRoom: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1400&q=85',
   sunlightTravertine: 'https://images.unsplash.com/photo-1600210491892-03d54c0aaf87?auto=format&fit=crop&w=1400&q=85',
-  livingDouble2: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1600&q=85',
-  diningVignette: 'https://images.unsplash.com/photo-1616046229478-9901c5536a45?auto=format&fit=crop&w=1200&q=85',
+  livingDouble2: 'assets/pexels-fotografiagmazg-12420730.jpg',
+  diningVignette: 'assets/clay-banks-BnDI_MVomAI-unsplash.jpg',
   modernVilla: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1400&q=85',
-  warmSalon: 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1200&q=85',
+  warmSalon: 'assets/pexels-pixabay-276746.jpg',
+  conservatoryDining: 'assets/clay-banks-BnDI_MVomAI-unsplash.jpg',
+  scandinavianSalon: 'assets/minh-pham-OtXADkUh3-I-unsplash.jpg',
+  artisanLiving: 'assets/pexels-fotografiagmazg-12420730.jpg',
+  classicLiving: 'assets/pexels-pixabay-276746.jpg',
   loungeAlcove: 'https://images.unsplash.com/photo-1617806118233-18e1de247200?auto=format&fit=crop&w=1200&q=85',
   loftOpen: 'https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?auto=format&fit=crop&w=1200&q=85',
   sereneMinimal: 'https://images.unsplash.com/photo-1618219740975-d40978bb7378?auto=format&fit=crop&w=1200&q=85',
-  hearthFireplace: 'https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?auto=format&fit=crop&w=1400&q=85',
-  brightSalon: 'https://images.unsplash.com/photo-1600121848594-d8644e57abab?auto=format&fit=crop&w=1200&q=85',
+  hearthFireplace: 'assets/pexels-fotografiagmazg-12420730.jpg',
+  brightSalon: 'assets/minh-pham-OtXADkUh3-I-unsplash.jpg',
   armchairDetail: 'https://images.unsplash.com/photo-1617103996702-96ff29b1c467?auto=format&fit=crop&w=1200&q=85',
-  diningTableMarble: 'https://images.unsplash.com/photo-1616486029423-aaa4789e8c9a?auto=format&fit=crop&w=1200&q=85',
+  diningTableMarble: 'assets/clay-banks-BnDI_MVomAI-unsplash.jpg',
 
   // Objects & Décor
   objectsCover: 'https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?auto=format&fit=crop&w=1400&q=85',
@@ -406,7 +410,7 @@ export const MAGAZINE_BOOKS = {
         headline: "Evening Sanctuary",
         deck: "When natural daylight fades, 2700K warm fixtures take over without harsh glare.",
         note: "Indirect wall washing creates gentle ambient gradients for night decompression.",
-        heroImage: P.loftOpen,
+        heroImage: P.classicLiving,
         products: [
           { sku: "HH-LGT-002", label: "Arc Floor Lamp", price: "₨ 78,500", badge: "Twilight", hotspot: { x: 60, y: 45 } }
         ]
@@ -418,7 +422,7 @@ export const MAGAZINE_BOOKS = {
         headline: "The Complete Living Pavilion",
         kicker: "PORTFOLIO HIGHLIGHT",
         deck: "All elements unified in architectural stillness. Designed and curated in Pakistan.",
-        heroImage: P.modernVilla,
+        heroImage: P.artisanLiving,
         products: [
           { sku: "HH-FUR-001", label: "CloudCurve Sofa", price: "₨ 345,000", badge: "Living Suite", hotspot: { x: 42, y: 65 } },
           { sku: "HH-FUR-002", label: "Noma Coffee Table", price: "₨ 125,000", badge: "Travertine", hotspot: { x: 62, y: 72 } }

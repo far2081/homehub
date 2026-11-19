@@ -940,7 +940,10 @@ async function runRealBrowserVerification() {
           // Advance page in flipbook
           const startPage = flipbook.currentPageIndex;
           flipbook.next();
-          await new Promise(r => setTimeout(r, 800));
+          for (let i = 0; i < 15; i++) {
+            await new Promise(r => setTimeout(r, 100));
+            if (flipbook.currentPageIndex > startPage || flipbook.currentPageIndex > 0) break;
+          }
           const afterTurnPage = flipbook.currentPageIndex;
 
           return {
