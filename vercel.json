@@ -4,6 +4,17 @@
   "outputDirectory": ".",
   "cleanUrls": false,
   "trailingSlash": false,
+  "functions": {
+    "index.js": {
+      "includeFiles": "{index.html,manifest.json,sw.js,css/**,js/**,assets/**}"
+    },
+    "server.js": {
+      "includeFiles": "{index.html,manifest.json,sw.js,css/**,js/**,assets/**}"
+    },
+    "api/**/*.js": {
+      "includeFiles": "{index.html,css/**,js/**,assets/**}"
+    }
+  },
   "rewrites": [
     {
       "source": "/api/(.*)",
@@ -12,6 +23,26 @@
     {
       "source": "/webstore/(.*)",
       "destination": "/$1"
+    },
+    {
+      "source": "/css/(.*)",
+      "destination": "/css/$1"
+    },
+    {
+      "source": "/js/(.*)",
+      "destination": "/js/$1"
+    },
+    {
+      "source": "/assets/(.*)",
+      "destination": "/assets/$1"
+    },
+    {
+      "source": "/manifest.json",
+      "destination": "/manifest.json"
+    },
+    {
+      "source": "/sw.js",
+      "destination": "/sw.js"
     },
     {
       "source": "/",

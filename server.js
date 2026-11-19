@@ -1,7 +1,8 @@
 /**
- * HomeHub - Lightweight Zero-Dependency Local Static Server
+ * HomeHub - Lightweight Zero-Dependency Local & Vercel Server
  * Runs out-of-the-box on Node.js using modern ES Module standard.
- * Vercel-Serverless Safe: Exports request handler function and guards listen().
+ * Vercel-Serverless Safe: Preloads index.html, supports multi-root directory resolving,
+ * exports requestHandler and guards server.listen().
  */
 
 import http from 'http';
@@ -12,8 +13,30 @@ import { fileURLToPath, pathToFileURL } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const PORT = (process.env && process.env.PORT) ? process.env.PORT : 3000;
+const PORT = (process.env && process.env.PORT) ? parseInt(process.env.PORT, 10) : 3000;
 const ROOT_DIR = __dirname;
+
+// Candidate base directories to find assets across local, monorepo, and Vercel serverless environments
+const BASE_DIRS = [
+  ROOT_DIR,
+  process.cwd(),
+  path.join(ROOT_DIR, 'webstore'),
+  path.join(process.cwd(), 'webstore'),
+  '/var/task',
+  '/var/task/webstore'
+];
+
+// Pre-resolve and cache index.html content in memory so that GET / or /index.html NEVER fails with 404
+let cachedIndexHtml = '';
+for (const dir of BASE_DIRS) {
+  try {
+    const candidate = path.join(dir, 'index.html');
+    if (fs.existsSync(candidate) && fs.statSync(candidate).isFile()) {
+      cachedIndexHtml = fs.readFileSync(candidate, 'utf8');
+      if (cachedIndexHtml) break;
+    }
+  } catch (_) {}
+}
 
 // Automatically parse and load .env file if present (safe guard against missing files)
 try {
@@ -66,7 +89,35 @@ const MIME_TYPES = {
   '.woff': 'font/woff'
 };
 
-const server = http.createServer((req, res) => {
+/**
+ * Resolves a requested pathname against candidate base directories.
+ */
+function findFileOnDisk(requestedPath) {
+  let cleanPath = requestedPath;
+  if (cleanPath.startsWith('/webstore/')) {
+    cleanPath = cleanPath.substring(9);
+  }
+  if (!cleanPath.startsWith('/')) {
+    cleanPath = '/' + cleanPath;
+  }
+  cleanPath = cleanPath.replace(/\\/g, '/');
+
+  for (const dir of BASE_DIRS) {
+    try {
+      const rel = cleanPath.startsWith('/') ? cleanPath.substring(1) : cleanPath;
+      const full = path.resolve(dir, rel);
+      if (fs.existsSync(full) && fs.statSync(full).isFile()) {
+        return full;
+      }
+    } catch (_) {}
+  }
+  return null;
+}
+
+/**
+ * Core Request Handler Function
+ */
+function requestHandler(req, res) {
   // Parse URL & query string safely
   let pathname = '/';
   try {
@@ -106,7 +157,7 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // Local image upload endpoint (Guarantees upload success if Supabase Storage is paused/offline)
+  // Local image upload endpoint
   if (pathname === '/api/upload' && req.method === 'POST') {
     let body = '';
     req.on('data', chunk => {
@@ -150,7 +201,7 @@ const server = http.createServer((req, res) => {
           const dangerousPatterns = [
             /<script\b/i,
             /javascript\s*:/i,
-            /\bon\w+\s*=/i, // inline event handlers: onload, onerror, onclick, etc.
+            /\bon\w+\s*=/i,
             /<foreignObject\b/i,
             /<iframe\b/i,
             /<embed\b/i,
@@ -212,28 +263,33 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  if (pathname === '/') {
-    pathname = '/index.html';
-  }
-
-  const filePath = path.join(ROOT_DIR, pathname);
-
-  // Security check: ensure path is within ROOT_DIR
-  if (!filePath.startsWith(ROOT_DIR)) {
-    res.writeHead(403, { 'Content-Type': 'text/plain' });
-    res.end('403 Forbidden');
-    return;
-  }
-
-  fs.stat(filePath, (err, stats) => {
-    if (err || !stats.isFile()) {
-      res.writeHead(404, { 'Content-Type': 'text/plain' });
-      res.end(`404 Not Found: ${pathname}`);
+  // Root or index.html handling: always serve valid index.html with HTTP 200
+  if (pathname === '/' || pathname === '/index.html' || pathname === '' || pathname === '/index' || pathname === '/home') {
+    let htmlContent = cachedIndexHtml;
+    const diskIndex = findFileOnDisk('/index.html');
+    if (diskIndex) {
+      try {
+        htmlContent = fs.readFileSync(diskIndex, 'utf8');
+      } catch (_) {}
+    }
+    if (htmlContent) {
+      res.writeHead(200, {
+        'Content-Type': 'text/html; charset=utf-8',
+        'Content-Length': Buffer.byteLength(htmlContent, 'utf8'),
+        'Cache-Control': 'public, max-age=0, must-revalidate',
+        'Access-Control-Allow-Origin': '*'
+      });
+      res.end(htmlContent);
       return;
     }
+  }
 
+  // Resolve static file on disk
+  const filePath = findFileOnDisk(pathname);
+  if (filePath) {
     const ext = path.extname(filePath).toLowerCase();
     const contentType = MIME_TYPES[ext] || 'application/octet-stream';
+    const stats = fs.statSync(filePath);
 
     // Support HTTP Range requests for video/audio streaming
     const range = req.headers.range;
@@ -253,20 +309,40 @@ const server = http.createServer((req, res) => {
         'X-Frame-Options': 'SAMEORIGIN'
       });
       file.pipe(res);
-    } else {
-      res.writeHead(200, {
-        'Content-Type': contentType,
-        'Content-Length': stats.size,
-        'Cache-Control': 'no-cache',
-        'Access-Control-Allow-Origin': '*',
-        'X-Content-Type-Options': 'nosniff',
-        'X-Frame-Options': 'SAMEORIGIN',
-        'Referrer-Policy': 'strict-origin-when-cross-origin'
-      });
-      fs.createReadStream(filePath).pipe(res);
+      return;
     }
-  });
-});
+
+    res.writeHead(200, {
+      'Content-Type': contentType,
+      'Content-Length': stats.size,
+      'Cache-Control': pathname.startsWith('/assets/') ? 'public, max-age=31536000, immutable' : 'no-cache',
+      'Access-Control-Allow-Origin': '*',
+      'X-Content-Type-Options': 'nosniff',
+      'X-Frame-Options': 'SAMEORIGIN',
+      'Referrer-Policy': 'strict-origin-when-cross-origin'
+    });
+    fs.createReadStream(filePath).pipe(res);
+    return;
+  }
+
+  // SPA navigation fallback: paths without file extension serve index.html
+  if (!path.extname(pathname) && cachedIndexHtml) {
+    res.writeHead(200, {
+      'Content-Type': 'text/html; charset=utf-8',
+      'Content-Length': Buffer.byteLength(cachedIndexHtml, 'utf8'),
+      'Cache-Control': 'public, max-age=0, must-revalidate',
+      'Access-Control-Allow-Origin': '*'
+    });
+    res.end(cachedIndexHtml);
+    return;
+  }
+
+  // File truly not found
+  res.writeHead(404, { 'Content-Type': 'text/plain' });
+  res.end(`404 Not Found: ${pathname}`);
+}
+
+const server = http.createServer(requestHandler);
 
 server.on('error', (err) => {
   if (err.code === 'EADDRINUSE') {
@@ -276,9 +352,13 @@ server.on('error', (err) => {
   }
 });
 
-// Guard: Only start listening if run directly and NOT in a Vercel serverless environment
-const isDirectRun = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
-if (isDirectRun && !process.env.VERCEL) {
+// Guard: Start listening if run directly via node server.js
+const isDirectRun = process.argv[1] && (
+  import.meta.url === pathToFileURL(process.argv[1]).href ||
+  process.argv[1].endsWith('server.js')
+);
+
+if (isDirectRun && !process.env.VERCEL && !server.listening) {
   server.listen(PORT, () => {
     console.log(`\n======================================================`);
     console.log(`  HOMEHUB — Real Production-Ready Web Application`);
@@ -288,5 +368,5 @@ if (isDirectRun && !process.env.VERCEL) {
   });
 }
 
-export { server };
+export { server, requestHandler, findFileOnDisk, cachedIndexHtml };
 export default server;
