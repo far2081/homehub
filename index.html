@@ -25,6 +25,7 @@
   <!-- Stylesheets -->
   <link rel="stylesheet" href="css/main.css" />
   <link rel="stylesheet" href="css/components/navigation.css" />
+  <link rel="stylesheet" href="css/components/homepage.css" />
   <link rel="stylesheet" href="css/components/book-navigation.css" />
   <link rel="stylesheet" href="css/components/category-page.css" />
   <link rel="stylesheet" href="css/components/magazine-3d.css" />
@@ -289,14 +290,194 @@
   <!-- Main Content Landmark -->
   <main id="main-content" role="main">
 
-    <!-- VIEW 1: HOME VIEW (Minimal Luxury Magazine Library Homepage) -->
+    <!-- VIEW 1: HOME VIEW (Calm Editorial Digital Flagship) -->
     <div class="home-view-wrapper" id="home-view">
       
-      <!-- DIGITAL MAGAZINE (Main and only content on homepage) -->
-      <section class="magazine-section-wrapper" id="magazine-section" aria-label="Interactive 3D Interior Magazine">
+      <!-- 1. CALM EDITORIAL HERO -->
+      <section class="home-hero-section" aria-label="HomeHub Editorial Introduction" data-plugin-slot="homepage-hero">
+        <div class="container hero-container">
+          <div class="hero-content">
+            <div class="hero-eyebrow-pill">
+              <span class="eyebrow-dot"></span>
+              <span class="eyebrow-text">HOMEHUB EDITORIAL • SPECIAL COLLECTOR'S ISSUE</span>
+            </div>
+            <h1 class="hero-title">The Art of<br /><em>Compact Living</em></h1>
+            <p class="hero-deck">
+              An architectural exploration of small-space ingenuity, quiet proportions, and the calm beauty of considered negative space.
+            </p>
+            <div class="hero-meta-row">
+              <span class="hero-meta-tag">📐 52–99 sq ft Small-Space Case Studies</span>
+              <span class="hero-meta-tag">🪵 FSC Birch & Honed Travertine</span>
+              <span class="hero-meta-tag">💡 2700K Circadian Illumination</span>
+            </div>
+            <div class="hero-actions">
+              <a href="#magazine-section" class="hero-btn-primary" id="hero-btn-read-magazine">
+                <span class="btn-icon">📖</span>
+                <span>Read Flagship Publication</span>
+              </a>
+              <a href="#shop" class="hero-btn-secondary" id="hero-btn-shop">
+                <span>Explore Curated Pieces →</span>
+              </a>
+              <a href="#ideas" class="hero-btn-subtle" id="hero-btn-ideas">
+                <span>Watch Masterclasses</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="hero-media-wrapper">
+            <div class="hero-media-frame">
+              <img 
+                src="assets/magazines/1aa74f5d-417b-4fed-ad3d-3f05fce90ac1.webp" 
+                alt="52 sq ft Galley Kitchen & Entryway Architectural Case Study" 
+                class="hero-media-image"
+                loading="eager"
+              />
+              <div class="hero-media-badge">
+                <span class="badge-vol">Volume 04</span>
+                <span class="badge-sub">The Art of Compact Living</span>
+              </div>
+            </div>
+            <div class="hero-media-caption">
+              <span class="caption-fig">Figure 1.0</span>
+              <span class="caption-text">52 sq ft Galley Kitchen with Birch Joinery & Monolithic Worktop • Stockholm Atelier</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. FLAGSHIP DIGITAL MAGAZINE (3D Flipbook Showcase) -->
+      <section class="magazine-section-wrapper" id="magazine-section" aria-label="Interactive 3D Interior Magazine" data-plugin-slot="magazine-flipbook">
         <div class="container">
+          <div class="section-intro-calm">
+            <span class="section-kicker">INTERACTIVE PUBLICATION</span>
+            <h2 class="section-serif-title">The Digital Magazine Experience</h2>
+            <p class="section-subtext">Turn realistic double-page spreads, explore tactile room photography, and discover architectural pieces in situ.</p>
+          </div>
           <!-- 3D Flipbook Mount Point -->
-          <div id="flipbook-mount-point" data-plugin-slot="magazine-flipbook"></div>
+          <div id="flipbook-mount-point"></div>
+        </div>
+      </section>
+
+      <!-- 3. CURATED PIECES FOR COMPACT LIVING (Uncrowded, calm 4-item grid) -->
+      <section class="home-curated-section" aria-label="Curated Pieces for Compact Living" data-plugin-slot="curated-showcase">
+        <div class="container">
+          <div class="curated-header-row">
+            <div>
+              <span class="section-kicker">ATELIER HIGHLIGHTS</span>
+              <h2 class="section-serif-title">Curated for Considered Spaces</h2>
+              <p class="section-subtext">Four essential handcrafted pieces designed to maximize living volume without visual clutter.</p>
+            </div>
+            <a href="#shop" class="curated-view-all-btn" id="home-curated-view-all">
+              <span>View Full 14-Piece Atelier Collection →</span>
+            </a>
+          </div>
+
+          <div class="home-curated-grid">
+            <!-- Piece 1: Modula Nested Desk -->
+            <article class="home-piece-card" data-sku="HH-SSS-001">
+              <div class="piece-media-wrap">
+                <img src="assets/magazines/4aa14b31-2e83-4baa-8af8-a1112955006d.webp" alt="Modula Nested Desk in compact study alcove" class="piece-img" />
+                <span class="piece-badge-corner">Small Spaces</span>
+              </div>
+              <div class="piece-body">
+                <div class="piece-cat">Small Space Solutions</div>
+                <h3 class="piece-title">Modula Nested Desk</h3>
+                <p class="piece-desc">Compact 38cm console that glides open to reveal a full 72cm oak worktop.</p>
+                <div class="piece-footer">
+                  <span class="piece-price">₨ 89,000</span>
+                  <button class="piece-view-btn" data-sku="HH-SSS-001">View Details</button>
+                </div>
+              </div>
+            </article>
+
+            <!-- Piece 2: Flute Floating Console -->
+            <article class="home-piece-card" data-sku="HH-SSS-002">
+              <div class="piece-media-wrap">
+                <img src="assets/magazines/ca22619b-3da0-49d0-9829-0146c7dcc909.webp" alt="Flute Floating Console wall mounted in hallway" class="piece-img" />
+                <span class="piece-badge-corner">Wall-Hung</span>
+              </div>
+              <div class="piece-body">
+                <div class="piece-cat">Small Space Solutions</div>
+                <h3 class="piece-title">Flute Floating Console</h3>
+                <p class="piece-desc">Wall-hung fluted oak tambour credenza with concealed magnetic drop doors.</p>
+                <div class="piece-footer">
+                  <span class="piece-price">₨ 74,000</span>
+                  <button class="piece-view-btn" data-sku="HH-SSS-002">View Details</button>
+                </div>
+              </div>
+            </article>
+
+            <!-- Piece 3: CloudCurve Sofa -->
+            <article class="home-piece-card" data-sku="HH-FUR-001">
+              <div class="piece-media-wrap">
+                <img src="assets/minh-pham-OtXADkUh3-I-unsplash.jpg" alt="CloudCurve Sofa in bright Scandinavian salon" class="piece-img" />
+                <span class="piece-badge-corner">Flagship</span>
+              </div>
+              <div class="piece-body">
+                <div class="piece-cat">Furniture</div>
+                <h3 class="piece-title">CloudCurve Sofa</h3>
+                <p class="piece-desc">Organic curvilinear 3-seater in textured Italian bouclé with 42cm low datum.</p>
+                <div class="piece-footer">
+                  <span class="piece-price">₨ 345,000</span>
+                  <button class="piece-view-btn" data-sku="HH-FUR-001">View Details</button>
+                </div>
+              </div>
+            </article>
+
+            <!-- Piece 4: Luna Pendant -->
+            <article class="home-piece-card" data-sku="HH-LGT-001">
+              <div class="piece-media-wrap">
+                <img src="assets/clay-banks-BnDI_MVomAI-unsplash.jpg" alt="Luna Pendant mouth blown opal glass sphere" class="piece-img" />
+                <span class="piece-badge-corner">2700K Glow</span>
+              </div>
+              <div class="piece-body">
+                <div class="piece-cat">Lighting</div>
+                <h3 class="piece-title">Luna Pendant</h3>
+                <p class="piece-desc">Mouth-blown opal glass sphere suspended by brushed champagne brass stem.</p>
+                <div class="piece-footer">
+                  <span class="piece-price">₨ 62,000</span>
+                  <button class="piece-view-btn" data-sku="HH-LGT-001">View Details</button>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. CONCISE CALM PRINCIPLES (Spatial Philosophy) -->
+      <section class="home-principles-section" aria-label="HomeHub Design Principles" data-plugin-slot="editorial-principles">
+        <div class="container">
+          <div class="principles-header">
+            <span class="section-kicker">EDITORIAL ETHOS</span>
+            <h2 class="section-serif-title">Three Principles of Thoughtful Living</h2>
+            <p class="section-subtext">How our studio approaches compact spaces, enduring materials, and human scale.</p>
+          </div>
+
+          <div class="principles-grid">
+            <div class="principle-card">
+              <span class="principle-number">01</span>
+              <h3 class="principle-title">Generous Negative Space</h3>
+              <p class="principle-body">
+                By maintaining low seating horizons and decluttering vertical lines, small footprints expand psychologically. Space is not something to fill; it is the canvas that allows light and breath to circulate.
+              </p>
+            </div>
+
+            <div class="principle-card">
+              <span class="principle-number">02</span>
+              <h3 class="principle-title">Honest Material Tactility</h3>
+              <p class="principle-body">
+                We reject artificial veneers. Solid FSC European ash, Roman travertine, enzyme-washed French flax linen, and hand-turned earthenware ground the senses in natural authenticity and timeless durability.
+              </p>
+            </div>
+
+            <div class="principle-card">
+              <span class="principle-number">03</span>
+              <h3 class="principle-title">Fluid Multi-Functionality</h3>
+              <p class="principle-body">
+                Every piece performs dual roles effortlessly. A hallway console expands smoothly into a 72cm work desk; low-profile storage doubles as architectural plinths for sculptural objects.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 

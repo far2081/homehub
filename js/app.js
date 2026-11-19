@@ -258,7 +258,7 @@ class HomeHubApp {
 
   initFlipbook() {
     this.flipbook = new Flipbook('flipbook-mount-point', {
-      initialBook: 'living-edit',
+      initialBook: 'small-spaces',
       onProductSelect: (sku) => this.openProduct(sku),
       onAddToCart: (sku, qty) => this.cart.addItem(sku, qty || 1),
       onBookChange: (bookId) => {
@@ -393,6 +393,17 @@ class HomeHubApp {
     if (magazinesNavBtn) magazinesNavBtn.addEventListener('click', (e) => { e.preventDefault(); this.showMagazinesView(); });
 
     // Homepage Action Buttons
+    const heroReadMagBtn = document.getElementById('hero-btn-read-magazine');
+    if (heroReadMagBtn) {
+      heroReadMagBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const magSec = document.getElementById('magazine-section');
+        if (magSec) {
+          magSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    }
+
     const heroShopBtn = document.getElementById('hero-btn-shop');
     if (heroShopBtn) heroShopBtn.addEventListener('click', (e) => { e.preventDefault(); this.showShopView(); });
 
@@ -401,6 +412,26 @@ class HomeHubApp {
 
     const heroMagazinesBtn = document.getElementById('hero-btn-magazines');
     if (heroMagazinesBtn) heroMagazinesBtn.addEventListener('click', (e) => { e.preventDefault(); this.showMagazinesView(); });
+
+    const curatedViewAllBtn = document.getElementById('home-curated-view-all');
+    if (curatedViewAllBtn) {
+      curatedViewAllBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.showShopView();
+      });
+    }
+
+    // Curated Homepage Pieces PDP Trigger
+    document.querySelectorAll('.home-piece-card, .piece-view-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const sku = btn.dataset.sku || btn.closest('.home-piece-card')?.dataset.sku;
+        if (sku) {
+          this.openProduct(sku);
+        }
+      });
+    });
 
     // Categories Dropdown Links (All 9 Categories)
     document.querySelectorAll('.category-dropdown-item').forEach(item => {
