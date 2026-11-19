@@ -1370,6 +1370,7 @@ export class Flipbook {
           ${this.renderHotspots(page.products)}
           
           <div class="spread-overlay-meta">
+            ${page.roomSize ? `<span class="spread-room-size-tag">Room Size: ${page.roomSize}</span>` : ''}
             <span class="spread-kicker">${page.kicker || 'DOUBLE-PAGE SPREAD'}</span>
             <h2 class="spread-title">${page.headline}</h2>
             <p class="spread-deck">${page.deck || ''}</p>
@@ -1393,6 +1394,7 @@ export class Flipbook {
 
           <div class="layout-b-photo-frame">
             <img src="${page.heroImage}" alt="${page.headline}" class="layout-b-photo" loading="lazy" />
+            ${page.roomSize ? `<span class="page-room-size-pill">Room Size: ${page.roomSize}</span>` : ''}
             ${this.renderHotspots(page.products)}
           </div>
 
@@ -1422,6 +1424,7 @@ export class Flipbook {
           ${this.renderHotspots(page.products)}
 
           <div class="layout-c-bottom-meta">
+            ${page.roomSize ? `<span class="spread-room-size-tag">Room Size: ${page.roomSize}</span>` : ''}
             <h2 class="layout-c-title">${page.headline}</h2>
             <p class="layout-c-specs">${page.deck || ''}</p>
           </div>

@@ -136,21 +136,53 @@ async function run() {
     await sendCommand(ws, 'Page.navigate', { url: BASE_URL });
     await sleep(2500);
 
-    // Load 'small-spaces' (The Art of Compact Living) and turn to Spread 1 (Pages 2-3 Galley Kitchen panoramic image_8.png)
-    console.log('[CDP] Opening The Art of Compact Living (small-spaces) Spread 1 (Pages 2-3)...');
+    // Load 'small-spaces' (The Art of Compact Living)
+    console.log('[CDP] Opening The Art of Compact Living (small-spaces)...');
     await evalInPage(ws, `
       (() => {
         if (window.homehub) {
           window.homehub.openBook('small-spaces');
-          if (window.homehub.flipbook) {
-            window.homehub.flipbook.goToPage(1);
-          }
         }
       })()
     `);
-    await sleep(2000);
+    await sleep(1000);
 
+    // Spread 1 (Pages 2-3: Galley Kitchen)
+    console.log('[CDP] Navigating to Spread 1 (Pages 2-3: Galley Kitchen)...');
+    await evalInPage(ws, `
+      (() => {
+        if (window.homehub && window.homehub.flipbook) {
+          window.homehub.flipbook.goToPage(1);
+        }
+      })()
+    `);
+    await sleep(1800);
+    await captureScreenshot(ws, 'preview_spread_01_galley_kitchen.png');
     await captureScreenshot(ws, 'preview_desktop_magazine_spread.png');
+
+    // Spread 3 (Pages 6-7: Living Room 99 sq ft)
+    console.log('[CDP] Navigating to Spread 3 (Pages 6-7: Living Room 99 sq ft)...');
+    await evalInPage(ws, `
+      (() => {
+        if (window.homehub && window.homehub.flipbook) {
+          window.homehub.flipbook.goToPage(5);
+        }
+      })()
+    `);
+    await sleep(1800);
+    await captureScreenshot(ws, 'preview_spread_03_living_room.png');
+
+    // Spread 5 (Pages 10-11: Bedroom 76 sq ft)
+    console.log('[CDP] Navigating to Spread 5 (Pages 10-11: Bedroom 76 sq ft)...');
+    await evalInPage(ws, `
+      (() => {
+        if (window.homehub && window.homehub.flipbook) {
+          window.homehub.flipbook.goToPage(9);
+        }
+      })()
+    `);
+    await sleep(1800);
+    await captureScreenshot(ws, 'preview_spread_05_bedroom.png');
 
     // 2. DESKTOP TABLE OF CONTENTS (TOC) DRAWER
     console.log('\n--- [2] Opening Table of Contents (TOC) Drawer ---');
@@ -186,21 +218,51 @@ async function run() {
     await sendCommand(ws, 'Page.navigate', { url: BASE_URL });
     await sleep(2500);
 
-    // Turn to page 2
-    console.log('[CDP] Navigating Mobile to The Art of Compact Living Spread 1...');
+    // Open small-spaces on mobile
     await evalInPage(ws, `
       (() => {
         if (window.homehub) {
           window.homehub.openBook('small-spaces');
-          if (window.homehub.flipbook) {
-            window.homehub.flipbook.goToPage(1);
-          }
         }
       })()
     `);
-    await sleep(2000);
+    await sleep(1000);
 
+    // Turn to Spread 1 Mobile
+    console.log('[CDP] Navigating Mobile to The Art of Compact Living Spread 1...');
+    await evalInPage(ws, `
+      (() => {
+        if (window.homehub && window.homehub.flipbook) {
+          window.homehub.flipbook.goToPage(1);
+        }
+      })()
+    `);
+    await sleep(1500);
     await captureScreenshot(ws, 'preview_mobile_magazine_375px.png');
+
+    // Turn to Spread 3 Mobile (Living Room)
+    console.log('[CDP] Navigating Mobile to Spread 3 (Living Room)...');
+    await evalInPage(ws, `
+      (() => {
+        if (window.homehub && window.homehub.flipbook) {
+          window.homehub.flipbook.goToPage(5);
+        }
+      })()
+    `);
+    await sleep(1500);
+    await captureScreenshot(ws, 'preview_mobile_spread_03_living.png');
+
+    // Turn to Spread 5 Mobile (Bedroom)
+    console.log('[CDP] Navigating Mobile to Spread 5 (Bedroom)...');
+    await evalInPage(ws, `
+      (() => {
+        if (window.homehub && window.homehub.flipbook) {
+          window.homehub.flipbook.goToPage(9);
+        }
+      })()
+    `);
+    await sleep(1500);
+    await captureScreenshot(ws, 'preview_mobile_spread_05_bedroom.png');
 
     console.log('\nAll visual previews captured successfully!');
   } catch (e) {
