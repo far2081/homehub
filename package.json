@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "type": "module",
   "description": "HomeHub — Real Production-Ready Web Application with 3D Magazine First Experience",
-  "main": "server.js",
   "scripts": {
+    "build": "echo 'HomeHub static assets ready'",
     "start": "node server.js",
     "dev": "node server.js",
     "serve": "node server.js",

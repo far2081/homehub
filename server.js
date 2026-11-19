@@ -1,23 +1,24 @@
 /**
  * HomeHub - Lightweight Zero-Dependency Local Static Server
  * Runs out-of-the-box on Node.js using modern ES Module standard.
+ * Vercel-Serverless Safe: Exports request handler function and guards listen().
  */
 
 import http from 'http';
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const PORT = process.env.PORT || 3000;
+const PORT = (process.env && process.env.PORT) ? process.env.PORT : 3000;
 const ROOT_DIR = __dirname;
 
-// Automatically parse and load .env file if present
-const envPath = path.join(ROOT_DIR, '.env');
-if (fs.existsSync(envPath)) {
-  try {
+// Automatically parse and load .env file if present (safe guard against missing files)
+try {
+  const envPath = path.join(ROOT_DIR, '.env');
+  if (fs.existsSync(envPath)) {
     const envContent = fs.readFileSync(envPath, 'utf8');
     envContent.split(/\r?\n/).forEach(line => {
       line = line.trim();
@@ -29,14 +30,14 @@ if (fs.existsSync(envPath)) {
         if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
           val = val.substring(1, val.length - 1);
         }
-        if (!process.env[key]) {
+        if (process.env && !process.env[key]) {
           process.env[key] = val;
         }
       }
     });
-  } catch (err) {
-    console.error('Notice: Could not parse .env file:', err.message);
   }
+} catch (_) {
+  // Silent fallback: never throw on missing or inaccessible .env
 }
 
 const MIME_TYPES = {
@@ -66,9 +67,14 @@ const MIME_TYPES = {
 };
 
 const server = http.createServer((req, res) => {
-  // Parse URL & query string
-  const parsedUrl = new URL(req.url, `http://localhost:${PORT}`);
-  let pathname = decodeURIComponent(parsedUrl.pathname);
+  // Parse URL & query string safely
+  let pathname = '/';
+  try {
+    const parsedUrl = new URL(req.url, `http://localhost:${PORT}`);
+    pathname = decodeURIComponent(parsedUrl.pathname);
+  } catch (_) {
+    pathname = req.url ? req.url.split('?')[0] : '/';
+  }
 
   // Safe client configuration endpoint (Never exposes secret/service_role keys)
   if (pathname === '/api/config') {
@@ -78,8 +84,24 @@ const server = http.createServer((req, res) => {
       'Access-Control-Allow-Origin': '*'
     });
     res.end(JSON.stringify({
-      supabaseUrl: process.env.SUPABASE_URL || '',
-      supabaseAnonKey: process.env.SUPABASE_ANON_KEY || ''
+      supabaseUrl: (process.env && process.env.SUPABASE_URL) ? process.env.SUPABASE_URL : '',
+      supabaseAnonKey: (process.env && process.env.SUPABASE_ANON_KEY) ? process.env.SUPABASE_ANON_KEY : ''
+    }));
+    return;
+  }
+
+  // Health endpoint
+  if (pathname === '/api/health') {
+    res.writeHead(200, {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Cache-Control': 'no-cache',
+      'Access-Control-Allow-Origin': '*'
+    });
+    res.end(JSON.stringify({
+      status: 'ok',
+      service: 'HomeHub Atelier',
+      version: '1.0.0',
+      timestamp: new Date().toISOString()
     }));
     return;
   }
@@ -246,12 +268,29 @@ const server = http.createServer((req, res) => {
   });
 });
 
-server.listen(PORT, () => {
-  console.log(`\n======================================================`);
-  console.log(`  HOMEHUB — Real Production-Ready Web Application`);
-  console.log(`  SHOP • STYLE • SMART`);
-  console.log(`  Local Server running at: http://localhost:${PORT}`);
-  console.log(`======================================================\n`);
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.log(`[HomeHub Server] Port ${PORT} already active; shared instance ready.`);
+  } else {
+    console.error('[HomeHub Server] Error:', err);
+  }
 });
 
-export default server;
+// Guard: Only start listening if run directly and NOT in a Vercel serverless environment
+const isDirectRun = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+if (isDirectRun && !process.env.VERCEL) {
+  server.listen(PORT, () => {
+    console.log(`\n======================================================`);
+    console.log(`  HOMEHUB — Real Production-Ready Web Application`);
+    console.log(`  SHOP • STYLE • SMART`);
+    console.log(`  Local Server running at: http://localhost:${PORT}`);
+    console.log(`======================================================\n`);
+  });
+}
+
+// Export a Vercel-compatible request handler function as default
+export default function handler(req, res) {
+  return server.emit('request', req, res);
+}
+handler.server = server;
+export { server };
