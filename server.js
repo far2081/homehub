@@ -96,13 +96,71 @@ const server = http.createServer((req, res) => {
       try {
         const parsed = JSON.parse(body);
         if (!parsed.data) {
-          res.writeHead(400, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+          res.writeHead(400, {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'X-Content-Type-Options': 'nosniff'
+          });
           res.end(JSON.stringify({ error: 'Missing image data' }));
           return;
         }
 
-        const ext = (parsed.filename || 'image.jpg').split('.').pop().toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
-        const cleanExt = (ext === 'jfif' || ext === 'pjpeg') ? 'jpg' : ext;
+        const rawExt = (parsed.filename || 'image.jpg').split('.').pop().toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
+        const allowedExtensions = ['jpg', 'jpeg', 'jfif', 'pjpeg', 'png', 'webp', 'avif', 'gif', 'svg'];
+        
+        if (!allowedExtensions.includes(rawExt)) {
+          res.writeHead(400, {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'X-Content-Type-Options': 'nosniff'
+          });
+          res.end(JSON.stringify({ error: `Disallowed file extension: .${rawExt}. Only standard photographic image formats are allowed.` }));
+          return;
+        }
+
+        const base64Data = parsed.data.includes(',') ? parsed.data.split(',')[1] : parsed.data;
+        const buffer = Buffer.from(base64Data, 'base64');
+
+        // STRICT SVG SANITIZATION STRATEGY
+        if (rawExt === 'svg') {
+          const svgText = buffer.toString('utf8');
+          const dangerousPatterns = [
+            /<script\b/i,
+            /javascript\s*:/i,
+            /\bon\w+\s*=/i, // inline event handlers: onload, onerror, onclick, etc.
+            /<foreignObject\b/i,
+            /<iframe\b/i,
+            /<embed\b/i,
+            /<object\b/i,
+            /<!ENTITY/i,
+            /<!DOCTYPE[^>]*\[/i
+          ];
+
+          for (const pattern of dangerousPatterns) {
+            if (pattern.test(svgText)) {
+              res.writeHead(400, {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+                'X-Content-Type-Options': 'nosniff'
+              });
+              res.end(JSON.stringify({
+                error: 'Security alert: SVG upload rejected. File contains potentially unsafe scripts, entities or event handlers.'
+              }));
+              return;
+            }
+          }
+
+          if (!svgText.includes('<svg') || !svgText.includes('</svg>')) {
+            res.writeHead(400, {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*'
+            });
+            res.end(JSON.stringify({ error: 'Malformed SVG: missing valid root <svg> tags.' }));
+            return;
+          }
+        }
+
+        const cleanExt = (rawExt === 'jfif' || rawExt === 'pjpeg') ? 'jpg' : rawExt;
         const filename = `product-${Date.now()}-${Math.random().toString(36).substring(2, 7)}.${cleanExt}`;
         const uploadDir = path.join(ROOT_DIR, 'assets', 'uploads');
         if (!fs.existsSync(uploadDir)) {
@@ -110,17 +168,21 @@ const server = http.createServer((req, res) => {
         }
 
         const savePath = path.join(uploadDir, filename);
-        const base64Data = parsed.data.includes(',') ? parsed.data.split(',')[1] : parsed.data;
-        fs.writeFileSync(savePath, Buffer.from(base64Data, 'base64'));
+        fs.writeFileSync(savePath, buffer);
 
         const publicUrl = `/assets/uploads/${filename}`;
         res.writeHead(200, {
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
+          'Access-Control-Allow-Origin': '*',
+          'X-Content-Type-Options': 'nosniff'
         });
         res.end(JSON.stringify({ url: publicUrl, success: true }));
       } catch (e) {
-        res.writeHead(500, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+        res.writeHead(500, {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'X-Content-Type-Options': 'nosniff'
+        });
         res.end(JSON.stringify({ error: e.message }));
       }
     });
@@ -164,6 +226,8 @@ const server = http.createServer((req, res) => {
         'Accept-Ranges': 'bytes',
         'Content-Length': chunksize,
         'Content-Type': contentType,
+        'X-Content-Type-Options': 'nosniff',
+        'X-Frame-Options': 'SAMEORIGIN'
       });
       file.pipe(res);
     } else {
@@ -171,7 +235,10 @@ const server = http.createServer((req, res) => {
         'Content-Type': contentType,
         'Content-Length': stats.size,
         'Cache-Control': 'no-cache',
-        'Access-Control-Allow-Origin': '*'
+        'Access-Control-Allow-Origin': '*',
+        'X-Content-Type-Options': 'nosniff',
+        'X-Frame-Options': 'SAMEORIGIN',
+        'Referrer-Policy': 'strict-origin-when-cross-origin'
       });
       fs.createReadStream(filePath).pipe(res);
     }

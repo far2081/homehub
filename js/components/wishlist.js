@@ -5,6 +5,7 @@
 
 import { storage } from '../utils/storage.js';
 import { formatPKR, showToast } from '../utils/helpers.js';
+import { INITIAL_PRODUCTS } from '../data/products.js';
 
 export class Wishlist {
   constructor(drawerId, options = {}) {
@@ -56,7 +57,7 @@ export class Wishlist {
   }
 
   toggle(sku) {
-    const product = this.products.find(p => p.sku === sku);
+    const product = (this.products || []).find(p => p.sku === sku) || INITIAL_PRODUCTS.find(p => p.sku === sku);
     const index = this.skus.indexOf(sku);
 
     if (index > -1) {
@@ -72,6 +73,22 @@ export class Wishlist {
     return this.isWishlisted(sku);
   }
 
+  clear() {
+    this.skus = [];
+    this.save();
+    this.render();
+  }
+
+  moveToCart(sku, cartInstance) {
+    if (!sku) return;
+    this.remove(sku);
+    if (cartInstance && typeof cartInstance.addItem === 'function') {
+      cartInstance.addItem(sku, 1);
+    } else if (typeof this.onAddToCart === 'function') {
+      this.onAddToCart(sku, 1);
+    }
+  }
+
   remove(sku) {
     this.skus = this.skus.filter(s => s !== sku);
     this.save();
@@ -80,7 +97,7 @@ export class Wishlist {
 
   render() {
     const count = this.getCount();
-    const items = this.skus.map(sku => this.products.find(p => p.sku === sku)).filter(Boolean);
+    const items = this.skus.map(sku => (this.products || []).find(p => p.sku === sku) || INITIAL_PRODUCTS.find(p => p.sku === sku)).filter(Boolean);
 
     this.drawer.innerHTML = `
       <div class="wishlist-backdrop" id="wishlist-backdrop"></div>

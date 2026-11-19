@@ -194,6 +194,10 @@ export class Catalogue {
     }
   }
 
+  renderProducts() {
+    this.renderGrid();
+  }
+
   renderGrid() {
     const grid = this.container.querySelector('#catalogue-grid');
     const stats = this.container.querySelector('#catalogue-stats');

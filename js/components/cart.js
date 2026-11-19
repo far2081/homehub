@@ -9,6 +9,8 @@ import { formatPKR, showToast } from '../utils/helpers.js';
 import { submitGuestOrder, isSupabaseConfigured } from '../services/supabaseClient.js';
 import { couponService } from '../services/couponService.js';
 import { customerService } from '../services/customerService.js';
+import { openPrintInvoice } from '../utils/invoice.js';
+import { INITIAL_PRODUCTS } from '../data/products.js';
 
 export class Cart {
   constructor(drawerId, options = {}) {
@@ -60,7 +62,13 @@ export class Cart {
   }
 
   addItem(sku, qty = 1, variantId = null) {
-    const product = this.products.find(p => p.sku === sku);
+    let product = (this.products || []).find(p => p.sku === sku);
+    if (!product && typeof window !== 'undefined' && window.homehub && window.homehub.products) {
+      product = window.homehub.products.find(p => p.sku === sku);
+    }
+    if (!product) {
+      product = INITIAL_PRODUCTS.find(p => p.sku === sku);
+    }
     if (!product) return;
 
     const chosenVariant = variantId || (product.variants && product.variants[0] ? product.variants[0].id : 'default');
@@ -82,11 +90,20 @@ export class Cart {
     showToast(`Added ${qty}× "${product.name}" to your bag`, 'success');
   }
 
-  updateQuantity(sku, variantId, newQty) {
-    const idx = this.items.findIndex(i => i.sku === sku && i.variantId === variantId);
+  updateQuantity(sku, variantIdOrQty, maybeQty) {
+    let variantId = null;
+    let newQty = 1;
+    if (typeof maybeQty === 'number') {
+      variantId = variantIdOrQty;
+      newQty = maybeQty;
+    } else if (typeof variantIdOrQty === 'number') {
+      newQty = variantIdOrQty;
+    }
+
+    const idx = this.items.findIndex(i => i.sku === sku && (variantId === null || i.variantId === variantId));
     if (idx > -1) {
       if (newQty <= 0) {
-        this.removeItem(sku, variantId);
+        this.removeItem(sku, this.items[idx].variantId);
       } else {
         this.items[idx].quantity = newQty;
         this.save();
@@ -587,6 +604,10 @@ export class Cart {
           }
         }
 
+        // Clearly distinguish cloud sync status
+        orderData.sync_status = supabaseSuccess ? 'CLOUD_CONFIRMED' : 'OFFLINE_LOCAL_PENDING_SYNC';
+        orderData.cloud_synced = supabaseSuccess;
+
         // Always save order to persistent storage so SaaS Admin Portal can manage it immediately
         try {
           const storedOrders = storage.get('homehub_orders', []);
@@ -618,29 +639,39 @@ export class Cart {
           <div class="checkout-modal-backdrop"></div>
           <div class="checkout-modal-card order-confirmed-card" role="dialog" aria-modal="true">
             <div class="order-confirmed-icon">✨</div>
-            <span class="status-pill live">ORDER CONFIRMED</span>
+            <span class="status-pill ${supabaseSuccess ? 'live' : 'staging'}">
+              ${supabaseSuccess ? '● CONFIRMED IN SUPABASE CLOUD' : '● ATELIER LOCAL OUTBOX (OFFLINE QUEUE)'}
+            </span>
             <h2>Thank you, ${customerName}</h2>
             <p class="order-ref-number">Order Reference: <strong>${orderNum}</strong></p>
             
             <div class="confirmed-body-box">
-              <p>Your curated selection has been confirmed in the HomeHub Atelier order queue${supabaseSuccess ? ' and synchronized with Supabase' : ''}. Our logistics concierge will reach out to <strong>${customerPhone}</strong> to schedule complimentary white-glove delivery to <strong>${shippingCity}</strong>.</p>
+              <p>Your curated selection has been recorded in the HomeHub Atelier registry (${supabaseSuccess ? 'Synchronized with Supabase Cloud' : 'Queued locally, pending cloud synchronization'}). Our logistics concierge will reach out to <strong>${customerPhone}</strong> to schedule complimentary white-glove delivery to <strong>${shippingCity}</strong>.</p>
               
               <div class="confirmed-details">
                 <div><span>Confirmation Email:</span> <strong>${customerEmail}</strong></div>
                 <div><span>Total Amount:</span> <strong>${formatPKR(total)}</strong></div>
                 <div><span>Payment Method:</span> <strong>Cash on White-Glove Delivery / Wire</strong></div>
                 ${discount > 0 ? `<div><span>Discount Applied:</span> <strong style="color: #137333;">−${formatPKR(discount)}</strong></div>` : ''}
+                <div><span>Sync Status:</span> <strong>${orderData.sync_status}</strong></div>
               </div>
             </div>
 
-            <div class="order-confirmed-actions">
-              <a href="mailto:farzunmir@gmail.com?subject=Order%20Confirmation%20${orderNum}&body=Hello%20Farhana,%0D%0A%0D%0AI%20have%20placed%20order%20${orderNum}%20for%20total%20${encodeURIComponent(formatPKR(total))}.%0D%0APlease%20contact%20me%20at%20${encodeURIComponent(customerPhone)}." class="direct-email-btn" style="margin-right: 10px;">
-                ✉ Notify Atelier Lead (farzunmir@gmail.com)
-              </a>
+            <div class="order-confirmed-actions" style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+              <button class="admin-btn-secondary" id="confirmed-print-invoice-btn" style="padding: 10px 18px; font-size: 0.82rem;">
+                🖨️ Print / Download Invoice
+              </button>
               <button class="admin-btn-primary" id="confirmed-done-btn">Continue Exploring HomeHub</button>
             </div>
           </div>
         `;
+
+        const printBtn = modal.querySelector('#confirmed-print-invoice-btn');
+        if (printBtn) {
+          printBtn.addEventListener('click', () => {
+            openPrintInvoice(orderData);
+          });
+        }
 
         const doneBtn = modal.querySelector('#confirmed-done-btn');
         if (doneBtn) doneBtn.addEventListener('click', close);

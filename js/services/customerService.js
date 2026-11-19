@@ -6,6 +6,8 @@
 import { storage } from '../utils/storage.js';
 
 const STORAGE_KEY = 'homehub_customers';
+const CLIENTS_AUTH_KEY = 'homehub_registered_clients';
+const ACTIVE_SESSION_KEY = 'homehub_client_session';
 
 const INITIAL_CUSTOMERS = [
   {
@@ -143,6 +145,135 @@ class CustomerService {
     }
 
     storage.set(STORAGE_KEY, customers);
+  }
+
+  /**
+   * Register a new client account
+   */
+  register({ name, email, password, phone, city }) {
+    if (!name || !email || !password) {
+      throw new Error('Name, email, and password are required.');
+    }
+    const cleanEmail = email.trim().toLowerCase();
+    if (!cleanEmail.includes('@') || !cleanEmail.includes('.')) {
+      throw new Error('Please provide a valid email address.');
+    }
+    if (password.length < 6) {
+      throw new Error('Password must be at least 6 characters.');
+    }
+
+    const registered = storage.get(CLIENTS_AUTH_KEY, []);
+    if (registered.some(c => c.email.toLowerCase() === cleanEmail)) {
+      throw new Error('An account with this email address already exists. Please sign in.');
+    }
+
+    const newClient = {
+      id: cleanEmail,
+      name: name.trim(),
+      email: cleanEmail,
+      passwordHash: btoa(password), // simple obfuscation for local prototype session
+      phone: phone ? phone.trim() : '',
+      city: city ? city.trim() : '',
+      tier: 'Silver Patron',
+      totalSpent: 0,
+      totalOrders: 0,
+      createdAt: new Date().toISOString()
+    };
+
+    registered.push(newClient);
+    storage.set(CLIENTS_AUTH_KEY, registered);
+
+    // Set active session
+    const sessionUser = {
+      id: newClient.id,
+      name: newClient.name,
+      email: newClient.email,
+      phone: newClient.phone,
+      city: newClient.city,
+      tier: newClient.tier
+    };
+    storage.set(ACTIVE_SESSION_KEY, sessionUser);
+    return sessionUser;
+  }
+
+  /**
+   * Authenticate an existing client
+   */
+  login(email, password) {
+    if (!email || !password) {
+      throw new Error('Email and password are required.');
+    }
+    const cleanEmail = email.trim().toLowerCase();
+    const registered = storage.get(CLIENTS_AUTH_KEY, []);
+    const found = registered.find(c => c.email.toLowerCase() === cleanEmail);
+
+    if (found) {
+      if (found.passwordHash !== btoa(password)) {
+        throw new Error('Incorrect password. Please verify and try again.');
+      }
+      const sessionUser = {
+        id: found.id,
+        name: found.name,
+        email: found.email,
+        phone: found.phone || '',
+        city: found.city || '',
+        tier: found.tier || 'Silver Patron'
+      };
+      storage.set(ACTIVE_SESSION_KEY, sessionUser);
+      return sessionUser;
+    }
+
+    // Default registered demo account for founder / VIP testing
+    if (cleanEmail === 'farzunmir@gmail.com' && (password === 'homehub2026' || password === 'admin123')) {
+      const founderUser = {
+        id: 'farzunmir@gmail.com',
+        name: 'Farhana Aamir',
+        email: 'farzunmir@gmail.com',
+        phone: '+92 300 1234567',
+        city: 'Lahore',
+        tier: 'Platinum Privileged'
+      };
+      storage.set(ACTIVE_SESSION_KEY, founderUser);
+      return founderUser;
+    }
+
+    throw new Error('No client account found with this email. Please register or place a guest order.');
+  }
+
+  /**
+   * End current client session
+   */
+  logout() {
+    storage.remove(ACTIVE_SESSION_KEY);
+  }
+
+  /**
+   * Retrieve active client session
+   */
+  getCurrentUser() {
+    return storage.get(ACTIVE_SESSION_KEY, null);
+  }
+
+  /**
+   * Get all orders placed by this customer
+   */
+  getCustomerOrders(email) {
+    if (!email) return [];
+    const cleanEmail = email.trim().toLowerCase();
+    let allOrders = storage.get('homehub_orders', []);
+    if (!allOrders || allOrders.length === 0) {
+      allOrders = storage.get('orders', []);
+    }
+    if ((!allOrders || allOrders.length === 0) && typeof window !== 'undefined' && window.localStorage) {
+      try {
+        const raw = window.localStorage.getItem('homehub_orders');
+        if (raw) allOrders = JSON.parse(raw);
+      } catch (_) {}
+    }
+    return (allOrders || []).filter(o => {
+      const orderEmail = (o.customer_email || o.customerEmail || '').toLowerCase();
+      return orderEmail === cleanEmail;
+    });
   }
 }
 

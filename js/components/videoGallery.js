@@ -125,7 +125,7 @@ export class VideoGallery {
 
     modalWrap.innerHTML = `
       <div class="vmodal-backdrop" id="vmodal-backdrop"></div>
-      <div class="vmodal-dialog" role="dialog" aria-modal="true" aria-labelledby="vmodal-title">
+      <div class="vmodal-dialog" id="video-modal" role="dialog" aria-modal="true" aria-labelledby="vmodal-title">
         <button class="vmodal-close-btn" id="vmodal-close-btn" aria-label="Close Video">✕</button>
 
         <div class="vmodal-player-area">
@@ -165,7 +165,7 @@ export class VideoGallery {
           <div class="vmodal-takeaways">
             <h4>Key Architectural Principles:</h4>
             <ul>
-              ${vid.keyTakeaways.map(t => `<li>${t}</li>`).join('')}
+              ${vid.keyTakeaways.map(t => `<li class="takeaway-item">${t}</li>`).join('')}
             </ul>
           </div>
 
@@ -174,7 +174,7 @@ export class VideoGallery {
               <h4>Pieces Featured in this Episode:</h4>
               <div class="vmodal-piece-chips">
                 ${featuredProds.map(p => `
-                  <button class="vmodal-piece-btn" data-modal-sku="${p.sku}">
+                  <button class="vmodal-piece-btn video-shop-chip" data-modal-sku="${p.sku}">
                     <img src="${p.images[0].url}" alt="${p.name}" />
                     <div class="vmodal-piece-text">
                       <span class="vpiece-name">${p.name}</span>

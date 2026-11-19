@@ -197,8 +197,36 @@ class HomeHubPluginRegistry {
   }
 
   isEnabled(id) {
+    if (id === 'soundEffects') {
+      const mag = this._modules.get('magazineCMS');
+      return mag && mag.config ? Boolean(mag.config.soundEffects) : true;
+    }
     const mod = this._modules.get(id);
     return mod ? mod.enabled : false;
+  }
+
+  enable(id) {
+    if (id === 'soundEffects') {
+      const mag = this._modules.get('magazineCMS');
+      if (mag) {
+        mag.config = { ...mag.config, soundEffects: true };
+        this._savePersistedState();
+        return true;
+      }
+    }
+    return this.toggleModule(id, true);
+  }
+
+  disable(id) {
+    if (id === 'soundEffects') {
+      const mag = this._modules.get('magazineCMS');
+      if (mag) {
+        mag.config = { ...mag.config, soundEffects: false };
+        this._savePersistedState();
+        return true;
+      }
+    }
+    return this.toggleModule(id, false);
   }
 
   toggleModule(id, enabledState = null) {
@@ -206,7 +234,7 @@ class HomeHubPluginRegistry {
     if (!mod) return false;
 
     // Never allow disabling core module
-    if (mod.category === 'core' && enabledState === false) {
+    if (mod.category === 'core' && (enabledState === false || (enabledState === null && mod.enabled))) {
       return false;
     }
 

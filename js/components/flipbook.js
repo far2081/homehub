@@ -67,6 +67,10 @@ export class Flipbook {
     }
   }
 
+  get currentBook() {
+    return this.getCurrentBook();
+  }
+
   getCurrentBook() {
     return MAGAZINE_BOOKS[this.currentBookId];
   }
@@ -101,6 +105,14 @@ export class Flipbook {
         rightPage: book.pages[pageIdx] || null
       };
     }
+  }
+
+  next() {
+    return this.nextPage();
+  }
+
+  prev() {
+    return this.prevPage();
   }
 
   nextPage() {

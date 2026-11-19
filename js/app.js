@@ -17,6 +17,10 @@ import { AdminPortal } from './components/admin.js';
 import { BookNavigation, BOOK_NAV_DATA } from './components/bookNavigation.js';
 import { CATEGORY_INSPIRATION_DATA } from './data/categoryInspiration.js';
 import { fetchStorefrontProducts } from './services/supabaseClient.js';
+import { customerService } from './services/customerService.js';
+import { openPrintInvoice } from './utils/invoice.js';
+import { couponService } from './services/couponService.js';
+import { pluginRegistry } from './services/pluginRegistry.js';
 
 // Curated Collection and Category Definitions for Full-Page Webpage Views
 const COLLECTIONS = {
@@ -131,6 +135,15 @@ const COLLECTIONS = {
 
 class HomeHubApp {
   constructor() {
+    this.customerServiceDirect = customerService;
+    this.openPrintInvoiceDirect = openPrintInvoice;
+    this.couponServiceDirect = couponService;
+    this.pluginRegistryDirect = pluginRegistry;
+    if (typeof window !== 'undefined') {
+      window.homehub = this;
+      window.homeHub = this;
+    }
+
     // Load products from storage if modified via Admin, else initial concept catalogue
     this.products = storage.get('custom_products', INITIAL_PRODUCTS);
     this.categories = CATEGORIES;
@@ -546,92 +559,300 @@ class HomeHubApp {
     const modal = document.getElementById('account-modal-container');
     if (!modal) return;
 
-    modal.innerHTML = `
-      <div class="account-backdrop" id="account-backdrop"></div>
-      <div class="account-dialog" role="dialog" aria-modal="true" aria-labelledby="account-dialog-title">
-        <div class="account-header">
-          <h3 id="account-dialog-title">Client Atelier Profile</h3>
-          <button class="cart-close-btn" id="close-account-modal-btn" aria-label="Close">✕</button>
-        </div>
+    const renderModalContent = () => {
+      const currentUser = customerService.getCurrentUser();
 
-        <div class="account-profile-card">
-          <div class="account-avatar">FA</div>
-          <div class="account-user-meta">
-            <strong>Farhana Aamir</strong>
-            <span>farzunmir@gmail.com</span>
-            <div class="account-tier-badge">Private Atelier Client</div>
+      if (!currentUser) {
+        modal.innerHTML = `
+          <div class="account-backdrop" id="account-backdrop"></div>
+          <div class="account-dialog" role="dialog" aria-modal="true" aria-labelledby="account-dialog-title">
+            <div class="account-header">
+              <h3 id="account-dialog-title">Client Atelier Account</h3>
+              <button class="cart-close-btn" id="close-account-modal-btn" aria-label="Close">✕</button>
+            </div>
+
+            <!-- Auth Mode Tabs -->
+            <div class="account-auth-tabs">
+              <button class="auth-tab-btn active" id="tab-client-signin">Sign In</button>
+              <button class="auth-tab-btn" id="tab-client-register">Register Account</button>
+            </div>
+
+            <div id="account-auth-error" class="checkout-error-banner" style="display: none; margin-bottom: 1rem;"></div>
+
+            <!-- Sign In Form -->
+            <form id="form-client-signin" class="client-auth-form">
+              <div class="form-group" style="margin-bottom: 1rem;">
+                <label for="signin-email" style="display:block; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--color-muted-earth); margin-bottom:6px;">Email Address *</label>
+                <input type="email" id="signin-email" required placeholder="ayesha@example.com" style="width:100%; padding:10px 14px; border-radius:var(--radius-pill); border:1px solid var(--color-border); font-family:inherit; font-size:0.85rem;" />
+              </div>
+              <div class="form-group" style="margin-bottom: 1.2rem;">
+                <label for="signin-password" style="display:block; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--color-muted-earth); margin-bottom:6px;">Password *</label>
+                <input type="password" id="signin-password" required placeholder="••••••••" style="width:100%; padding:10px 14px; border-radius:var(--radius-pill); border:1px solid var(--color-border); font-family:inherit; font-size:0.85rem;" />
+              </div>
+              <button type="submit" class="admin-btn-primary" style="width:100%; padding:12px; font-size:0.85rem;">Sign In to Client Atelier →</button>
+            </form>
+
+            <!-- Register Form (Hidden by default) -->
+            <form id="form-client-register" class="client-auth-form" style="display: none;">
+              <div class="form-group" style="margin-bottom: 0.8rem;">
+                <label for="reg-name" style="display:block; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--color-muted-earth); margin-bottom:4px;">Full Name *</label>
+                <input type="text" id="reg-name" required placeholder="e.g. Ayesha Malik" style="width:100%; padding:9px 14px; border-radius:var(--radius-pill); border:1px solid var(--color-border); font-family:inherit; font-size:0.85rem;" />
+              </div>
+              <div class="form-group" style="margin-bottom: 0.8rem;">
+                <label for="reg-email" style="display:block; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--color-muted-earth); margin-bottom:4px;">Email Address *</label>
+                <input type="email" id="reg-email" required placeholder="ayesha@example.com" style="width:100%; padding:9px 14px; border-radius:var(--radius-pill); border:1px solid var(--color-border); font-family:inherit; font-size:0.85rem;" />
+              </div>
+              <div class="form-group" style="margin-bottom: 0.8rem;">
+                <label for="reg-password" style="display:block; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--color-muted-earth); margin-bottom:4px;">Password (min 6 characters) *</label>
+                <input type="password" id="reg-password" minlength="6" required placeholder="••••••••" style="width:100%; padding:9px 14px; border-radius:var(--radius-pill); border:1px solid var(--color-border); font-family:inherit; font-size:0.85rem;" />
+              </div>
+              <div class="form-row-2" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:1.2rem;">
+                <div class="form-group">
+                  <label for="reg-phone" style="display:block; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--color-muted-earth); margin-bottom:4px;">Phone Number</label>
+                  <input type="tel" id="reg-phone" placeholder="+92 300 1234567" style="width:100%; padding:9px 14px; border-radius:var(--radius-pill); border:1px solid var(--color-border); font-family:inherit; font-size:0.85rem;" />
+                </div>
+                <div class="form-group">
+                  <label for="reg-city" style="display:block; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--color-muted-earth); margin-bottom:4px;">City</label>
+                  <input type="text" id="reg-city" placeholder="Lahore / Karachi..." style="width:100%; padding:9px 14px; border-radius:var(--radius-pill); border:1px solid var(--color-border); font-family:inherit; font-size:0.85rem;" />
+                </div>
+              </div>
+              <button type="submit" class="admin-btn-primary" style="width:100%; padding:12px; font-size:0.85rem;">Create Client Atelier Account →</button>
+            </form>
+
+            <div style="border-top: 1px solid var(--color-border); padding-top: 1.2rem; margin-top: 1.4rem;">
+              <p style="font-size: 0.75rem; color: var(--color-muted-earth); margin-bottom: 0.6rem;">
+                Atelier staff, design directors and administrators can access the full management console below:
+              </p>
+              <button class="account-admin-switch-btn admin-open-trigger" id="account-launch-admin-btn">
+                🔑 Switch to Staff Admin Console
+              </button>
+            </div>
           </div>
-        </div>
+        `;
+      } else {
+        const clientOrders = customerService.getCustomerOrders(currentUser.email);
+        const initials = currentUser.name ? currentUser.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : 'HH';
 
-        <div class="account-nav-list">
-          <button class="account-nav-item" id="account-view-wishlist-btn">
-            <span>❤️ Saved Wishlist Pieces</span>
-            <strong>${this.wishlist ? this.wishlist.getCount() : 0} Pieces →</strong>
-          </button>
-          <button class="account-nav-item" id="account-view-bag-btn">
-            <span>🛍️ Active Shopping Bag</span>
-            <strong>${this.cart ? this.cart.getCount() : 0} Items →</strong>
-          </button>
-          <button class="account-nav-item" id="account-view-consult-btn">
-            <span>📋 White-Glove Staged Consultation</span>
-            <span>Active in Atelier →</span>
-          </button>
-        </div>
+        modal.innerHTML = `
+          <div class="account-backdrop" id="account-backdrop"></div>
+          <div class="account-dialog" role="dialog" aria-modal="true" aria-labelledby="account-dialog-title" style="max-width: 680px;">
+            <div class="account-header">
+              <h3 id="account-dialog-title">Client Atelier Profile</h3>
+              <button class="cart-close-btn" id="close-account-modal-btn" aria-label="Close">✕</button>
+            </div>
 
-        <div style="border-top: 1px solid var(--color-border); padding-top: 1.2rem; margin-top: 1rem;">
-          <p style="font-size: 0.75rem; color: var(--color-muted-earth); margin-bottom: 0.8rem;">
-            Atelier staff, design directors and administrators can access the full management console below:
-          </p>
-          <button class="account-admin-switch-btn admin-open-trigger" id="account-launch-admin-btn">
-            🔑 Switch to Staff Admin Console
-          </button>
-        </div>
-      </div>
-    `;
+            <div class="account-profile-card">
+              <div class="account-avatar">${initials}</div>
+              <div class="account-user-meta">
+                <strong>${currentUser.name}</strong>
+                <span>${currentUser.email}</span>
+                <div class="account-tier-badge">${currentUser.tier || 'Private Atelier Client'}</div>
+                ${currentUser.city ? `<span style="font-size:0.72rem; color:var(--color-muted-earth); margin-top:2px;">📍 ${currentUser.city}</span>` : ''}
+              </div>
+              <button id="client-signout-btn" class="footer-admin-link" style="margin-left: auto; align-self: center;">Sign Out</button>
+            </div>
 
-    modal.classList.add('is-open');
-    document.body.style.overflow = 'hidden';
+            <!-- Customer Order History -->
+            <div class="account-orders-section" style="margin-top: 1.6rem;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.8rem;">
+                <h4 style="font-family:'Cormorant Garamond', serif; font-size:1.25rem; margin:0; color:var(--color-noir);">
+                  Atelier Order History (${clientOrders.length})
+                </h4>
+                <span style="font-size:0.72rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--color-muted-olive); font-weight:600;">
+                  Live Status Tracking
+                </span>
+              </div>
 
-    const close = () => {
-      modal.classList.remove('is-open');
-      document.body.style.overflow = '';
-      modal.innerHTML = '';
+              ${clientOrders.length === 0 ? `
+                <div style="background:var(--color-surface-subtle); padding:1.5rem; text-align:center; border:1px solid var(--color-border); border-radius:var(--radius-sm);">
+                  <div style="font-size:1.8rem; margin-bottom:0.4rem;">📦</div>
+                  <p style="font-size:0.82rem; color:var(--color-muted-earth); margin:0;">
+                    No order history recorded for <strong>${currentUser.email}</strong> yet.<br/>
+                    Orders placed with this email will automatically appear here with real-time status and downloadable invoices.
+                  </p>
+                </div>
+              ` : `
+                <div class="account-orders-list" style="display:flex; flex-direction:column; gap:12px; max-height:280px; overflow-y:auto; padding-right:4px;">
+                  ${clientOrders.map(order => {
+                    const statusClass = (order.status || order.order_status || 'PENDING').toLowerCase();
+                    const itemsText = Array.isArray(order.items)
+                      ? order.items.map(it => `${it.quantity || 1}× ${it.product_name || it.sku}`).join(', ')
+                      : 'Curated Architectural Pieces';
+
+                    return `
+                      <div class="account-order-card" style="border:1px solid var(--color-border); background:var(--color-surface-pure); padding:14px; border-radius:var(--radius-sm); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                        <div style="flex:1; min-width:220px;">
+                          <div style="display:flex; align-items:center; gap:8px;">
+                            <strong style="font-size:0.84rem; font-family:monospace; color:var(--color-noir);">${order.order_number || order.id}</strong>
+                            <span class="status-pill ${statusClass === 'delivered' ? 'live' : 'staging'}" style="font-size:0.65rem; padding:2px 8px;">
+                              ● ${order.status || order.order_status || 'PENDING'}
+                            </span>
+                          </div>
+                          <div style="font-size:0.75rem; color:var(--color-muted-earth); margin-top:4px;">
+                            ${itemsText}
+                          </div>
+                          <div style="font-size:0.7rem; color:var(--color-warm-taupe); margin-top:2px;">
+                            ${new Date(order.created_at || Date.now()).toLocaleDateString()} • ${order.sync_status === 'CLOUD_CONFIRMED' ? 'Cloud Verified' : 'Local Atelier Outbox'}
+                          </div>
+                        </div>
+
+                        <div style="text-align:right; display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
+                          <strong style="font-size:0.9rem; color:var(--color-noir);">${formatPKR(order.total_amount || order.total || 0)}</strong>
+                          <button class="client-print-invoice-btn footer-admin-link" data-order-ref="${order.order_number || order.id}" style="padding:4px 10px; font-size:0.68rem;">
+                            🖨️ Invoice
+                          </button>
+                        </div>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              `}
+            </div>
+
+            <div class="account-nav-list" style="margin-top: 1.4rem;">
+              <button class="account-nav-item" id="account-view-wishlist-btn">
+                <span>❤️ Saved Wishlist Pieces</span>
+                <strong>${this.wishlist ? this.wishlist.getCount() : 0} Pieces →</strong>
+              </button>
+              <button class="account-nav-item" id="account-view-bag-btn">
+                <span>🛍️ Active Shopping Bag</span>
+                <strong>${this.cart ? this.cart.getCount() : 0} Items →</strong>
+              </button>
+            </div>
+
+            <div style="border-top: 1px solid var(--color-border); padding-top: 1rem; margin-top: 1.2rem;">
+              <button class="account-admin-switch-btn admin-open-trigger" id="account-launch-admin-btn">
+                🔑 Switch to Staff Admin Console
+              </button>
+            </div>
+          </div>
+        `;
+      }
+
+      modal.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+
+      const close = () => {
+        modal.classList.remove('is-open');
+        document.body.style.overflow = '';
+        modal.innerHTML = '';
+      };
+
+      modal.querySelector('#account-backdrop').addEventListener('click', close);
+      modal.querySelector('#close-account-modal-btn').addEventListener('click', close);
+
+      // Tab switching
+      const tabSignIn = modal.querySelector('#tab-client-signin');
+      const tabRegister = modal.querySelector('#tab-client-register');
+      const formSignIn = modal.querySelector('#form-client-signin');
+      const formRegister = modal.querySelector('#form-client-register');
+      const errorBanner = modal.querySelector('#account-auth-error');
+
+      if (tabSignIn && tabRegister && formSignIn && formRegister) {
+        tabSignIn.addEventListener('click', () => {
+          tabSignIn.classList.add('active');
+          tabRegister.classList.remove('active');
+          formSignIn.style.display = 'block';
+          formRegister.style.display = 'none';
+          if (errorBanner) errorBanner.style.display = 'none';
+        });
+
+        tabRegister.addEventListener('click', () => {
+          tabRegister.classList.add('active');
+          tabSignIn.classList.remove('active');
+          formRegister.style.display = 'block';
+          formSignIn.style.display = 'none';
+          if (errorBanner) errorBanner.style.display = 'none';
+        });
+      }
+
+      // Handle Sign In submit
+      if (formSignIn) {
+        formSignIn.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const email = modal.querySelector('#signin-email').value.trim();
+          const password = modal.querySelector('#signin-password').value;
+          try {
+            customerService.login(email, password);
+            renderModalContent();
+          } catch (err) {
+            if (errorBanner) {
+              errorBanner.textContent = err.message;
+              errorBanner.style.display = 'block';
+            }
+          }
+        });
+      }
+
+      // Handle Register submit
+      if (formRegister) {
+        formRegister.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const name = modal.querySelector('#reg-name').value.trim();
+          const email = modal.querySelector('#reg-email').value.trim();
+          const password = modal.querySelector('#reg-password').value;
+          const phone = modal.querySelector('#reg-phone').value.trim();
+          const city = modal.querySelector('#reg-city').value.trim();
+          try {
+            customerService.register({ name, email, password, phone, city });
+            renderModalContent();
+          } catch (err) {
+            if (errorBanner) {
+              errorBanner.textContent = err.message;
+              errorBanner.style.display = 'block';
+            }
+          }
+        });
+      }
+
+      // Handle Sign Out
+      const signoutBtn = modal.querySelector('#client-signout-btn');
+      if (signoutBtn) {
+        signoutBtn.addEventListener('click', () => {
+          customerService.logout();
+          renderModalContent();
+        });
+      }
+
+      // Print Invoice button handlers
+      modal.querySelectorAll('.client-print-invoice-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const orderRef = btn.dataset.orderRef;
+          const clientOrders = customerService.getCustomerOrders(currentUser.email);
+          const order = clientOrders.find(o => (o.order_number === orderRef || o.id === orderRef));
+          if (order) {
+            openPrintInvoice(order);
+          }
+        });
+      });
+
+      // Quick Nav Buttons
+      const wishBtn = modal.querySelector('#account-view-wishlist-btn');
+      if (wishBtn) {
+        wishBtn.addEventListener('click', () => {
+          close();
+          if (this.wishlist) this.wishlist.open();
+        });
+      }
+
+      const bagBtn = modal.querySelector('#account-view-bag-btn');
+      if (bagBtn) {
+        bagBtn.addEventListener('click', () => {
+          close();
+          if (this.cart) this.cart.open();
+        });
+      }
+
+      const adminBtn = modal.querySelector('#account-launch-admin-btn');
+      if (adminBtn) {
+        adminBtn.addEventListener('click', () => {
+          close();
+          if (this.adminPortal) this.adminPortal.open();
+        });
+      }
     };
 
-    modal.querySelector('#account-backdrop').addEventListener('click', close);
-    modal.querySelector('#close-account-modal-btn').addEventListener('click', close);
-
-    const wishBtn = modal.querySelector('#account-view-wishlist-btn');
-    if (wishBtn) {
-      wishBtn.addEventListener('click', () => {
-        close();
-        if (this.wishlist) this.wishlist.open();
-      });
-    }
-
-    const bagBtn = modal.querySelector('#account-view-bag-btn');
-    if (bagBtn) {
-      bagBtn.addEventListener('click', () => {
-        close();
-        if (this.cart) this.cart.open();
-      });
-    }
-
-    const consultBtn = modal.querySelector('#account-view-consult-btn');
-    if (consultBtn) {
-      consultBtn.addEventListener('click', () => {
-        close();
-        if (this.cart) this.cart.openCheckoutStatusModal();
-      });
-    }
-
-    const adminBtn = modal.querySelector('#account-launch-admin-btn');
-    if (adminBtn) {
-      adminBtn.addEventListener('click', () => {
-        close();
-        if (this.adminPortal) this.adminPortal.open();
-      });
-    }
+    renderModalContent();
   }
 
   openSearchModal() {
@@ -1170,9 +1391,18 @@ class HomeHubApp {
 
 export { HomeHubApp };
 
-// Instantiate on DOMContentLoaded in browser environment
+// Instantiate in browser environment
 if (typeof document !== 'undefined') {
-  document.addEventListener('DOMContentLoaded', () => {
-    window.homeHub = new HomeHubApp();
-  });
+  const initApp = () => {
+    if (!window.homehub) {
+      window.homeHub = new HomeHubApp();
+      window.homehub = window.homeHub;
+    }
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+  } else {
+    initApp();
+  }
 }

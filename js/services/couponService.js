@@ -71,23 +71,29 @@ class CouponService {
 
   validateCoupon(code, subtotal = 0) {
     if (!code || typeof code !== 'string') {
-      return { valid: false, message: 'Please enter a valid coupon code.', discount: 0 };
+      const msg = 'Please enter a valid coupon code.';
+      return { valid: false, message: msg, error: msg, discount: 0, discountAmount: 0 };
     }
 
     const coupon = this.getCoupon(code);
     if (!coupon) {
-      return { valid: false, message: `Coupon code "${code.trim().toUpperCase()}" is invalid.`, discount: 0 };
+      const msg = `Coupon code "${code.trim().toUpperCase()}" is invalid.`;
+      return { valid: false, message: msg, error: msg, discount: 0, discountAmount: 0 };
     }
 
     if (!coupon.active) {
-      return { valid: false, message: `Coupon "${coupon.code}" has expired or is inactive.`, discount: 0 };
+      const msg = `Coupon "${coupon.code}" has expired or is inactive.`;
+      return { valid: false, message: msg, error: msg, discount: 0, discountAmount: 0 };
     }
 
     if (coupon.minOrder && subtotal < coupon.minOrder) {
+      const msg = `Coupon "${coupon.code}" requires a minimum order of ₨ ${coupon.minOrder.toLocaleString()}.`;
       return {
         valid: false,
-        message: `Coupon "${coupon.code}" requires a minimum order of ₨ ${coupon.minOrder.toLocaleString()}.`,
-        discount: 0
+        message: msg,
+        error: msg,
+        discount: 0,
+        discountAmount: 0
       };
     }
 
@@ -101,7 +107,9 @@ class CouponService {
     return {
       valid: true,
       message: `Coupon "${coupon.code}" applied successfully!`,
+      error: null,
       discount,
+      discountAmount: discount,
       coupon
     };
   }
