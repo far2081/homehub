@@ -78,7 +78,14 @@ const P = {
   tambourSlats: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=85',
   diningNook: 'https://images.unsplash.com/photo-1592078615290-033ee584e267?auto=format&fit=crop&w=1200&q=85',
   boucleHeadboard: 'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&w=1200&q=85',
-  studioPenthouse: 'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&w=1400&q=85'
+  studioPenthouse: 'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&w=1400&q=85',
+
+  // Panoramic Local 2-Page Landscape Spreads
+  galleyKitchenPanoramic: 'assets/image_8.png',
+  doubleLivingPanoramic: 'assets/preview-double-spread.png',
+  doubleBedroomPanoramic: 'assets/homehub-03-category-bedroom.png',
+  doubleDiningPanoramic: 'assets/grid-02-desktop-dining-room-6col.png',
+  lookbookGalleryPanoramic: 'assets/preview-layout-e.png'
 };
 
 export const MAGAZINE_BOOKS = {
@@ -1136,334 +1143,335 @@ export const MAGAZINE_BOOKS = {
 
   "small-spaces": {
     id: "small-spaces",
-    title: "Small Spaces",
+    title: "The Art of Compact Living",
     issue: "Volume 04 • Urban Space Intelligence",
-    subtitle: "Compact Living, Multi-Functional Joinery & Nested Modules",
+    subtitle: "The Art of Compact Living - An IKEA-inspired Exploration",
     themeColor: "#E9D8D0",
-    coverImage: P.smallSpacesCover,
-    description: "An architectural guide to unlocking generous living within urban floorplans: dual-height nesting desks, floating consoles, and low-datum platform beds.",
+    coverImage: P.galleyKitchenPanoramic,
+    description: "An architectural exploration of space intelligence: 52 sq ft galley kitchens, 99 sq ft multi-functional living, 76 sq ft micro bedrooms, and drop-leaf hallway joinery.",
     coverLines: [
-      "Dual-Height Nesting: The Modula Console & Work Desk",
-      "Floor Reclamation: The Flute Wall-Mounted Console",
-      "Low-Datum Horizons: Haven Platform Bed with Floating Nightstands",
-      "Sightline Intelligence: How 65cm Heights Double Perceived Volume"
+      "The Art of Compact Living - An IKEA-inspired Exploration",
+      "Panoramic 52 sq ft Galley Kitchen: Wall-Mounted Storage Rails",
+      "Spacious 99 sq ft Living Room: Sofa Beds & Vertical Bookshelves",
+      "Immersive 76 sq ft Micro Bedroom: Under-Bed Storage Drawers",
+      "Dual-Page Entryway & Dining Nook: Drop-Leaf Tables & Hook Cascades"
     ],
     totalPages: 24,
     pages: [
+      // Cover Page (Page 1): Flat front cover layout on paper stage
       {
         pageNumber: 1,
         type: "cover",
-        headline: "Small Spaces",
+        headline: "The Art of Compact Living",
         kicker: "HOMEHUB EDITORIAL • ISSUE N° 4",
-        deck: "Compact living, spatial intelligence, and multi-functional architectural furniture for urban apartments.",
-        heroImage: P.smallSpacesCover,
+        deck: "The Art of Compact Living - An IKEA-inspired Exploration",
+        heroImage: P.galleyKitchenPanoramic,
         colophon: "Curated by HomeHub Urban Studio • Photography by Atelier Nord",
         coverLines: [
-          "Dual-Height Nesting: Modula Console & Work Desk",
-          "Floor Reclamation: Flute Wall-Hung Console",
-          "Low-Datum Horizons: Haven Platform Bed",
-          "Sightline Intelligence: The 65cm Rule"
+          "The Art of Compact Living - An IKEA-inspired Exploration",
+          "Panoramic 52 sq ft Galley Kitchen (Pages 2-3)",
+          "Spacious 99 sq ft Multi-Functional Living (Pages 6-7)",
+          "Immersive 76 sq ft Micro Bedroom (Pages 10-11)",
+          "Dual-Page Entryway & Dining Nook (Pages 14-15)"
         ],
         products: []
       },
+
+      // Spread 1 (Pages 2-3) — Panoramic 52 sq ft Galley Kitchen
+      // Custom panoramic view split across the center bind (image_8.png) with natural gutter shading in the fold.
       {
         pageNumber: 2,
-        type: "layout-d",
-        storyRole: "text",
-        kicker: "ESSAY 04 / SPACE INTELLIGENCE",
-        headline: "The Luxury of Intentional Footprints",
-        deck: "Why thoughtful multi-functional architecture liberates modern urban living from clutter.",
-        quote: "Compact square footage is not a limitation; it is a catalyst for uncompromising architectural discipline.",
-        body: [
-          "Urban lofts and apartments in Lahore, Karachi, and Islamabad demand intelligent furniture that adapts between work hours and evening relaxation. Bulky static desks steal valuable circulation space.",
-          "The Modula Nested Desk solves this with dual-height engineering. By day, the lower desk rolls out smoothly on concealed ball-bearing castors to create a full 140cm workspace. By night, it slides beneath the fluted console, returning two square meters of floor to the room."
-        ],
-        materialNote: "Kiln-dried solid European oak, fluted timber tambour, concealed German steel glides.",
-        heroImage: P.modulaDesk,
+        type: "layout-a",
+        spreadRole: "left",
+        spreadImage: P.galleyKitchenPanoramic,
+        headline: "The 52 Sq Ft Galley Kitchen",
+        kicker: "PANORAMIC ARCHITECTURE • 52 SQ FT GALLEY KITCHEN",
+        deck: "Wall-mounted steel rails, open birch wood shelving, and fold-down breakfast counter engineered for high-efficiency urban cooking.",
         products: [
-          { sku: "HH-SSS-001", label: "Modula Nested Desk", price: "₨ 88,500", badge: "Dual Nesting", hotspot: { x: 50, y: 58 } }
+          { sku: "HH-SSS-001", label: "Fold-Down Countertop", price: "₨ 88,500", badge: "Fold-Down Counter", hotspot: { x: 42, y: 64 } }
         ]
       },
       {
         pageNumber: 3,
-        type: "layout-c",
-        headline: "The Convertible Studio",
-        kicker: "45 SQ METERS IN SITU",
-        deck: "Living, working, and dining seamlessly coexisting without visual chaos.",
-        heroImage: P.compactLoft,
+        type: "layout-a",
+        spreadRole: "right",
+        spreadImage: P.galleyKitchenPanoramic,
+        headline: "Wall-Mounted Storage Rail Systems",
+        kicker: "SPATIAL EFFICIENCY • GALLEY KITCHEN CONTINUED",
+        deck: "Open birch shelving and hanging utensil tracks reclaim 100% of working counter space.",
         products: [
-          { sku: "HH-SSS-001", label: "Modula Nested Desk", price: "₨ 88,500", badge: "Nested Desk", hotspot: { x: 52, y: 64 } }
+          { sku: "HH-SSS-002", label: "Flute Birch Wall Rack", price: "₨ 64,000", badge: "Wall Grid", hotspot: { x: 58, y: 52 } }
         ]
       },
-      // Spread 2: Continuous Double Page 1
+
+      // Spread 2 (Pages 4-5) — Kitchen closeups & Wall-Grid Systems
+      // Distinct, candid detailed collage of open drawers, stacked spice jars, and roll-out storage cart close-ups without repeating image_8.png.
       {
         pageNumber: 4,
-        type: "layout-a",
-        spreadRole: "left",
-        spreadImage: P.smallDouble1,
-        headline: "The Seamless Urban Studio",
-        kicker: "DOUBLE-PAGE COMPACT LIVING SPREAD",
-        deck: "Continuous oak flooring and low-slung furniture planes make a 48m² apartment feel expansive.",
+        type: "layout-b",
+        kicker: "KITCHEN CLOSEUP 01",
+        headline: "Precision Drawer Organization",
+        deck: "Modular drawer inserts and sliding cutlery dividers keep culinary tools arranged in intuitive rows.",
+        note: "Concealed German soft-close tandem runners rated for 40kg dynamic load.",
+        heroImage: P.nestedWorktop,
         products: [
-          { sku: "HH-SSS-001", label: "Modula Nested Desk", price: "₨ 88,500", badge: "Modula Desk", hotspot: { x: 38, y: 62 } }
+          { sku: "HH-SSS-001", label: "Modula Drawer Inserts", price: "₨ 88,500", badge: "Drawer Organizers", hotspot: { x: 50, y: 55 } }
         ]
       },
       {
         pageNumber: 5,
-        type: "layout-a",
-        spreadRole: "right",
-        spreadImage: P.smallDouble1,
-        headline: "Floor Space Reclaimed",
-        kicker: "DOUBLE-PAGE COMPACT LIVING SPREAD",
-        deck: "Eliminating floor-standing clutter allows natural light to wash across every corner uninterrupted.",
+        type: "layout-b",
+        kicker: "KITCHEN CLOSEUP 02",
+        headline: "Roll-Out Carts & Wall-Grid Systems",
+        deck: "Stacked spice jars, hanging wire baskets, and roll-out utility carts that glide under worktops.",
+        note: "Perforated powder-coated steel with heavy-duty locking ball-bearing castors.",
+        heroImage: P.compactDining,
         products: [
-          { sku: "HH-SSS-002", label: "Flute Floating Console", price: "₨ 64,000", badge: "Floating Console", hotspot: { x: 62, y: 55 } }
+          { sku: "HH-SSS-002", label: "Flute Floating Console", price: "₨ 64,000", badge: "Storage System", hotspot: { x: 52, y: 58 } }
         ]
       },
-      // Spread 3: Layout B
+
+      // Spread 3 (Pages 6-7) — Spacious 99 sq ft Multi-Functional Living Room
+      // Grand landscape apartment living spread with split center fold, showcasing an IKEA-style sofa bed, wall cabinets, nesting tables, and tall floor-to-ceiling bookshelves.
       {
         pageNumber: 6,
-        type: "layout-b",
-        kicker: "MODULAR ENGINEERING 01",
-        headline: "Concealed Nested Worktop",
-        deck: "Dual-height nesting desk equipped with cable pass-through channels and magnetic dock.",
-        note: "Transitions from a 40cm depth console to a full 80cm deep work desk in two seconds.",
-        heroImage: P.nestedWorktop,
+        type: "layout-a",
+        spreadRole: "left",
+        spreadImage: P.doubleLivingPanoramic,
+        headline: "The 99 Sq Ft Living Room",
+        kicker: "GRAND LANDSCAPE • 99 SQ FT MULTI-FUNCTIONAL LIVING",
+        deck: "Sofa bed adaptability, overhead cabinetry, and nesting tables in an unbroken communal lounge.",
         products: [
-          { sku: "HH-SSS-001", label: "Modula Nested Desk", price: "₨ 88,500", badge: "Nested Desk", hotspot: { x: 50, y: 58 } }
+          { sku: "HH-FUR-001", label: "CloudCurve Sofa Bed", price: "₨ 345,000", badge: "Convertible Sofa", hotspot: { x: 45, y: 62 } }
         ]
       },
       {
         pageNumber: 7,
-        type: "layout-b",
-        kicker: "MODULAR ENGINEERING 02",
-        headline: "Wall-Hung Flute Console",
-        deck: "Sliding tambour door concealing media cords, gaming consoles, and charging stations.",
-        note: "Mounts directly to masonry or drywall using heavy-duty French-cleat brackets.",
-        heroImage: P.fluteConsole,
+        type: "layout-a",
+        spreadRole: "right",
+        spreadImage: P.doubleLivingPanoramic,
+        headline: "Floor-to-Ceiling Vertical Library",
+        kicker: "VERTICAL SPATIAL EXPANSION",
+        deck: "Full-height modular bookshelves draw the eye upward, doubling the perceived ceiling height.",
         products: [
-          { sku: "HH-SSS-002", label: "Flute Floating Console", price: "₨ 64,000", badge: "Flute Console", hotspot: { x: 48, y: 55 } }
+          { sku: "HH-FUR-002", label: "Noma Nesting Tables", price: "₨ 125,000", badge: "Nesting Tables", hotspot: { x: 55, y: 68 } }
         ]
       },
-      // Spread 4: Layout E (Product Collection)
+
+      // Spread 4 (Pages 8-9) — Living Area Styling Collages
+      // Detailed reading nooks, task lighting close-ups, and nested table configurations on textured cream paper background.
       {
         pageNumber: 8,
-        type: "layout-e",
-        kicker: "CURATED COLLECTION • URBAN MODULES",
-        headline: "Small Space Solutions",
-        deck: "Multi-functional architectural pieces designed to multiply usable room area.",
-        collectionItems: [
-          { sku: "HH-SSS-001", label: "Modula Nested Desk", price: "₨ 88,500", specs: "140 × 60 × 75 cm • Dual-Height Oak", image: P.modulaDesk },
-          { sku: "HH-SSS-002", label: "Flute Floating Console", price: "₨ 64,000", specs: "160 × 35 × 28 cm • Wall-Mounted", image: P.fluteConsole }
+        type: "layout-d",
+        storyRole: "text",
+        kicker: "LIVING AREA STYLING • ESSAY",
+        headline: "The Curated Living Nook",
+        deck: "How micro-zones establish distinct functional boundaries in open-concept studio apartments.",
+        quote: "In compact spaces, every piece must justify its presence twice over: once for form, and once for utility.",
+        body: [
+          "Living within a compact footprint requires curating multi-layered textures that soften architectural lines without adding bulk. Combining tactile linen bouclé with slim iron frames maintains optical openness.",
+          "By clustering low-profile seating with cantilevered task lighting, the corner transforms into an intimate reading retreat without interrupting room circulation."
         ],
+        materialNote: "Kiln-dried European oak, brushed brass joints, tactile bouclé upholstery.",
+        heroImage: P.compactLoft,
         products: [
-          { sku: "HH-SSS-001", label: "Modula Nested Desk", price: "₨ 88,500", badge: "Nested Desk", hotspot: { x: 40, y: 50 } },
-          { sku: "HH-SSS-002", label: "Flute Floating Console", price: "₨ 64,000", badge: "Floating Console", hotspot: { x: 75, y: 70 } }
+          { sku: "HH-FUR-003", label: "Aura Swivel Lounge Chair", price: "₨ 165,000", badge: "Compact Swivel", hotspot: { x: 50, y: 62 } }
         ]
       },
       {
         pageNumber: 9,
-        type: "layout-e",
-        kicker: "BEDROOM & WALL SOLUTIONS",
-        headline: "Rest & Storage",
-        deck: "Low-profile bed platforms and organic brass mirrors for compact master suites.",
-        collectionItems: [
-          { sku: "HH-FUR-004", label: "Haven Low-Profile Bed", price: "₨ 285,000", specs: "King / Queen • Floating Platform", image: P.havenPlatformBed },
-          { sku: "HH-DEC-004", label: "Halo Pebble Mirror", price: "₨ 38,000", specs: "75 × 110 cm • Solid Brass", image: P.haloMirror }
-        ],
+        type: "layout-c",
+        headline: "Task Lighting & Nesting Geometry",
+        kicker: "ATMOSPHERIC ZONING",
+        deck: "Low-glare directional lamps and tiered tables that collapse flat when more floor space is required.",
+        heroImage: P.auraArmchair,
         products: [
-          { sku: "HH-FUR-004", label: "Haven Bed", price: "₨ 285,000", badge: "Haven Bed", hotspot: { x: 45, y: 50 } },
-          { sku: "HH-DEC-004", label: "Halo Mirror", price: "₨ 38,000", badge: "Halo Mirror", hotspot: { x: 75, y: 70 } }
+          { sku: "HH-LGT-002", label: "Arc Floor Lamp", price: "₨ 58,000", badge: "Task Lighting", hotspot: { x: 50, y: 40 } },
+          { sku: "HH-FUR-002", label: "Noma Coffee Table", price: "₨ 125,000", badge: "Nesting Geometry", hotspot: { x: 50, y: 72 } }
         ]
       },
-      // Spread 5: Layout D
+
+      // Spread 5 (Pages 10-11) — Immersive 76 sq ft Micro Bedroom
+      // Wide bedroom perspective split across pages showing smart under-bed deep drawers, modular shelving, wall-pegboards, and high-placed shelf units.
       {
         pageNumber: 10,
-        type: "layout-d",
-        storyRole: "text",
-        kicker: "SPATIAL STRATEGY",
-        headline: "The Low-Datum Horizon",
-        deck: "How lowering furniture heights makes compact ceilings feel dramatically taller.",
-        quote: "Keep horizontal furniture planes below 70cm; eye-level air volume expands the room instantly.",
-        body: [
-          "Standard high-profile beds with tall headboards visually bisect small bedrooms, making them feel like cramped storage boxes. The Haven Bed replaces that bulk with an architectural low-profile platform.",
-          "Standing only 28cm from the floor, it creates a generous expanse of negative space above the mattress. Integrated cantilevered nightstand shelves eliminate floor-standing bedside clutter."
-        ],
-        materialNote: "Solid kiln-dried oak, natural boucle upholstered headboard, recessed hidden legs.",
-        heroImage: P.neutralMasterBed,
+        type: "layout-a",
+        spreadRole: "left",
+        spreadImage: P.doubleBedroomPanoramic,
+        headline: "The 76 Sq Ft Micro Bedroom",
+        kicker: "WIDE PERSPECTIVE • 76 SQ FT BEDROOM SPREAD",
+        deck: "Deep hydraulic under-bed storage drawers and architectural pegboards that float off the floor.",
         products: [
-          { sku: "HH-FUR-004", label: "Haven Bed", price: "₨ 285,000", badge: "Haven Bed", hotspot: { x: 50, y: 65 } }
+          { sku: "HH-FUR-004", label: "Haven Platform Bed", price: "₨ 285,000", badge: "Under-Bed Drawers", hotspot: { x: 42, y: 65 } }
         ]
       },
       {
         pageNumber: 11,
-        type: "layout-c",
-        headline: "The Serene Sleeping Nook",
-        kicker: "COMPACT BEDROOM",
-        deck: "The Haven Low-Profile Bed paired with soft French linen and ambient Glow Table Lamps.",
-        heroImage: P.cozyBedroomHaven,
+        type: "layout-a",
+        spreadRole: "right",
+        spreadImage: P.doubleBedroomPanoramic,
+        headline: "High-Datum Perimeter Shelving",
+        kicker: "ACOUSTIC COMFORT & REST",
+        deck: "High wall-mounted perimeter shelves store seasonal wardrobe without encroaching on bed clearance.",
         products: [
-          { sku: "HH-FUR-004", label: "Haven Bed", price: "₨ 285,000", badge: "Haven Bed", hotspot: { x: 52, y: 60 } }
+          { sku: "HH-DEC-004", label: "Halo Pebble Mirror", price: "₨ 38,000", badge: "Halo Mirror", hotspot: { x: 60, y: 40 } }
         ]
       },
-      // Spread 6: Layout C + Layout B
+
+      // Spread 6 (Pages 12-13) — Work & Utility Workspace Detail
+      // Split visual zooming into floating desks, chair folding mechanics, and overhead cubby organizers.
       {
         pageNumber: 12,
-        type: "layout-c",
-        headline: "The Wall-Hung Entryway",
-        kicker: "ZERO FLOOR FOOTPRINT",
-        deck: "The Flute Floating Console paired with the Halo Mirror, turning a 1-meter hallway into a gallery.",
-        heroImage: P.wallHungEntry,
+        type: "layout-b",
+        kicker: "WORKSPACE DETAIL 01",
+        headline: "The Dual-Height Floating Desk",
+        deck: "Concealed castor guides allow the work surface to glide effortlessly out from the wall console.",
+        note: "Integrated power conduits and magnetic cord anchors keep laptop charging invisible.",
+        heroImage: P.modulaDesk,
         products: [
-          { sku: "HH-SSS-002", label: "Flute Floating Console", price: "₨ 64,000", badge: "Flute Console", hotspot: { x: 50, y: 58 } },
-          { sku: "HH-DEC-004", label: "Halo Mirror", price: "₨ 38,000", badge: "Halo Mirror", hotspot: { x: 50, y: 35 } }
+          { sku: "HH-SSS-001", label: "Modula Nested Desk", price: "₨ 88,500", badge: "Floating Worktop", hotspot: { x: 50, y: 58 } }
         ]
       },
       {
         pageNumber: 13,
         type: "layout-b",
-        kicker: "TAMBOUR DETAIL",
-        headline: "Solid Oak Tambour Slats",
-        deck: "Precision-milled fluted battens glued to heavy canvas for frictionless sliding action.",
-        note: "Allows open access to interior shelving without doors swinging out into tight walking paths.",
+        kicker: "WORKSPACE DETAIL 02",
+        headline: "Overhead Cubby & Chair Folding",
+        deck: "Fluted oak tambour panels conceal overhead cubbies and hanging brackets for flat-folding task chairs.",
+        note: "Seamless acoustic tambour sliding without swinging door radius.",
         heroImage: P.tambourSlats,
         products: [
-          { sku: "HH-SSS-002", label: "Flute Floating Console", price: "₨ 64,000", badge: "Oak Tambour", hotspot: { x: 48, y: 55 } }
+          { sku: "HH-SSS-002", label: "Flute Floating Console", price: "₨ 64,000", badge: "Tambour Cubby", hotspot: { x: 48, y: 52 } }
         ]
       },
-      // Spread 7: Continuous Double Page 2
+
+      // Spread 7 (Pages 14-15) — Dual-page Entryway & Dining Nook (30 sq ft)
+      // Wide hallway entrance scene with Drop-leaf table, hook cascades, and folding stool racks extending naturally on both pages.
       {
         pageNumber: 14,
         type: "layout-a",
         spreadRole: "left",
-        spreadImage: P.smallDouble2,
-        headline: "Light-Drenched Micro-Living",
-        kicker: "DOUBLE-PAGE COMPACT LIVING SPREAD",
-        deck: "A 38-square-meter urban penthouse designed with integrated architectural woodwork.",
+        spreadImage: P.doubleDiningPanoramic,
+        headline: "The 30 Sq Ft Entryway & Dining",
+        kicker: "DUAL-PAGE SPREAD • ENTRYWAY & DINING NOOK",
+        deck: "Drop-leaf solid oak table expands from a 35cm slim hallway credenza to an intimate dining table for four.",
         products: [
-          { sku: "HH-SSS-001", label: "Modula Nested Desk", price: "₨ 88,500", badge: "Desk Worktop", hotspot: { x: 38, y: 60 } }
+          { sku: "HH-SSS-001", label: "Drop-Leaf Dining Table", price: "₨ 88,500", badge: "Drop-Leaf Table", hotspot: { x: 40, y: 62 } }
         ]
       },
       {
         pageNumber: 15,
         type: "layout-a",
         spreadRole: "right",
-        spreadImage: P.smallDouble2,
-        headline: "Efficiency Without Compromise",
-        kicker: "DOUBLE-PAGE COMPACT LIVING SPREAD",
-        deck: "Every centimeter utilized for living, storage, and quiet contemplative rest.",
+        spreadImage: P.doubleDiningPanoramic,
+        headline: "Hook Cascades & Folding Stools",
+        kicker: "ZERO CORRIDOR OBSTRUCTION",
+        deck: "Vertical wall hook cascades hold coats, tote bags, and nesting stool brackets cleanly off the entrance path.",
         products: [
-          { sku: "HH-FUR-003", label: "Aura Lounge Chair", price: "₨ 165,000", badge: "Compact Swivel", hotspot: { x: 65, y: 55 } }
+          { sku: "HH-SSS-002", label: "Flute Entry Console", price: "₨ 64,000", badge: "Entry Stool Rack", hotspot: { x: 62, y: 55 } }
         ]
       },
-      // Spread 8: Layout E
+
+      // Spread 8 (Pages 16-17) — Walkway Utility & Hallway storage
+      // Close-ups of storage trays, bins, and over-the-door hooks.
       {
         pageNumber: 16,
-        type: "layout-e",
-        kicker: "COMPACT WORKSPACE & REST",
-        headline: "Multi-Functional Modules",
-        deck: "Pieces that transition between daytime productivity and evening repose.",
-        collectionItems: [
-          { sku: "HH-SSS-001", label: "Modula Nested Desk", price: "₨ 88,500", specs: "Extends from 40 to 80cm depth", image: P.modulaDesk },
-          { sku: "HH-FUR-004", label: "Haven Low-Profile Bed", price: "₨ 285,000", specs: "28cm Height • Integrated Shelves", image: P.havenPlatformBed }
-        ],
+        type: "layout-b",
+        kicker: "HALLWAY UTILITY 01",
+        headline: "Wall-Hung Hallway Valet",
+        deck: "Recessed key trays, leather catchalls, and mail slots mounted at entrance eye-level.",
+        note: "Solid French oak with magnetic key anchors.",
+        heroImage: P.wallHungEntry,
         products: [
-          { sku: "HH-SSS-001", label: "Modula Nested Desk", price: "₨ 88,500", badge: "Modula Desk", hotspot: { x: 40, y: 50 } },
-          { sku: "HH-FUR-004", label: "Haven Bed", price: "₨ 285,000", badge: "Haven Bed", hotspot: { x: 75, y: 70 } }
+          { sku: "HH-SSS-002", label: "Flute Hallway Console", price: "₨ 64,000", badge: "Wall Valet", hotspot: { x: 50, y: 54 } }
         ]
       },
       {
         pageNumber: 17,
         type: "layout-e",
-        kicker: "WALL-MOUNTED STORAGE",
-        headline: "Floating Consoles & Mirrors",
-        deck: "Keep floors 100% visible to dramatically enhance room width perception.",
+        kicker: "STORAGE SYSTEMS • CURATED",
+        headline: "Modular Walkway Storage Units",
+        deck: "Over-the-door hanging rails, felt organizing bins, and stacking shoe modules.",
         collectionItems: [
-          { sku: "HH-SSS-002", label: "Flute Floating Console", price: "₨ 64,000", specs: "Wall-Hung • French Cleat", image: P.fluteConsole },
-          { sku: "HH-DEC-004", label: "Halo Pebble Mirror", price: "₨ 38,000", specs: "Solid Brass • Dual Cleat", image: P.haloMirror }
+          { sku: "HH-SSS-001", label: "Modula Nested Desk", price: "₨ 88,500", specs: "Dual-Height Oak • Roll-Out Worktop", image: P.modulaDesk },
+          { sku: "HH-SSS-002", label: "Flute Floating Console", price: "₨ 64,000", specs: "160 × 35 × 28 cm • Wall-Mounted", image: P.fluteConsole }
         ],
         products: [
-          { sku: "HH-SSS-002", label: "Flute Floating Console", price: "₨ 64,000", badge: "Floating Console", hotspot: { x: 40, y: 50 } },
-          { sku: "HH-DEC-004", label: "Halo Mirror", price: "₨ 38,000", badge: "Pebble Mirror", hotspot: { x: 75, y: 70 } }
+          { sku: "HH-SSS-001", label: "Modula Storage Organizer", price: "₨ 88,500", badge: "Organizer", hotspot: { x: 40, y: 50 } },
+          { sku: "HH-DEC-004", label: "Halo Entry Mirror", price: "₨ 38,000", badge: "Entry Mirror", hotspot: { x: 75, y: 65 } }
         ]
       },
-      // Spread 9: Layout D
+
+      // Spread 9 (Pages 18-19) — Cozy Study Nook Transition
+      // Smart corner configurations, wall organization, and task lighting.
       {
         pageNumber: 18,
-        type: "layout-d",
-        storyRole: "text",
-        kicker: "URBAN DESIGN CODEX",
-        headline: "The Five Rules of Compact Living",
-        deck: "Actionable interior guidelines for urban apartments in modern Pakistani cities.",
-        quote: "Floor visibility is the single greatest predictor of perceived spaciousness in compact homes.",
-        body: [
-          "Rule One: Float Storage Off the Floor. When eye sightlines can travel beneath a console or nightstand to the wall skirting, the brain registers the full boundary of the room.",
-          "Rule Two: Embrace Dual Functions. A desk must double as an entrance credenza. A coffee table must hold internal storage.",
-          "Rule Three: Reflect Light with Asymmetry. A round or pebble mirror like Halo bounces light into darker corners without adding heavy rectilinear geometry."
-        ],
-        materialNote: "Solid oak, powder-coated steel brackets, distortion-free float glass.",
-        heroImage: P.compactDining,
+        type: "layout-c",
+        headline: "The Cozy Corner Study",
+        kicker: "CORNER GEOMETRY & FOCUS",
+        deck: "Converting dead bedroom alcoves into fully wired architectural workspaces.",
+        heroImage: P.readingSanctum,
         products: [
-          { sku: "HH-SSS-001", label: "Modula Nested Desk", price: "₨ 88,500", badge: "Dual Desk", hotspot: { x: 45, y: 60 } }
+          { sku: "HH-LGT-003", label: "Glow Table Lamp", price: "₨ 28,000", badge: "Study Lamp", hotspot: { x: 50, y: 45 } },
+          { sku: "HH-SSS-001", label: "Modula Study Desk", price: "₨ 88,500", badge: "Study Desk", hotspot: { x: 50, y: 68 } }
         ]
       },
       {
         pageNumber: 19,
-        type: "layout-c",
-        headline: "The Compact Dining Nook",
-        kicker: "MULTI-PURPOSE LIVING",
-        deck: "A dining table that doubles as a communal gathering and creative workspace.",
+        type: "layout-d",
+        storyRole: "text",
+        kicker: "TRANSITION & COZINESS",
+        headline: "The Architecture of Quiet Corners",
+        deck: "Why dedicated micro-workstations prevent work stress from spilling into relaxation zones.",
+        quote: "A dedicated study nook of only 1.2 square meters provides greater cognitive focus than an expansive open table.",
+        body: [
+          "Designing a home workstation in a small flat requires visual quiet. When cords are concealed and shelves are framed by matte oak, the workstation feels serene even when shut off.",
+          "Directional table illumination creates a warm light cone that isolates the workspace without flooding the rest of the dark apartment."
+        ],
+        materialNote: "Natural linen shades, machined brass pivots, solid timber joinery.",
         heroImage: P.diningNook,
         products: [
-          { sku: "HH-LGT-001", label: "Luna Pendant", price: "₨ 42,000", badge: "Luna Light", hotspot: { x: 50, y: 38 } }
+          { sku: "HH-LGT-001", label: "Luna Pendant Light", price: "₨ 42,000", badge: "Luna Light", hotspot: { x: 48, y: 60 } }
         ]
       },
-      // Spread 10: Layout B
+
+      // Spread 10 (Pages 20-21) — Storage "Before & After" or Functional Details
+      // Highlighting sliding systems, shelf dividers, and nested tools.
       {
         pageNumber: 20,
         type: "layout-b",
-        kicker: "DETAIL STUDY",
-        headline: "Floating Nightstand Integration",
-        deck: "Haven Bed with flush-mounted cantilevered side shelves in solid European oak.",
-        note: "Pre-routed cable grommets for phone and lamp charging with zero visible wire spaghetti.",
+        kicker: "FUNCTIONAL ENGINEERING 01",
+        headline: "Concealed Sliding Systems",
+        deck: "Flush-mounted ball-bearing sliders that eliminate the clearance needed for hinged swinging doors.",
+        note: "Tested to 50,000 sliding cycles under maximum load.",
         heroImage: P.havenBedDetail,
         products: [
-          { sku: "HH-FUR-004", label: "Haven Bed", price: "₨ 285,000", badge: "Haven Nightstand", hotspot: { x: 50, y: 55 } }
+          { sku: "HH-FUR-004", label: "Haven Sliding Base", price: "₨ 285,000", badge: "Sliding Base", hotspot: { x: 50, y: 55 } }
         ]
       },
       {
         pageNumber: 21,
         type: "layout-b",
-        kicker: "ACOUSTIC INTEGRATION",
-        headline: "Bouclé Headboard Wall",
-        deck: "The upholstered headboard absorbs room reverberation for deeper, uninterrupted sleep.",
-        note: "Treated with eco-friendly stain resistance suitable for everyday urban living.",
+        kicker: "FUNCTIONAL ENGINEERING 02",
+        headline: "Modular Shelf Dividers & Nested Tools",
+        deck: "Removable acoustic dividers that allow wardrobe shelves to adapt between summer linens and winter coats.",
+        note: "Eco-friendly pressed felt dividers with friction tabs.",
         heroImage: P.boucleHeadboard,
         products: [
-          { sku: "HH-FUR-004", label: "Haven Bed", price: "₨ 285,000", badge: "Haven Boucle", hotspot: { x: 52, y: 50 } }
+          { sku: "HH-DEC-003", label: "CloudSoft Dividers", price: "₨ 18,500", badge: "Felt Dividers", hotspot: { x: 52, y: 52 } }
         ]
       },
-      // Spread 11: Layout C + Layout E
+
+      // Spread 11 (Pages 22-23) — Lookbook Back Cover
+      // Panoramic back-page indexed gallery of featured small-space furniture and pricing reference.
       {
         pageNumber: 22,
-        type: "layout-c",
-        headline: "The Complete Studio Penthouse",
-        kicker: "ARCHITECTURAL MASTERY",
-        deck: "Proof that 40 square meters can feel as noble and luxurious as a countryside villa.",
-        heroImage: P.studioPenthouse,
-        products: [
-          { sku: "HH-SSS-001", label: "Modula Nested Desk", price: "₨ 88,500", badge: "Studio Desk", hotspot: { x: 40, y: 65 } },
-          { sku: "HH-SSS-002", label: "Flute Floating Console", price: "₨ 64,000", badge: "Floating Console", hotspot: { x: 65, y: 55 } }
-        ]
-      },
-      {
-        pageNumber: 23,
         type: "layout-e",
-        kicker: "ATELIER INDEX",
-        headline: "Small Space Catalogue Index",
-        deck: "Technical drawings, weight ratings, and instant purchase options for all modular pieces.",
+        kicker: "LOOKBOOK BACK COVER • PART I",
+        headline: "Small-Space Furniture Gallery",
+        deck: "Curated architectural modules designed to multiply usable space in urban homes. Ready for white-glove delivery across Pakistan.",
         collectionItems: [
-          { sku: "HH-SSS-001", label: "Modula Nested Desk", price: "₨ 88,500", specs: "Oak • Castor Glides", image: P.modulaDesk },
+          { sku: "HH-SSS-001", label: "Modula Nested Desk", price: "₨ 88,500", specs: "Oak • Dual Castors", image: P.modulaDesk },
           { sku: "HH-SSS-002", label: "Flute Floating Console", price: "₨ 64,000", specs: "Wall-Hung • French Cleat", image: P.fluteConsole }
         ],
         products: [
@@ -1471,13 +1479,29 @@ export const MAGAZINE_BOOKS = {
           { sku: "HH-SSS-002", label: "Flute Floating Console", price: "₨ 64,000", badge: "Order Console", hotspot: { x: 75, y: 70 } }
         ]
       },
-      // Page 24: Backcover
+      {
+        pageNumber: 23,
+        type: "layout-e",
+        kicker: "LOOKBOOK BACK COVER • PART II",
+        headline: "Pricing & Technical Reference",
+        deck: "Complete dimensions, timber specifications, and verified prices with white-glove Cash on Delivery assembly.",
+        collectionItems: [
+          { sku: "HH-FUR-004", label: "Haven Low-Profile Bed", price: "₨ 285,000", specs: "King / Queen • Floating Base", image: P.havenPlatformBed },
+          { sku: "HH-DEC-004", label: "Halo Pebble Mirror", price: "₨ 38,000", specs: "75 × 110 cm • Solid Brass", image: P.haloMirror }
+        ],
+        products: [
+          { sku: "HH-FUR-004", label: "Haven Platform Bed", price: "₨ 285,000", badge: "Order Bed", hotspot: { x: 40, y: 50 } },
+          { sku: "HH-DEC-004", label: "Halo Mirror", price: "₨ 38,000", badge: "Order Mirror", hotspot: { x: 75, y: 70 } }
+        ]
+      },
+
+      // Page 24: Epilogue & Colophon Backcover
       {
         pageNumber: 24,
         type: "backcover",
         headline: "HOMEHUB ATELIER",
-        kicker: "SMALL SPACES • VOLUME 04 COMPLETED",
-        deck: "Engineered in celebration of urban agility, spatial intelligence, and honest craft.",
+        kicker: "THE ART OF COMPACT LIVING • COMPLETED",
+        deck: "An exploration of spatial agility, multi-functional joinery, and honest craft for modern urban homes.",
         colophon: "Published by HomeHub Atelier • Created by Farhana Aamir • farzunmir@gmail.com",
         heroImage: P.smallSpacesBackcover,
         products: []

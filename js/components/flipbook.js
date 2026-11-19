@@ -593,6 +593,9 @@ export class Flipbook {
               <div class="spine-staple spine-staple-top"></div>
               <div class="spine-staple spine-staple-bottom"></div>
             </div>
+
+            <!-- Realistic Print Spine Crease Overlay Down the Center Page Fold -->
+            <div class="spine-crease-overlay" aria-hidden="true"></div>
             
             <!-- Pages Container -->
             <div class="magazine-pages-container" id="magazine-pages-slot">
