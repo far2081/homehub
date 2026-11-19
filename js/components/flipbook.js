@@ -548,30 +548,15 @@ export class Flipbook {
 
     this.container.innerHTML = `
       <div class="flipbook-wrapper" id="flipbook-wrapper">
-        <!-- Magazine Top Header & Book Switcher -->
+        <!-- Magazine Top Header -->
         <div class="flipbook-header">
           <div class="book-meta">
-            <span class="book-badge">COLLECTIBLE EDITORIAL • 3D READER</span>
-            <h2 class="book-headline">${book.title}</h2>
-            <p class="book-issue">${book.issue} • <em>${book.subtitle}</em></p>
+            <span class="book-badge">COLLECTIBLE DUAL-PAGE SPREADS • 24 PAGES</span>
+            <h2 class="book-headline">${this.currentBookId === 'small-spaces' ? 'Compact Living Monograph & Spatial Case Studies' : book.title}</h2>
+            <p class="book-issue">${this.currentBookId === 'small-spaces' ? 'Volume 04 • Architectural Floorplans, Birch Joinery & Monolithic Works • 12 Dual Spreads' : `${book.issue} • <em>${book.subtitle}</em>`}</p>
           </div>
 
           <div class="book-controls-top">
-            <!-- Book Switcher Quick Pills -->
-            <div class="book-pills" role="tablist" aria-label="Magazine Books">
-              ${Object.values(MAGAZINE_BOOKS).map(b => `
-                <button 
-                  class="book-pill-btn ${b.id === this.currentBookId ? 'active' : ''}" 
-                  data-book="${b.id}"
-                  role="tab"
-                  aria-selected="${b.id === this.currentBookId}"
-                >
-                  <span class="pill-dot"></span>
-                  ${b.title}
-                </button>
-              `).join('')}
-            </div>
-
             <!-- Reading Tools -->
             <div class="book-action-icons">
               <button class="book-action-btn toc-trigger-btn" id="flipbook-toc-btn" title="Open Curated Editorial Index">
@@ -1350,7 +1335,7 @@ export class Flipbook {
             <div class="backcover-divider"></div>
             <p class="backcover-colophon">${page.colophon}</p>
             <div class="backcover-buttons">
-              <button class="backcover-reopen-btn" onclick="document.querySelector('.book-pill-btn[data-book=\\'${this.currentBookId}\\']').click()">
+              <button class="backcover-reopen-btn" onclick="window.homehub ? window.homehub.openBook('${this.currentBookId}', 0) : null">
                 ↺ Re-read Issue
               </button>
               <a href="#catalogue-section" class="backcover-shop-btn">

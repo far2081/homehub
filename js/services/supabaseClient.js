@@ -224,7 +224,7 @@ export async function fetchStorefrontProducts() {
       .eq('is_active', true)
       .order('created_at', { ascending: true });
 
-    if (error || !data || data.length === 0) {
+    if (error || !Array.isArray(data) || data.length === 0) {
       console.warn('Supabase products fetch failed or empty, using fallback:', error);
       return { data: INITIAL_PRODUCTS, isFallback: true };
     }
@@ -382,7 +382,7 @@ export async function adminFetchAllProducts() {
     .select('*')
     .order('created_at', { ascending: false });
 
-  if (error) throw error;
+  if (error || !Array.isArray(data)) return [];
   return data.map(dbProductToStorefront);
 }
 
@@ -501,7 +501,7 @@ export async function adminFetchOrders() {
     `)
     .order('created_at', { ascending: false });
 
-  if (error) throw error;
+  if (error || !Array.isArray(data)) return [];
   return data;
 }
 

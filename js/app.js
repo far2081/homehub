@@ -580,12 +580,13 @@ class HomeHubApp {
       wishBtn.addEventListener('click', () => this.wishlist.open());
     }
 
-    // Admin Triggers
-    document.querySelectorAll('.admin-open-trigger').forEach(el => {
-      el.addEventListener('click', (e) => {
+    // Admin Triggers (Direct delegation for static and dynamically injected links)
+    document.addEventListener('click', (e) => {
+      const trigger = e.target.closest('a[href="#admin"], .admin-open-trigger');
+      if (trigger) {
         e.preventDefault();
-        this.adminPortal.open();
-      });
+        if (this.adminPortal) this.adminPortal.open();
+      }
     });
 
     // Mobile Bottom App Navigation (PWA Shell)
@@ -607,8 +608,11 @@ class HomeHubApp {
     // Initial Badge states
     this.updateHeaderBadges();
 
-    // Listen to hash changes (back / forward navigation)
+    // Listen to hash and state changes (back / forward navigation & URL hash routes)
     window.addEventListener('popstate', () => {
+      this.handleInitialRouting();
+    });
+    window.addEventListener('hashchange', () => {
       this.handleInitialRouting();
     });
   }
@@ -1445,7 +1449,8 @@ class HomeHubApp {
       const sku = hash.replace('#product-', '');
       this.openProduct(sku);
     } else if (hash === '#admin') {
-      this.adminPortal.open();
+      this.showHomepage();
+      if (this.adminPortal) this.adminPortal.open();
     }
   }
 }

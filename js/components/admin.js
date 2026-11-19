@@ -78,7 +78,33 @@ export class AdminPortal {
         this.authenticated = true;
         this.currentUser = verified.user;
         this.adminProfile = verified.profile;
+        this.adminSession = {
+          email: verified.user.email,
+          name: verified.profile.full_name || 'Admin',
+          role: verified.profile.role ? verified.profile.role.toLowerCase() : 'super_admin',
+          permissions: {
+            manageProducts: true,
+            manageCategories: true,
+            manageInventory: true,
+            manageOrders: true,
+            manageCoupons: true,
+            manageRoles: true
+          }
+        };
         this.isSupabaseAuth = true;
+        return true;
+      }
+    } catch (e) {}
+
+    // Check stored persistent admin session
+    try {
+      const storedSession = storage.get('homehub_admin_session', null);
+      if (storedSession && storedSession.email) {
+        this.authenticated = true;
+        this.adminSession = storedSession;
+        this.currentUser = { email: storedSession.email };
+        this.adminProfile = { role: (storedSession.role || 'SUPER_ADMIN').toUpperCase(), full_name: storedSession.name || 'Admin' };
+        this.isSupabaseAuth = false;
         return true;
       }
     } catch (e) {}
@@ -90,7 +116,20 @@ export class AdminPortal {
         if (stored === 'true') {
           this.authenticated = true;
           this.currentUser = { email: 'admin@homehub.atelier' };
-          this.adminProfile = { role: 'SUPER_ADMIN', full_name: 'Atelier Lead' };
+          this.adminProfile = { role: 'SUPER_ADMIN', full_name: 'Studio Master' };
+          this.adminSession = {
+            email: 'admin@homehub.atelier',
+            name: 'Studio Master',
+            role: 'super_admin',
+            permissions: {
+              manageProducts: true,
+              manageCategories: true,
+              manageInventory: true,
+              manageOrders: true,
+              manageCoupons: true,
+              manageRoles: true
+            }
+          };
           return true;
         }
       }
@@ -119,6 +158,11 @@ export class AdminPortal {
     if (this.container) {
       this.container.classList.remove('is-open');
       document.body.style.overflow = '';
+    }
+    if (typeof window !== 'undefined' && window.location.hash === '#admin') {
+      try {
+        history.replaceState(null, '', window.location.pathname + window.location.search);
+      } catch (e) {}
     }
   }
 
@@ -176,31 +220,47 @@ export class AdminPortal {
   }
 
   async login(email, password) {
-    // 1. Try Supabase Auth first
-    if (isSupabaseConfigured()) {
+    const cleanEmail = (email || '').trim().toLowerCase();
+    const cleanPass = (password || '').trim();
+
+    // 1. Built-in Super Admin (Farhana Aamir)
+    if (cleanEmail === 'farzunmir@gmail.com' && (cleanPass === 'homehub2026' || cleanPass === 'admin123')) {
+      await this.authenticateAdminDirect('farzunmir@gmail.com', cleanPass);
+      this.authenticated = true;
+      this.currentUser = { email: 'farzunmir@gmail.com' };
+      this.adminProfile = { role: 'SUPER_ADMIN', full_name: 'Farhana Aamir' };
+      this.isSupabaseAuth = false;
       try {
-        const result = await authenticateAdmin(email, password);
-        if (result && result.user) {
-          this.authenticated = true;
-          this.currentUser = result.user;
-          this.adminProfile = result.profile;
-          this.isSupabaseAuth = true;
-          showToast(`Welcome back, ${result.profile.full_name || 'Admin'} (${result.profile.role})`, 'success');
-          await this.render();
-          this.loadRemoteData();
-          return true;
+        if (typeof window !== 'undefined' && window.sessionStorage) {
+          window.sessionStorage.setItem('homehub_admin_auth', 'true');
         }
-      } catch (err) {
-        showToast(err.message || 'Supabase authentication failed.', 'warning');
-        return false;
-      }
+      } catch (e) {}
+      showToast('Welcome back, Farhana Aamir (SUPER_ADMIN)', 'success');
+      await this.render();
+      this.loadRemoteData();
+      return true;
     }
 
-    // 2. Offline / Demo Credentials Fallback
-    if (email === 'admin@homehub.atelier' && password === 'HomeHub@Atelier2026') {
+    // 2. Built-in Atelier Staging Demo Account
+    if (cleanEmail === 'admin@homehub.atelier' && cleanPass === 'HomeHub@Atelier2026') {
       this.authenticated = true;
       this.currentUser = { email: 'admin@homehub.atelier' };
       this.adminProfile = { role: 'SUPER_ADMIN', full_name: 'Studio Master' };
+      this.adminSession = {
+        email: 'admin@homehub.atelier',
+        name: 'Studio Master',
+        role: 'super_admin',
+        loginTime: new Date().toISOString(),
+        permissions: {
+          manageProducts: true,
+          manageCategories: true,
+          manageInventory: true,
+          manageOrders: true,
+          manageCoupons: true,
+          manageRoles: true
+        }
+      };
+      storage.set('homehub_admin_session', this.adminSession);
       this.isSupabaseAuth = false;
       try {
         if (typeof window !== 'undefined' && window.sessionStorage) {
@@ -209,7 +269,43 @@ export class AdminPortal {
       } catch (e) {}
       showToast('Offline Atelier staging mode unlocked.', 'info');
       await this.render();
+      this.loadRemoteData();
       return true;
+    }
+
+    // 3. Try Supabase Auth
+    if (isSupabaseConfigured()) {
+      try {
+        const result = await authenticateAdmin(email, password);
+        if (result && result.user) {
+          this.authenticated = true;
+          this.currentUser = result.user;
+          this.adminProfile = result.profile;
+          this.adminSession = {
+            email: result.user.email,
+            name: result.profile ? result.profile.full_name : 'Admin',
+            role: result.profile && result.profile.role ? result.profile.role.toLowerCase() : 'super_admin',
+            loginTime: new Date().toISOString(),
+            permissions: {
+              manageProducts: true,
+              manageCategories: true,
+              manageInventory: true,
+              manageOrders: true,
+              manageCoupons: true,
+              manageRoles: true
+            }
+          };
+          storage.set('homehub_admin_session', this.adminSession);
+          this.isSupabaseAuth = true;
+          showToast(`Welcome back, ${result.profile ? result.profile.full_name : 'Admin'} (${result.profile ? result.profile.role : 'ADMIN'})`, 'success');
+          await this.render();
+          this.loadRemoteData();
+          return true;
+        }
+      } catch (err) {
+        showToast(err.message || 'Supabase authentication failed.', 'warning');
+        return false;
+      }
     }
 
     showToast('Invalid administrator credentials.', 'warning');
@@ -225,6 +321,8 @@ export class AdminPortal {
     this.authenticated = false;
     this.currentUser = null;
     this.adminProfile = null;
+    this.adminSession = null;
+    storage.remove('homehub_admin_session');
     try {
       if (typeof window !== 'undefined' && window.sessionStorage) {
         window.sessionStorage.removeItem('homehub_admin_auth');
@@ -1925,7 +2023,16 @@ export class AdminPortal {
           manageRoles: true
         }
       };
+      this.authenticated = true;
+      this.currentUser = { email: 'farzunmir@gmail.com' };
+      this.adminProfile = { role: 'SUPER_ADMIN', full_name: 'Farhana Aamir' };
+      this.isSupabaseAuth = false;
       storage.set('homehub_admin_session', this.adminSession);
+      try {
+        if (typeof window !== 'undefined' && window.sessionStorage) {
+          window.sessionStorage.setItem('homehub_admin_auth', 'true');
+        }
+      } catch (e) {}
       return this.adminSession;
     }
     return false;
