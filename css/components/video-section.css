@@ -72,11 +72,23 @@
   border-color: var(--color-noir);
 }
 
-/* Video Grid */
+/* Video Grid (Symmetrical 6-Video Complete 3x2 Grid) */
 .video-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
+}
+
+@media (max-width: 1080px) {
+  .video-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .video-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .video-card {

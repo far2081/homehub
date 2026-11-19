@@ -34,13 +34,13 @@ export const CATEGORY_INSPIRATION_DATA = {
       }
     ],
     makeoverVideo: {
-      id: 'vid-small-bedroom',
-      title: 'Sanctuary in 12 Square Meters',
+      id: 'vid-bedroom-sanctuary',
+      title: 'Sanctuary & Rest: Low-Profile Architectural Joinery',
       duration: '3:45',
       author: 'Urban Architecture Collective',
       description: 'Clever spatial layout strategies for compact bedrooms: floating nightstands, recessed platform beds, and diffuse bedside illumination.',
-      thumbnail: 'assets/magazines/7589a24a-202a-49a0-99c9-5e49e7eb5da5.webp',
-      embedUrl: 'https://www.youtube-nocookie.com/embed/O6vYf5Z1jWg?rel=0&modestbranding=1&playsinline=1',
+      thumbnail: 'assets/magazines/3ffa9485-4bd9-4392-a47d-7010d339117d.webp',
+      embedUrl: 'https://www.youtube-nocookie.com/embed/zW8S_C3C_o0?autoplay=1&rel=0&modestbranding=1&playsinline=1',
       takeaways: [
         'A platform bed with recessed plinth creates the optical illusion of continuous floor space.',
         'Replace floor lamps with wall sconces or compact mushroom table lights.',

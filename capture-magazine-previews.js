@@ -150,6 +150,16 @@ async function run() {
     await sleep(1500);
     await captureScreenshot(ws, 'preview_desktop_catalogue.png');
 
+    // Capture Interior Ideas / 6 Video Masterclasses Grid
+    console.log('[CDP] Navigating to Ideas View (6 Video Masterclasses)...');
+    await evalInPage(ws, `
+      (() => {
+        window.location.hash = '#ideas';
+      })()
+    `);
+    await sleep(1500);
+    await captureScreenshot(ws, 'preview_desktop_videos_6row.png');
+
     // Return to #home
     await evalInPage(ws, `
       (() => {

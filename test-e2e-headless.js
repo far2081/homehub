@@ -165,13 +165,14 @@ console.log('\n[4] Testing The Four Digital Books & Hotspot Linkages:');
 // --- 5. VIDEO MASTERCLASSES & PLAYBACK CONTENT ---
 console.log('\n[5] Testing Interior Video Masterclasses:');
 {
-  assert(INSPIRATION_VIDEOS.length === 5, 'Exactly 5 curated video masterclasses present');
+  assert(INSPIRATION_VIDEOS.length === 6, 'Exactly 6 curated video masterclasses present (complete row)');
   const categories = INSPIRATION_VIDEOS.map(v => v.category);
   assert(categories.includes('living-room'), 'Includes Living room styling');
-  assert(categories.includes('small-bedroom'), 'Includes Small bedroom ideas');
-  assert(categories.includes('lighting'), 'Includes Lighting inspiration');
-  assert(categories.includes('decor'), 'Includes Home decoration');
+  assert(categories.includes('bedroom'), 'Includes Bedroom architecture (no duplicate small-bedroom)');
+  assert(categories.includes('lighting'), 'Includes Lighting atmosphere');
+  assert(categories.includes('dining-room'), 'Includes Dining room architecture');
   assert(categories.includes('space-saving'), 'Includes Space-saving furniture');
+  assert(categories.includes('furniture'), 'Includes Furniture craft & joinery');
 
   for (const v of INSPIRATION_VIDEOS) {
     assert(v.embedType === 'youtube' && v.embedUrl.startsWith('https://www.youtube-nocookie.com/embed/'), `Video "${v.id}" uses privacy-enhanced embed URL`);

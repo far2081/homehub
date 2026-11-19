@@ -1,6 +1,7 @@
 /**
  * HomeHub - Interior Video Inspiration Gallery
- * Legitimate HTML5 video player modal and curated design inspiration cards.
+ * Legitimate HTML5 & Embed video player modal with curated design inspiration cards.
+ * 6-Video Complete Row Series
  */
 
 import { INSPIRATION_VIDEOS } from '../data/videos.js';
@@ -30,22 +31,23 @@ export class VideoGallery {
             <span class="video-badge">EDITORIAL IN MOTION</span>
             <h2 class="video-heading">Interior Video Masterclasses</h2>
             <p class="video-subhead">
-              Visual styling guides, architectural proportions, and space-saving engineering filmed in real architectural homes.
+              Visual styling guides, architectural proportions, and space-saving engineering filmed in real architectural homes across 6 complete episodes.
             </p>
           </div>
           
-          <!-- Category Filters -->
+          <!-- Category Filters (Clean 6 categories, zero duplicate small-bedroom, zero home-decor) -->
           <div class="video-pills" role="tablist">
-            <button class="video-pill active" data-vcat="all">All Masterclasses</button>
+            <button class="video-pill active" data-vcat="all">All Masterclasses (6)</button>
             <button class="video-pill" data-vcat="living-room">Living Room</button>
-            <button class="video-pill" data-vcat="small-bedroom">Small Bedroom</button>
+            <button class="video-pill" data-vcat="bedroom">Bedroom</button>
+            <button class="video-pill" data-vcat="dining-room">Dining Room</button>
             <button class="video-pill" data-vcat="lighting">Lighting</button>
-            <button class="video-pill" data-vcat="decor">Home Décor</button>
             <button class="video-pill" data-vcat="space-saving">Space Saving</button>
+            <button class="video-pill" data-vcat="furniture">Furniture</button>
           </div>
         </div>
 
-        <!-- Video Cards Grid -->
+        <!-- Video Cards Grid (Symmetrical 6-video layout) -->
         <div class="video-grid" id="video-grid">
           <!-- Injected via renderGrid -->
         </div>
@@ -123,41 +125,43 @@ export class VideoGallery {
     // Resolve featured products
     const featuredProds = (vid.featuredSkus || []).map(sku => this.products.find(p => p.sku === sku)).filter(Boolean);
 
+    // Guaranteed working embed URL with proper origin, autoplay & playsinline
+    const autoplayUrl = vid.embedUrl ? (vid.embedUrl.includes('?') ? `${vid.embedUrl}&autoplay=1` : `${vid.embedUrl}?autoplay=1`) : '';
+
     modalWrap.innerHTML = `
       <div class="vmodal-backdrop" id="vmodal-backdrop"></div>
       <div class="vmodal-dialog" id="video-modal" role="dialog" aria-modal="true" aria-labelledby="vmodal-title">
         <button class="vmodal-close-btn" id="vmodal-close-btn" aria-label="Close Video">✕</button>
 
         <div class="vmodal-player-area">
-          ${vid.embedType === 'youtube' && vid.embedUrl ? `
-            <div class="vmodal-iframe-wrap">
-              <iframe 
-                src="${vid.embedUrl}" 
-                title="${vid.title}" 
-                class="vmodal-iframe-element" 
-                frameborder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                allowfullscreen
-              ></iframe>
-            </div>
-          ` : `
-            <video 
-              src="${vid.videoUrl || ''}" 
-              poster="${vid.thumbnail}" 
-              controls 
-              autoplay 
-              playsinline 
-              class="vmodal-video-element"
-              id="vmodal-video"
-            >
-              Your browser does not support HTML5 video streaming.
-            </video>
-          `}
+          <div class="vmodal-iframe-wrap" id="vmodal-iframe-wrap">
+            <iframe 
+              src="${autoplayUrl}" 
+              title="${vid.title}" 
+              class="vmodal-iframe-element" 
+              id="vmodal-iframe"
+              frameborder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+              allowfullscreen
+              referrerpolicy="strict-origin-when-cross-origin"
+            ></iframe>
+          </div>
         </div>
 
         <div class="vmodal-info-area">
           <div class="vmodal-header">
-            <span class="vmodal-cat">${vid.categoryLabel} • ${vid.duration}</span>
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:0.4rem;">
+              <span class="vmodal-cat">${vid.categoryLabel} • ${vid.duration}</span>
+              <a 
+                href="https://www.youtube.com/watch?v=${vid.youtubeId}" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="vmodal-external-link"
+                style="font-size:0.75rem; color:var(--color-terracotta, #C85A32); text-decoration:none; font-weight:600;"
+              >
+                Open in YouTube Player ↗
+              </a>
+            </div>
             <h2 id="vmodal-title">${vid.title}</h2>
             <p class="vmodal-desc">${vid.description}</p>
           </div>
@@ -194,8 +198,6 @@ export class VideoGallery {
     document.body.style.overflow = 'hidden';
 
     const close = () => {
-      const v = modalWrap.querySelector('#vmodal-video');
-      if (v) v.pause();
       const iframe = modalWrap.querySelector('.vmodal-iframe-element');
       if (iframe) iframe.src = '';
       modalWrap.classList.remove('is-open');
