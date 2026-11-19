@@ -288,9 +288,4 @@ if (isDirectRun && !process.env.VERCEL) {
   });
 }
 
-// Export a Vercel-compatible request handler function as default
-export default function handler(req, res) {
-  return server.emit('request', req, res);
-}
-handler.server = server;
 export { server };

@@ -178,8 +178,10 @@ export class AdminPortal {
         this.isProductsLoading = true;
         const remoteProducts = await adminFetchAllProducts();
         if (remoteProducts && remoteProducts.length > 0) {
-          this.products = remoteProducts;
-          this.onProductsUpdated(this.products);
+          const remoteSkus = new Set(remoteProducts.map(p => p.sku));
+          const localOnly = (this.products || []).filter(p => !remoteSkus.has(p.sku));
+          this.products = [...localOnly, ...remoteProducts];
+          this.saveLocalProductsBackup();
         }
       } catch (err) {
         console.warn('Admin: Supabase products fetch error:', err.message);
@@ -1979,8 +1981,9 @@ export class AdminPortal {
           }
         }
 
-        // Clear search query so newly prepended product appears at row 1 immediately
+        // Clear search query and switch to products tab so newly prepended product appears at row 1 immediately
         this.productFilterQuery = '';
+        this.activeTab = 'products';
 
         this.saveLocalProductsBackup();
         closeForm();

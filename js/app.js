@@ -1389,6 +1389,7 @@ class HomeHubApp {
               muted 
               playsinline 
               loop 
+              controls
               preload="metadata" 
               poster="${catData.makeoverVideo.thumbnail}"
               aria-label="${catData.makeoverVideo.title}"
