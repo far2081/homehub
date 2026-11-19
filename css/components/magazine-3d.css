@@ -92,13 +92,37 @@
 }
 
 .book-pill-btn.active {
-  background-color: var(--color-noir);
-  color: var(--color-soft-ivory);
-  box-shadow: var(--shadow-sm);
+  background-color: var(--color-terracotta);
+  color: #FFFFFF;
+  box-shadow: var(--shadow-terracotta);
 }
 
 .book-pill-btn.active .pill-dot {
-  background-color: var(--color-soft-champagne);
+  background-color: #FFFFFF;
+}
+
+.book-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  background-color: var(--color-surface-pure);
+  color: var(--color-charcoal);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-subtle);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.book-action-btn:hover,
+.book-action-btn.active {
+  border-color: var(--color-terracotta);
+  color: var(--color-terracotta);
+  background-color: var(--color-terracotta-subtle);
 }
 
 .paper-badge {
@@ -835,24 +859,24 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background-color: var(--color-soft-champagne);
-  color: var(--color-noir);
-  padding: 0.75rem 1.5rem;
+  background-color: var(--color-terracotta);
+  color: #FFFFFF;
+  padding: 0.85rem 1.8rem;
   border-radius: var(--radius-pill);
-  font-size: 0.82rem;
+  font-size: 0.84rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   border: none;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 4px 18px rgba(217, 119, 87, 0.45);
   transition: all var(--transition-fast);
 }
 
 .cover-open-btn:hover {
-  background-color: #FFFFFF;
+  background-color: var(--color-terracotta-hover);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 8px 26px rgba(217, 119, 87, 0.55);
 }
 
 .open-arrow {
@@ -1010,7 +1034,7 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
-/* Hotspot Pins directly on the photography */
+/* Minimalist Numbered Architectural Hotspot Pins */
 .magazine-hotspot-pin {
   position: absolute;
   transform: translate(-50%, -50%);
@@ -1022,16 +1046,17 @@
 
 .hotspot-pulse {
   position: absolute;
-  width: 100%;
-  height: 100%;
+  inset: -6px;
   border-radius: 50%;
-  background-color: rgba(214, 188, 145, 0.5);
-  animation: hotspot-pulse-anim 2s infinite ease-out;
+  background-color: var(--color-terracotta-subtle);
+  border: 1px solid var(--color-terracotta-border);
+  animation: hotspot-breathe 2.4s infinite cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-@keyframes hotspot-pulse-anim {
-  0% { transform: scale(0.8); opacity: 0.9; }
-  100% { transform: scale(2.2); opacity: 0; }
+@keyframes hotspot-breathe {
+  0% { transform: scale(0.85); opacity: 0.8; }
+  50% { transform: scale(1.4); opacity: 0.15; }
+  100% { transform: scale(1.8); opacity: 0; }
 }
 
 .hotspot-dot {
@@ -1039,36 +1064,40 @@
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background-color: var(--color-noir);
-  color: var(--color-soft-champagne);
-  font-size: 0.72rem;
+  background-color: var(--color-ink);
+  color: #FFFFFF;
+  font-family: var(--font-sans);
+  font-size: 0.65rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid #FFFFFF;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  transition: transform var(--transition-fast);
+  border: 1.5px solid var(--color-terracotta);
+  box-shadow: 0 2px 8px rgba(25, 25, 24, 0.35);
+  transition: all var(--transition-fast);
 }
 
 .magazine-hotspot-pin:hover .hotspot-dot {
   transform: scale(1.15);
-  background-color: var(--color-soft-champagne);
-  color: var(--color-noir);
+  background-color: var(--color-terracotta);
+  border-color: #FFFFFF;
+  color: #FFFFFF;
+  box-shadow: var(--shadow-terracotta);
 }
 
-/* Floating Hotspot Mini Card - Discreet Editorial Publication Styling */
+/* Floating Hotspot Contextual Card */
 .hotspot-card {
   position: absolute;
-  bottom: calc(100% + 10px);
+  bottom: calc(100% + 12px);
   left: 50%;
   transform: translateX(-50%) translateY(6px);
-  width: 190px;
-  background-color: rgba(255, 255, 255, 0.96);
-  border: 1px solid rgba(24, 21, 18, 0.1);
-  border-radius: var(--radius-xs);
-  padding: 0.65rem 0.8rem;
-  box-shadow: 0 10px 25px -5px rgba(24, 21, 18, 0.18);
-  backdrop-filter: blur(8px);
+  width: 220px;
+  background-color: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 0.9rem;
+  box-shadow: 0 12px 30px -4px rgba(25, 25, 24, 0.16);
   z-index: 40;
   opacity: 0;
   visibility: hidden;
@@ -1084,24 +1113,89 @@
   transform: translateX(-50%) translateY(0);
 }
 
+.hotspot-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
 .hotspot-card-badge {
-  display: block;
   font-size: 0.55rem;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--color-muted-olive);
-  font-weight: 600;
-  margin-bottom: 2px;
+  color: var(--color-terracotta);
+  font-weight: 700;
+}
+
+.hotspot-card-price {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--color-ink);
+  font-variant-numeric: tabular-nums;
 }
 
 .hotspot-card-title {
   display: block;
   font-family: var(--font-serif);
-  font-size: 0.92rem;
-  font-weight: 500;
-  color: var(--color-noir);
+  font-size: 0.96rem;
+  font-weight: 600;
+  color: var(--color-ink);
   line-height: 1.25;
-  margin-bottom: 2px;
+  margin-bottom: 3px;
+}
+
+.hotspot-card-material {
+  font-size: 0.68rem;
+  color: var(--color-ink-muted);
+  line-height: 1.3;
+  margin-bottom: 8px;
+}
+
+.hotspot-card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border-top: 1px solid var(--color-border-subtle);
+  padding-top: 6px;
+  margin-top: 4px;
+}
+
+.hotspot-add-bag-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-terracotta);
+  color: #FFFFFF;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+
+.hotspot-add-bag-btn:hover {
+  background-color: var(--color-terracotta-hover);
+  box-shadow: 0 2px 6px rgba(217, 119, 87, 0.4);
+}
+
+.hotspot-story-btn {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--color-ink-secondary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.hotspot-story-btn:hover {
+  color: var(--color-terracotta);
 }
 
 .hotspot-card-tap {
@@ -1888,6 +1982,394 @@
 
 .layout-e-piece:hover .layout-e-piece-explore {
   color: var(--color-muted-olive);
+}
+
+/* ==========================================================================
+   Collector's Studio Pedestal & Cover Stage Presentation
+   ========================================================================== */
+.flipbook-stage-pedestal {
+  background: radial-gradient(ellipse 70% 45% at 50% 50%, rgba(217, 119, 87, 0.04) 0%, transparent 70%);
+  padding: 2rem 0;
+  border-radius: 12px;
+}
+
+/* ==========================================================================
+   Curated "Shop This Spread" Lookbook Strip
+   ========================================================================== */
+.spread-lookbook-tray {
+  margin: 1.8rem auto 0;
+  background-color: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 1.1rem 1.4rem;
+  box-shadow: var(--shadow-subtle);
+  max-width: 1160px;
+}
+
+.lookbook-tray-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.lookbook-tray-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--color-border-subtle);
+  padding-bottom: 0.6rem;
+}
+
+.lookbook-tray-tag {
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-terracotta);
+  font-weight: 700;
+  display: block;
+}
+
+.lookbook-tray-headline {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: var(--color-ink);
+  line-height: 1.2;
+}
+
+.lookbook-tray-hint {
+  font-size: 0.72rem;
+  color: var(--color-ink-muted);
+  font-style: italic;
+}
+
+.lookbook-tray-cards {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+}
+
+.lookbook-piece-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: var(--color-canvas);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  min-width: 240px;
+  flex-shrink: 0;
+  transition: all var(--transition-fast);
+}
+
+.lookbook-piece-card:hover {
+  border-color: var(--color-terracotta-border);
+  background-color: #FFFFFF;
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+
+.lookbook-piece-thumb {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-xs);
+  overflow: hidden;
+  background-color: #EDE8DE;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.lookbook-piece-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.lookbook-piece-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.lookbook-piece-cat {
+  display: block;
+  font-size: 0.58rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-ink-muted);
+}
+
+.lookbook-piece-title {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.lookbook-piece-title:hover {
+  color: var(--color-terracotta);
+}
+
+.lookbook-piece-price {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--color-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.lookbook-add-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-terracotta);
+  color: #FFFFFF;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: all var(--transition-fast);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.lookbook-add-btn:hover {
+  background-color: var(--color-terracotta-hover);
+  box-shadow: 0 2px 8px rgba(217, 119, 87, 0.4);
+}
+
+/* ==========================================================================
+   Editorial Table of Contents (TOC) Slide-Over Drawer
+   ========================================================================== */
+.flipbook-toc-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 90vw;
+  max-width: 420px;
+  background-color: #FAF9F5;
+  border-left: 1px solid var(--color-border);
+  box-shadow: -10px 0 35px rgba(25, 25, 24, 0.15);
+  z-index: 12000;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform var(--transition-spring);
+}
+
+.flipbook-toc-drawer.is-open {
+  transform: translateX(0);
+}
+
+.flipbook-toc-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(25, 25, 24, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 11999;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: all var(--transition-fast);
+}
+
+.flipbook-toc-backdrop.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.toc-drawer-header {
+  padding: 1.5rem 1.8rem;
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.toc-kicker {
+  display: block;
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-terracotta);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.toc-headline {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: var(--color-ink);
+  line-height: 1.2;
+}
+
+.toc-issue {
+  font-size: 0.78rem;
+  color: var(--color-ink-muted);
+  margin-top: 3px;
+}
+
+.toc-close-btn {
+  font-size: 1.2rem;
+  color: var(--color-ink-muted);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.toc-close-btn:hover {
+  background-color: var(--color-canvas-subtle);
+  color: var(--color-ink);
+}
+
+.toc-drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.2rem 1.8rem;
+}
+
+.toc-spreads-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.toc-spread-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: #FFFFFF;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.toc-spread-card:hover,
+.toc-spread-card.current {
+  border-color: var(--color-terracotta);
+  box-shadow: var(--shadow-sm);
+  transform: translateX(3px);
+}
+
+.toc-spread-card.current {
+  background-color: var(--color-terracotta-subtle);
+}
+
+.toc-spread-num {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-terracotta);
+  min-width: 20px;
+  font-variant-numeric: tabular-nums;
+}
+
+.toc-spread-thumb {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-xs);
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+  border: 1px solid var(--color-border-subtle);
+}
+
+.toc-spread-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.toc-spread-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
+.toc-spread-folio {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+}
+
+.toc-spread-time {
+  font-size: 0.62rem;
+  color: var(--color-ink-muted);
+}
+
+.toc-spread-title {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.toc-spread-products {
+  display: flex;
+  gap: 4px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.toc-prod-tag {
+  font-size: 0.58rem;
+  background-color: var(--color-canvas);
+  color: var(--color-ink-secondary);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.toc-spread-arrow {
+  color: var(--color-ink-muted);
+  font-size: 0.9rem;
+  transition: transform var(--transition-fast);
+}
+
+.toc-spread-card:hover .toc-spread-arrow {
+  transform: translateX(3px);
+  color: var(--color-terracotta);
+}
+
+/* Reading Focus Mode */
+.reading-focus-mode .flipbook-header,
+.reading-focus-mode .flipbook-footer {
+  opacity: 0.2;
+  transition: opacity 0.3s ease;
+}
+
+.reading-focus-mode .flipbook-header:hover,
+.reading-focus-mode .flipbook-footer:hover {
+  opacity: 1;
+}
+
+.reading-focus-mode .flipbook-stage {
+  padding: 3rem 0;
 }
 
 /* Accessibility: Respect Reduced Motion */

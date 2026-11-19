@@ -10,7 +10,8 @@
  */
 
 import { MAGAZINE_BOOKS } from '../data/magazines.js';
-import { attachSwipeHandler, showToast } from '../utils/helpers.js';
+import { INITIAL_PRODUCTS } from '../data/products.js';
+import { attachSwipeHandler, formatPKR, showToast } from '../utils/helpers.js';
 
 export class Flipbook {
   constructor(containerId, options = {}) {
@@ -533,11 +534,11 @@ export class Flipbook {
     if (!book) return;
 
     this.container.innerHTML = `
-      <div class="flipbook-wrapper">
+      <div class="flipbook-wrapper" id="flipbook-wrapper">
         <!-- Magazine Top Header & Book Switcher -->
         <div class="flipbook-header">
           <div class="book-meta">
-            <span class="book-badge">DIGITAL EDITORIAL • 3D READER</span>
+            <span class="book-badge">COLLECTIBLE EDITORIAL • 3D READER</span>
             <h2 class="book-headline">${book.title}</h2>
             <p class="book-issue">${book.issue} • <em>${book.subtitle}</em></p>
           </div>
@@ -558,8 +559,16 @@ export class Flipbook {
               `).join('')}
             </div>
 
-            <!-- Paper Quality & Silent Mode Indicators -->
+            <!-- Reading Tools & Quality Indicators -->
             <div class="book-action-icons">
+              <button class="book-action-btn toc-trigger-btn" id="flipbook-toc-btn" title="Open Curated Editorial Index">
+                <span class="btn-icon">☰</span>
+                <span class="btn-text">Index & Chapters</span>
+              </button>
+              <button class="book-action-btn focus-trigger-btn" id="flipbook-focus-btn" title="Toggle Reading Focus Mode">
+                <span class="btn-icon">⛶</span>
+                <span class="btn-text">Focus</span>
+              </button>
               <span class="paper-badge" title="Coated Art Paper with Natural Page Curl">
                 <span class="paper-dot"></span>
                 <span>Coated Paper 170gsm</span>
@@ -568,8 +577,8 @@ export class Flipbook {
           </div>
         </div>
 
-        <!-- 3D Perspective Stage -->
-        <div class="flipbook-stage">
+        <!-- 3D Perspective Stage on Studio Pedestal -->
+        <div class="flipbook-stage flipbook-stage-pedestal">
           <div class="flipbook-viewport ${this.isDesktopSpread ? 'mode-spread' : 'mode-single'}" id="flipbook-viewport">
             <!-- Ambient Specular Reflection Layer (tracks cursor/light) -->
             <div class="ambient-specular-light"></div>
@@ -608,6 +617,9 @@ export class Flipbook {
           </button>
         </div>
 
+        <!-- Shop This Spread Lookbook Tray Slot -->
+        <div id="spread-lookbook-slot"></div>
+
         <!-- Bottom Controls & Page Scrubber -->
         <div class="flipbook-footer">
           <div class="footer-page-counter" id="footer-page-counter">
@@ -623,6 +635,9 @@ export class Flipbook {
             <span class="tip-text">${this.isDesktopSpread ? 'Drag page edge with mouse or use arrow keys to curl pages' : 'Swipe left or right across screen to curl pages'}</span>
           </div>
         </div>
+
+        <!-- Slide-over Table of Contents Drawer -->
+        ${this.renderTOCDrawer(book)}
       </div>
     `;
 
@@ -641,6 +656,48 @@ export class Flipbook {
         this.loadBook(bookId, 0);
       });
     });
+
+    // Curated Table of Contents Drawer Listeners
+    const tocBtn = this.container.querySelector('#flipbook-toc-btn');
+    const tocDrawer = this.container.querySelector('#flipbook-toc-drawer');
+    const tocBackdrop = this.container.querySelector('#flipbook-toc-backdrop');
+    const tocClose = this.container.querySelector('#flipbook-toc-close-btn');
+
+    const openToc = () => {
+      if (tocDrawer) tocDrawer.classList.add('is-open');
+      if (tocBackdrop) tocBackdrop.classList.add('is-open');
+    };
+    const closeToc = () => {
+      if (tocDrawer) tocDrawer.classList.remove('is-open');
+      if (tocBackdrop) tocBackdrop.classList.remove('is-open');
+    };
+
+    if (tocBtn) tocBtn.addEventListener('click', openToc);
+    if (tocClose) tocClose.addEventListener('click', closeToc);
+    if (tocBackdrop) tocBackdrop.addEventListener('click', closeToc);
+
+    this.container.querySelectorAll('[data-goto-spread]').forEach(card => {
+      card.addEventListener('click', (e) => {
+        const pageIdx = parseInt(e.currentTarget.dataset.gotoSpread, 10);
+        closeToc();
+        this.goToPage(pageIdx);
+      });
+    });
+
+    // Reading Focus Mode
+    const focusBtn = this.container.querySelector('#flipbook-focus-btn');
+    if (focusBtn) {
+      focusBtn.addEventListener('click', () => {
+        const wrapper = this.container.querySelector('#flipbook-wrapper');
+        if (wrapper) {
+          wrapper.classList.toggle('reading-focus-mode');
+          const isFocused = wrapper.classList.contains('reading-focus-mode');
+          focusBtn.classList.toggle('active', isFocused);
+          const btnText = focusBtn.querySelector('.btn-text');
+          if (btnText) btnText.textContent = isFocused ? 'Exit Focus' : 'Focus';
+        }
+      });
+    }
 
     // Prev / Next Arrows
     const prevBtn = this.container.querySelector('#flip-prev-btn');
@@ -891,6 +948,9 @@ export class Flipbook {
     // Attach Hotspot & Product click triggers
     this.attachProductTriggers(slot);
 
+    // Render Curated Shop This Spread Lookbook Tray
+    this.renderSpreadLookbookTray({ leftPage, rightPage });
+
     // Update Counter
     if (counter) {
       if (this.isDesktopSpread) {
@@ -947,9 +1007,23 @@ export class Flipbook {
   }
 
   attachProductTriggers(slot) {
-    // 1. Hotspot pin clicks open Product Detail Modal directly
+    // 1. Quick Add To Bag handlers
+    slot.querySelectorAll('[data-quick-add]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        const sku = e.currentTarget.dataset.quickAdd;
+        if (typeof this.onAddToCart === 'function') {
+          this.onAddToCart(sku, 1);
+          showToast(`Added piece to your shopping bag.`);
+        }
+      });
+    });
+
+    // 2. Hotspot pin clicks open Product Detail Modal directly
     slot.querySelectorAll('.magazine-hotspot-pin').forEach(pin => {
       pin.addEventListener('click', (e) => {
+        if (e.target.closest('[data-quick-add]')) return;
         e.stopPropagation();
         const sku = pin.dataset.productSku || pin.dataset.viewProduct;
         if (typeof this.onProductSelect === 'function') {
@@ -958,25 +1032,14 @@ export class Flipbook {
       });
     });
 
-    // 2. View details triggers inside curated collection plates and editorial citations
+    // 3. View details triggers inside curated collection plates, citations, lookbook
     slot.querySelectorAll('[data-view-product]').forEach(btn => {
+      if (btn.classList.contains('magazine-hotspot-pin')) return;
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         const sku = e.currentTarget.dataset.viewProduct;
         if (typeof this.onProductSelect === 'function') {
           this.onProductSelect(sku);
-        }
-      });
-    });
-
-    // 3. Quick Add To Bag handlers (preserved for backward compatibility, not on magazine pages)
-    slot.querySelectorAll('[data-quick-add]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const sku = e.currentTarget.dataset.quickAdd;
-        if (typeof this.onAddToCart === 'function') {
-          this.onAddToCart(sku, 1);
-          showToast(`Added piece to your shopping bag.`);
         }
       });
     });
@@ -987,18 +1050,201 @@ export class Flipbook {
     return products.map((p, idx) => {
       const x = p.hotspot ? p.hotspot.x : (35 + idx * 30);
       const y = p.hotspot ? p.hotspot.y : (50 + idx * 12);
+      const matchedProd = INITIAL_PRODUCTS.find(item => item.sku === p.sku);
+      const priceText = matchedProd ? formatPKR(matchedProd.price) : '';
+      const numLabel = String(idx + 1).padStart(2, '0');
       return `
         <div class="magazine-hotspot-pin" style="left:${x}%; top:${y}%;" data-product-sku="${p.sku}" data-view-product="${p.sku}" title="${p.label}">
           <div class="hotspot-pulse"></div>
-          <div class="hotspot-dot">✦</div>
+          <div class="hotspot-dot">${numLabel}</div>
           <div class="hotspot-card">
-            <span class="hotspot-card-badge">${p.badge || 'ATELIER PIECE'}</span>
+            <div class="hotspot-card-top">
+              <span class="hotspot-card-badge">${p.badge || 'ATELIER PIECE'}</span>
+              ${priceText ? `<span class="hotspot-card-price">${priceText}</span>` : ''}
+            </div>
             <strong class="hotspot-card-title">${p.label}</strong>
-            <span class="hotspot-card-tap">Tap to view editorial details ↗</span>
+            ${matchedProd && matchedProd.material ? `<p class="hotspot-card-material">${matchedProd.material.split(',')[0]}</p>` : ''}
+            <div class="hotspot-card-actions">
+              <button class="hotspot-add-bag-btn" data-quick-add="${p.sku}" title="Add ${p.label} to Bag">
+                <span>+ Add to Bag</span>
+              </button>
+              <button class="hotspot-story-btn" data-view-product="${p.sku}" title="View Editorial Story">
+                <span>Story ↗</span>
+              </button>
+            </div>
           </div>
         </div>
       `;
     }).join('');
+  }
+
+  renderSpreadLookbookTray(curPages) {
+    const slot = this.container ? this.container.querySelector('#spread-lookbook-slot') : null;
+    if (!slot) return;
+
+    const allItems = [];
+    const seenSkus = new Set();
+
+    const extractItems = (page) => {
+      if (!page) return;
+      if (Array.isArray(page.products)) {
+        page.products.forEach(p => {
+          if (p.sku && !seenSkus.has(p.sku)) {
+            seenSkus.add(p.sku);
+            const fullProd = INITIAL_PRODUCTS.find(ip => ip.sku === p.sku);
+            allItems.push({
+              sku: p.sku,
+              label: p.label || (fullProd ? fullProd.name : p.sku),
+              category: fullProd ? fullProd.categoryLabel : 'Atelier Piece',
+              priceFormatted: fullProd ? formatPKR(fullProd.price) : '',
+              image: fullProd && fullProd.images && fullProd.images[0] ? fullProd.images[0].url : (p.image || '')
+            });
+          }
+        });
+      }
+      if (Array.isArray(page.collectionItems)) {
+        page.collectionItems.forEach(item => {
+          if (item.sku && !seenSkus.has(item.sku)) {
+            seenSkus.add(item.sku);
+            const fullProd = INITIAL_PRODUCTS.find(ip => ip.sku === item.sku);
+            allItems.push({
+              sku: item.sku,
+              label: item.label || (fullProd ? fullProd.name : item.sku),
+              category: fullProd ? fullProd.categoryLabel : 'Atelier Piece',
+              priceFormatted: fullProd ? formatPKR(fullProd.price) : '',
+              image: item.image || (fullProd && fullProd.images && fullProd.images[0] ? fullProd.images[0].url : '')
+            });
+          }
+        });
+      }
+    };
+
+    extractItems(curPages.leftPage);
+    extractItems(curPages.rightPage);
+
+    if (allItems.length === 0) {
+      slot.innerHTML = '';
+      return;
+    }
+
+    slot.innerHTML = `
+      <div class="spread-lookbook-tray" id="spread-lookbook-tray">
+        <div class="lookbook-tray-inner">
+          <div class="lookbook-tray-header">
+            <div class="lookbook-tray-title-wrap">
+              <span class="lookbook-tray-tag">SHOP THIS SPREAD</span>
+              <h4 class="lookbook-tray-headline">Pieces in this Vignette (${allItems.length})</h4>
+            </div>
+            <span class="lookbook-tray-hint">Single-tap to bag or inspect story</span>
+          </div>
+          <div class="lookbook-tray-cards">
+            ${allItems.map(p => `
+              <div class="lookbook-piece-card" data-product-sku="${p.sku}">
+                <div class="lookbook-piece-thumb" data-view-product="${p.sku}">
+                  <img src="${p.image}" alt="${p.label}" loading="lazy" />
+                </div>
+                <div class="lookbook-piece-info">
+                  <span class="lookbook-piece-cat">${p.category}</span>
+                  <strong class="lookbook-piece-title" data-view-product="${p.sku}">${p.label}</strong>
+                  <span class="lookbook-piece-price">${p.priceFormatted}</span>
+                </div>
+                <div class="lookbook-piece-actions">
+                  <button class="lookbook-add-btn" data-quick-add="${p.sku}" title="Add ${p.label} to Bag">
+                    <span>+ Bag</span>
+                  </button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+
+    this.attachProductTriggers(slot);
+  }
+
+  renderTOCDrawer(book) {
+    if (!book || !book.pages) return '';
+    const spreads = [];
+
+    // Spread 0: Cover
+    spreads.push({
+      pageIndex: 0,
+      title: 'Cover: ' + (book.pages[0].headline || book.title),
+      label: 'Page 1 • Collector Masthead',
+      readTime: '1 min read',
+      heroImage: book.pages[0].heroImage || '',
+      featuredProducts: (book.pages[0].products || []).map(p => p.label)
+    });
+
+    // Inner Spreads (2-3, 4-5, etc.)
+    for (let i = 1; i < book.pages.length - 1; i += (this.isDesktopSpread ? 2 : 1)) {
+      const p1 = book.pages[i];
+      const p2 = this.isDesktopSpread ? book.pages[i + 1] : null;
+      const spreadTitle = (p1 && p1.headline) || (p2 && p2.headline) || `Editorial Spread`;
+      const pageNumbers = p2 ? `Pages ${p1.pageNumber}–${p2.pageNumber}` : `Page ${p1 ? p1.pageNumber : i + 1}`;
+      const prods = [];
+      if (p1 && p1.products) p1.products.forEach(pr => prods.push(pr.label));
+      if (p2 && p2.products) p2.products.forEach(pr => prods.push(pr.label));
+      const hero = (p1 && p1.heroImage) || (p1 && p1.spreadImage) || (p2 && p2.heroImage) || (p2 && p2.spreadImage) || '';
+      spreads.push({
+        pageIndex: i,
+        title: spreadTitle,
+        label: pageNumbers,
+        readTime: '2 min read',
+        heroImage: hero,
+        featuredProducts: Array.from(new Set(prods))
+      });
+    }
+
+    // Last Page: Backcover / Epilogue
+    const lastIdx = book.pages.length - 1;
+    spreads.push({
+      pageIndex: lastIdx,
+      title: 'Colophon & Epilogue',
+      label: `Page ${book.pages[lastIdx].pageNumber}`,
+      readTime: '1 min read',
+      heroImage: book.pages[lastIdx].heroImage || '',
+      featuredProducts: []
+    });
+
+    return `
+      <div class="flipbook-toc-drawer" id="flipbook-toc-drawer" aria-hidden="true">
+        <div class="toc-drawer-header">
+          <div class="toc-header-meta">
+            <span class="toc-kicker">EDITORIAL INDEX</span>
+            <h3 class="toc-headline">${book.title}</h3>
+            <p class="toc-issue">${book.issue} • 24 Curated Pages</p>
+          </div>
+          <button class="toc-close-btn" id="flipbook-toc-close-btn" aria-label="Close Index">✕</button>
+        </div>
+        <div class="toc-drawer-body">
+          <div class="toc-spreads-list">
+            ${spreads.map((s, sIdx) => `
+              <div class="toc-spread-card ${s.pageIndex === this.currentPageIndex ? 'current' : ''}" data-goto-spread="${s.pageIndex}">
+                <div class="toc-spread-num">${String(sIdx + 1).padStart(2, '0')}</div>
+                <div class="toc-spread-thumb" style="background-image: url('${s.heroImage}')"></div>
+                <div class="toc-spread-info">
+                  <div class="toc-spread-top">
+                    <span class="toc-spread-folio">${s.label}</span>
+                    <span class="toc-spread-time">${s.readTime}</span>
+                  </div>
+                  <strong class="toc-spread-title">${s.title}</strong>
+                  ${s.featuredProducts.length > 0 ? `
+                    <div class="toc-spread-products">
+                      ${s.featuredProducts.slice(0, 2).map(p => `<span class="toc-prod-tag">${p}</span>`).join('')}
+                      ${s.featuredProducts.length > 2 ? `<span class="toc-prod-tag">+${s.featuredProducts.length - 2} more</span>` : ''}
+                    </div>
+                  ` : ''}
+                </div>
+                <span class="toc-spread-arrow">→</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+      <div class="flipbook-toc-backdrop" id="flipbook-toc-backdrop"></div>
+    `;
   }
 
   buildPageHTML(page, position) {
@@ -1073,8 +1319,8 @@ export class Flipbook {
           <div class="cover-footer-meta">
             <p class="cover-colophon">${page.colophon || ''}</p>
             <div class="cover-action-wrap">
-              <button class="cover-open-btn" aria-label="Open Magazine">
-                <span>Open Magazine</span>
+              <button class="cover-open-btn" aria-label="Read Issue">
+                <span>Read Issue</span>
                 <span class="open-arrow">→</span>
               </button>
             </div>

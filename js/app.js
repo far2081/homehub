@@ -309,11 +309,16 @@ class HomeHubApp {
   updateHeaderBadges() {
     const cartBadge = document.getElementById('header-cart-badge');
     const wishBadge = document.getElementById('header-wishlist-badge');
+    const mobileCartBadge = document.getElementById('mobile-bottom-cart-badge');
 
     if (cartBadge) {
       const cCount = this.cart.getCount();
       cartBadge.textContent = cCount;
       cartBadge.style.display = cCount > 0 ? 'flex' : 'none';
+      if (mobileCartBadge) {
+        mobileCartBadge.textContent = cCount;
+        mobileCartBadge.style.display = cCount > 0 ? 'inline-flex' : 'none';
+      }
     }
 
     if (wishBadge) {
@@ -321,6 +326,12 @@ class HomeHubApp {
       wishBadge.textContent = wCount;
       wishBadge.style.display = wCount > 0 ? 'flex' : 'none';
     }
+  }
+
+  updateBottomNavActive(tabName) {
+    document.querySelectorAll('.mobile-bottom-nav-item').forEach(item => item.classList.remove('active'));
+    const activeItem = document.getElementById(`mobile-tab-${tabName}`);
+    if (activeItem) activeItem.classList.add('active');
   }
 
   openProduct(sku) {
@@ -545,6 +556,22 @@ class HomeHubApp {
         this.adminPortal.open();
       });
     });
+
+    // Mobile Bottom App Navigation (PWA Shell)
+    const mobTabHome = document.getElementById('mobile-tab-home');
+    if (mobTabHome) mobTabHome.addEventListener('click', (e) => { e.preventDefault(); this.showHomepage(); });
+
+    const mobTabMagazines = document.getElementById('mobile-tab-magazines');
+    if (mobTabMagazines) mobTabMagazines.addEventListener('click', (e) => { e.preventDefault(); this.showMagazinesView(); });
+
+    const mobTabShop = document.getElementById('mobile-tab-shop');
+    if (mobTabShop) mobTabShop.addEventListener('click', (e) => { e.preventDefault(); this.showShopView(); });
+
+    const mobTabCart = document.getElementById('mobile-tab-cart');
+    if (mobTabCart) mobTabCart.addEventListener('click', (e) => { e.preventDefault(); this.cart.open(); });
+
+    const mobTabAccount = document.getElementById('mobile-tab-account');
+    if (mobTabAccount) mobTabAccount.addEventListener('click', (e) => { e.preventDefault(); this.openAccountModal(); });
 
     // Initial Badge states
     this.updateHeaderBadges();
@@ -1035,6 +1062,7 @@ class HomeHubApp {
     document.querySelectorAll('.nav-item-link').forEach(l => l.classList.remove('active'));
     const homeNav = document.getElementById('header-nav-home');
     if (homeNav) homeNav.classList.add('active');
+    this.updateBottomNavActive('home');
 
     window.history.pushState(null, '', '#home');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1057,6 +1085,7 @@ class HomeHubApp {
     document.querySelectorAll('.nav-item-link').forEach(l => l.classList.remove('active'));
     const shopNav = document.getElementById('header-nav-shop');
     if (shopNav) shopNav.classList.add('active');
+    this.updateBottomNavActive('shop');
 
     if (this.catalogue) {
       this.catalogue.setCategory('all');
@@ -1109,6 +1138,7 @@ class HomeHubApp {
     document.querySelectorAll('.nav-item-link').forEach(l => l.classList.remove('active'));
     const magNav = document.getElementById('header-nav-magazines');
     if (magNav) magNav.classList.add('active');
+    this.updateBottomNavActive('magazines');
 
     window.history.pushState(null, '', '#magazines');
     const magSection = document.getElementById('magazine-section');

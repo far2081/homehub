@@ -71,13 +71,15 @@
 }
 
 .cat-pill:hover {
-  border-color: var(--color-noir);
+  border-color: var(--color-terracotta);
+  color: var(--color-terracotta);
 }
 
 .cat-pill.active {
-  background-color: var(--color-noir);
-  color: var(--color-soft-ivory);
-  border-color: var(--color-noir);
+  background-color: var(--color-terracotta);
+  color: #FFFFFF;
+  border-color: var(--color-terracotta);
+  box-shadow: var(--shadow-terracotta);
 }
 
 .catalogue-actions {
@@ -116,7 +118,8 @@
 
 .catalogue-search-box input:focus {
   outline: none;
-  border-color: var(--color-noir);
+  border-color: var(--color-terracotta);
+  box-shadow: 0 0 0 3px rgba(217, 119, 87, 0.15);
   width: 280px;
 }
 
@@ -246,8 +249,8 @@
 }
 
 .card-wishlist-btn.is-active svg {
-  stroke: var(--color-muted-olive);
-  fill: rgba(137, 149, 129, 0.15);
+  stroke: var(--color-terracotta);
+  fill: var(--color-terracotta);
 }
 
 /* Card Badges */
@@ -347,7 +350,7 @@
 }
 
 .card-title:hover {
-  color: var(--color-muted-olive);
+  color: var(--color-terracotta);
 }
 
 .card-desc {
@@ -405,9 +408,10 @@
 }
 
 .card-add-btn:hover {
-  background-color: var(--color-noir);
-  color: var(--color-soft-ivory);
-  border-color: var(--color-noir);
+  background-color: var(--color-terracotta);
+  color: #FFFFFF;
+  border-color: var(--color-terracotta);
+  box-shadow: var(--shadow-terracotta);
 }
 
 /* Empty State */

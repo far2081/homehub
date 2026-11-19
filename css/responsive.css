@@ -397,3 +397,14 @@ select {
     height: 58px;
   }
 }
+
+/* 7. Native Mobile App Bottom Shell Safe Area Clearence */
+@media (max-width: 768px) {
+  body {
+    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .site-footer {
+    padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+  }
+}

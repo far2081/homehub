@@ -307,12 +307,12 @@
 }
 
 .admin-tab-btn:hover {
-  color: var(--color-noir);
+  color: var(--color-terracotta);
 }
 
 .admin-tab-btn.active {
-  color: var(--color-noir);
-  border-bottom-color: var(--color-noir);
+  color: var(--color-terracotta);
+  border-bottom-color: var(--color-terracotta);
 }
 
 /* Content Area */
@@ -699,7 +699,7 @@
 
 .plugin-card:hover {
   box-shadow: var(--shadow-md);
-  border-color: #D6BC91;
+  border-color: var(--color-terracotta);
 }
 
 .plugin-card.is-disabled {
@@ -776,8 +776,9 @@
 }
 
 .plugin-toggle-btn.btn-active {
-  background-color: #E6F4EA;
-  color: #137333;
+  background-color: var(--color-terracotta-subtle);
+  color: var(--color-terracotta);
+  border: 1px solid var(--color-terracotta-border);
 }
 
 .plugin-toggle-btn.btn-inactive {

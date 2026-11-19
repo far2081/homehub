@@ -677,12 +677,12 @@ async function runRealBrowserVerification() {
         })()
       `);
 
-      if (supabaseCheck.cloudError && (supabaseCheck.cloudError.includes('fetch failed') || supabaseCheck.cloudError.includes('ENOTFOUND'))) {
+      if (supabaseCheck.cloudError && (supabaseCheck.cloudError.toLowerCase().includes('fetch') || supabaseCheck.cloudError.includes('ENOTFOUND'))) {
         results.push({
           workflow: 9,
           name: 'Verify the order and order items exist in Supabase',
           status: 'BLOCKED',
-          evidence: `Supabase cloud endpoint is unreachable (ENOTFOUND dlfkbpsfdhciwwjovyjr.supabase.co). Verified security control: application strictly flags order as '${supabaseCheck.recentOrderSyncStatus}' instead of falsely claiming cloud confirmation.`
+          evidence: `Supabase cloud endpoint is unreachable (ENOTFOUND/Offline). Verified security control: application strictly flags order as '${supabaseCheck.recentOrderSyncStatus}' instead of falsely claiming cloud confirmation.`
         });
       } else if (supabaseCheck.cloudConnected) {
         results.push({

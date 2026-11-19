@@ -9,37 +9,62 @@
 
 :root {
   /* ========================================================================
-     HOMEHUB DESIGN SYSTEM — EDITORIAL LUXURY TOKENS
+     HOMEHUB DESIGN SYSTEM — CLAUDE EDITORIAL LUXURY DESIGN SYSTEM
+     Warm terracotta/amber, tactile parchment alabaster, and quiet intelligence
      ======================================================================== */
   
-  /* 1. Core Color Palette */
-  --color-warm-ivory: #F8F5EF;
-  --color-cream: #FBF9F5;
-  --color-sage: #DDE8DF;
-  --color-muted-olive: #899581;
-  --color-warm-taupe: #B8AA98;
-  --color-natural-beige: #EADCCB;
-  --color-dusty-blush: #E9D8D0;
-  --color-soft-champagne: #D6BC91;
-  --color-deep-charcoal: #302E2A;
+  /* 1. Claude Signature Editorial Palette */
+  --color-canvas: #FAF9F5;
+  --color-canvas-subtle: #F5F3EE;
+  --color-parchment: #FAF9F5;
+  --color-warm-ivory: #FAF9F5;
+  --color-cream: #F5F3EE;
+  --color-soft-ivory: #FAF9F5;
 
-  /* Aliases & Semantic Extensions */
-  --color-soft-ivory: var(--color-warm-ivory);
-  --color-sage-mist: var(--color-sage);
-  --color-warm-beige: var(--color-natural-beige);
-  --color-noir: var(--color-deep-charcoal);
-  --color-charcoal: #3A3733;
-  --color-muted-earth: #6E6860;
-  --color-border: #E8E1D7;
-  --color-border-subtle: #F1ECE4;
+  /* Ink & Typography Hierarchy */
+  --color-ink: #191918;
+  --color-noir: #191918;
+  --color-deep-charcoal: #191918;
+  --color-charcoal: #2B2824;
+  --color-muted-earth: #686259;
+  --color-ink-secondary: #5C574F;
+  --color-ink-muted: #8A8378;
+
+  /* Hairline Stone Borders */
+  --color-border: #E6E2D8;
+  --color-border-subtle: #F0ECE4;
+  --color-border-hover: #D6D0C4;
+
+  /* Tactile Surfaces */
   --color-surface-pure: #FFFFFF;
-  --color-surface-subtle: var(--color-cream);
-  --color-surface-tint: #F4EFE7;
-  --color-terracotta: var(--color-muted-olive);
+  --color-surface-card: #FFFFFF;
+  --color-surface-elevated: #FCFBF8;
+  --color-surface-subtle: #FAF9F5;
+  --color-surface-tint: #F3EFE9;
+
+  /* Signature Warm Terracotta & Amber Accents */
+  --color-claude-terracotta: #D97757;
+  --color-claude-terracotta-hover: #C4623F;
+  --color-claude-terracotta-subtle: rgba(217, 119, 87, 0.08);
+  --color-claude-terracotta-border: rgba(217, 119, 87, 0.22);
+  --color-terracotta: #D97757;
+  --color-terracotta-hover: #C4623F;
+  --color-terracotta-subtle: rgba(217, 119, 87, 0.08);
+  --color-terracotta-border: rgba(217, 119, 87, 0.22);
+  --color-terracotta-glow: 0 4px 18px rgba(217, 119, 87, 0.28);
+
+  /* Muted Editorial Secondary Tones */
+  --color-sage: #DCE5DD;
+  --color-muted-olive: #73806C;
+  --color-warm-taupe: #B3A593;
+  --color-natural-beige: #EAE0D3;
+  --color-dusty-blush: #E8D7CF;
+  --color-soft-champagne: #D9C3A0;
 
   /* 2. Editorial Typography */
-  --font-serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
-  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-serif: 'Newsreader', 'Cormorant Garamond', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
   /* Typographic Hierarchy Scale */
   --font-size-hero: clamp(2.6rem, 5.2vw, 4.4rem);
@@ -70,18 +95,20 @@
   --radius-pill: 9999px;
 
   /* 5. Organic & Quiet Luxury Elevation Shadows */
-  --shadow-subtle: 0 4px 20px -2px rgba(48, 46, 42, 0.04);
-  --shadow-sm: 0 4px 16px rgba(48, 46, 42, 0.05);
-  --shadow-md: 0 10px 30px -4px rgba(48, 46, 42, 0.07);
-  --shadow-lg: 0 20px 48px -8px rgba(48, 46, 42, 0.10);
-  --shadow-book: 0 32px 64px -16px rgba(48, 46, 42, 0.18);
-  --shadow-spine: inset 24px 0 32px -12px rgba(48, 46, 42, 0.12);
+  --shadow-subtle: 0 1px 3px rgba(25, 25, 24, 0.03), 0 4px 12px rgba(25, 25, 24, 0.04);
+  --shadow-sm: 0 1px 3px rgba(25, 25, 24, 0.04), 0 6px 16px -2px rgba(25, 25, 24, 0.05);
+  --shadow-md: 0 2px 6px rgba(25, 25, 24, 0.05), 0 12px 28px -4px rgba(25, 25, 24, 0.08);
+  --shadow-lg: 0 4px 12px rgba(25, 25, 24, 0.06), 0 24px 52px -8px rgba(25, 25, 24, 0.12);
+  --shadow-book: 0 24px 60px -12px rgba(25, 25, 24, 0.20), 0 0 0 1px rgba(25, 25, 24, 0.06);
+  --shadow-spine: inset 24px 0 32px -12px rgba(25, 25, 24, 0.14);
+  --shadow-terracotta: 0 4px 18px rgba(217, 119, 87, 0.32);
 
   /* 6. Transitions */
-  --transition-fast: 0.2s cubic-bezier(0.2, 0, 0.2, 1);
-  --transition-smooth: 0.38s cubic-bezier(0.25, 1, 0.5, 1);
-  --transition-luxury: 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-  --transition-page: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: 0.18s cubic-bezier(0.2, 0, 0.2, 1);
+  --transition-smooth: 0.36s cubic-bezier(0.25, 1, 0.5, 1);
+  --transition-luxury: 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-page: 0.48s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-spring: 0.45s cubic-bezier(0.32, 0.72, 0, 1);
 
   /* 7. Layout */
   --max-width: 1440px;
@@ -210,6 +237,55 @@ img {
   padding-right: clamp(1rem, 4vw, 2.5rem);
 }
 
+/* Micro-Interactions & Tabular Numerals */
+button:active,
+.btn:active,
+.hero-btn-primary:active,
+.hero-btn-secondary:active,
+.page-home-btn:active,
+.cat-pill:active,
+.book-pill-btn:active {
+  transform: scale(0.97);
+}
+
+[class*="price"],
+.price,
+.item-price,
+.order-total,
+.cart-total,
+.stat-value,
+.page-number,
+.page-folio,
+.item-qty,
+.tab-badge,
+.util-badge,
+.hotspot-price {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Skeleton Shimmer Loaders */
+@keyframes claudeShimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, var(--color-border-subtle) 25%, #FFFFFF 50%, var(--color-border-subtle) 75%);
+  background-size: 200% 100%;
+  animation: claudeShimmer 1.8s ease-in-out infinite;
+  border-radius: var(--radius-sm);
+}
+
+/* Standardized Decoupled Plugin Slots */
+[data-plugin-slot] {
+  position: relative;
+  transition: opacity var(--transition-fast);
+}
+
+[data-plugin-slot].slot-disabled {
+  display: none !important;
+}
+
 /* Marquee Announcement Bar */
 .top-announcement-bar {
   background-color: var(--color-noir);
@@ -239,19 +315,26 @@ img {
 }
 
 .section-kicker {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-size: 0.72rem;
   text-transform: uppercase;
-  letter-spacing: 0.2em;
-  color: var(--color-muted-olive);
+  letter-spacing: 0.18em;
+  color: var(--color-terracotta);
+  background-color: var(--color-terracotta-subtle);
+  border: 1px solid var(--color-terracotta-border);
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
   font-weight: 600;
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.75rem;
 }
 
 .section-title {
   font-size: clamp(2rem, 4vw, 3.2rem);
   margin-bottom: 0.8rem;
   color: var(--color-noir);
+  letter-spacing: -0.015em;
 }
 
 .section-subtitle {
@@ -268,7 +351,7 @@ img {
   align-items: center;
   justify-content: center;
   padding: 4rem 1.5rem;
-  background: linear-gradient(180deg, var(--color-soft-ivory) 0%, var(--color-warm-beige) 100%);
+  background: linear-gradient(180deg, var(--color-soft-ivory) 0%, var(--color-cream) 100%);
   overflow: hidden;
 }
 
@@ -278,8 +361,8 @@ img {
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: radial-gradient(circle at 10% 20%, rgba(221, 232, 223, 0.4) 0%, transparent 40%),
-                    radial-gradient(circle at 90% 80%, rgba(233, 216, 208, 0.45) 0%, transparent 45%);
+  background-image: radial-gradient(circle at 10% 20%, rgba(217, 119, 87, 0.06) 0%, transparent 40%),
+                    radial-gradient(circle at 90% 80%, rgba(232, 215, 207, 0.35) 0%, transparent 45%);
   pointer-events: none;
 }
 
@@ -305,12 +388,13 @@ img {
   line-height: 1.05;
   margin-bottom: 1.4rem;
   color: var(--color-noir);
+  letter-spacing: -0.02em;
 }
 
 .hero-main-title em {
   font-style: italic;
   font-weight: 300;
-  color: #7D6B5A;
+  color: var(--color-terracotta);
 }
 
 .hero-paragraph {
@@ -332,15 +416,42 @@ img {
 }
 
 .hero-btn-primary {
-  background-color: var(--color-noir);
-  color: var(--color-soft-ivory);
-  padding: 1rem 2.2rem;
+  background-color: var(--color-terracotta);
+  color: #FFFFFF;
+  padding: 0.95rem 2.2rem;
   border-radius: var(--radius-pill);
   font-size: 0.85rem;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.12em;
   font-weight: 600;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-terracotta);
+  transition: all var(--transition-fast);
+}
+
+.hero-btn-primary:hover {
+  background-color: var(--color-terracotta-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(217, 119, 87, 0.4);
+}
+
+.hero-btn-secondary {
+  background-color: var(--color-surface-pure);
+  color: var(--color-noir);
+  padding: 0.95rem 2rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-subtle);
+}
+
+.hero-btn-secondary:hover {
+  background-color: var(--color-surface-subtle);
+  border-color: var(--color-border-hover);
+  transform: translateY(-2px);
+}
 }
 
 .hero-btn-primary:hover {
