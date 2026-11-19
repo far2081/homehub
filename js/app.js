@@ -1384,9 +1384,21 @@ class HomeHubApp {
         <!-- Video Masterclass Card -->
         <div class="cat-video-showcase">
           <div class="cat-video-preview-col" data-video-id="${catData.makeoverVideo.id}">
-            <img src="${catData.makeoverVideo.thumbnail}" alt="${catData.makeoverVideo.title}" class="cat-video-preview-thumb" />
+            <video 
+              class="cat-video-element" 
+              muted 
+              playsinline 
+              loop 
+              preload="metadata" 
+              poster="${catData.makeoverVideo.thumbnail}"
+              aria-label="${catData.makeoverVideo.title}"
+            >
+              <source src="${catData.makeoverVideo.videoUrl || catData.makeoverVideo.localVideoUrl}" type="video/mp4">
+              ${catData.makeoverVideo.webmUrl ? `<source src="${catData.makeoverVideo.webmUrl}" type="video/webm">` : ''}
+              Your browser does not support HTML5 video.
+            </video>
             <div class="cat-video-play-overlay">
-              <div class="cat-video-play-icon">▶</div>
+              <div class="cat-video-play-icon" aria-label="Toggle Play">▶</div>
             </div>
           </div>
           <div class="cat-video-info-col">
@@ -1467,17 +1479,49 @@ class HomeHubApp {
     const backBtn = container.querySelector('#cat-page-back-btn');
     if (backBtn) backBtn.addEventListener('click', (e) => { e.preventDefault(); window.history.back(); });
 
-    // Video play triggers
-    const videoTrigger = container.querySelector('.cat-video-preview-col');
-    if (videoTrigger && this.videoGallery) {
-      videoTrigger.addEventListener('click', () => {
-        this.videoGallery.openVideoModal(catData.makeoverVideo.id);
+    // Video play triggers & smooth inline playback
+    const videoPreviewCol = container.querySelector('.cat-video-preview-col');
+    const catVideoEl = videoPreviewCol ? videoPreviewCol.querySelector('.cat-video-element') : null;
+    const catPlayIcon = videoPreviewCol ? videoPreviewCol.querySelector('.cat-video-play-icon') : null;
+
+    if (videoPreviewCol && catVideoEl) {
+      // Hover behavior: preview video smoothly without audio lock
+      videoPreviewCol.addEventListener('mouseenter', () => {
+        catVideoEl.play().then(() => {
+          videoPreviewCol.classList.add('is-playing');
+          if (catPlayIcon) catPlayIcon.textContent = '❚❚';
+        }).catch(() => {});
+      });
+
+      videoPreviewCol.addEventListener('mouseleave', () => {
+        if (!catVideoEl.paused) {
+          catVideoEl.pause();
+          videoPreviewCol.classList.remove('is-playing');
+          if (catPlayIcon) catPlayIcon.textContent = '▶';
+        }
+      });
+
+      // Click behavior: toggle playback on desktop and mobile
+      videoPreviewCol.addEventListener('click', () => {
+        if (catVideoEl.paused) {
+          catVideoEl.play().then(() => {
+            videoPreviewCol.classList.add('is-playing');
+            if (catPlayIcon) catPlayIcon.textContent = '❚❚';
+          }).catch(() => {
+            if (this.videoGallery) this.videoGallery.openVideoModal(catData.makeoverVideo.id);
+          });
+        } else {
+          catVideoEl.pause();
+          videoPreviewCol.classList.remove('is-playing');
+          if (catPlayIcon) catPlayIcon.textContent = '▶';
+        }
       });
     }
 
     const watchBtn = container.querySelector('.cat-watch-video-btn');
     if (watchBtn && this.videoGallery) {
-      watchBtn.addEventListener('click', () => {
+      watchBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
         this.videoGallery.openVideoModal(catData.makeoverVideo.id);
       });
     }

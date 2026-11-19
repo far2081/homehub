@@ -394,6 +394,14 @@
   vertical-align: middle;
 }
 
+.admin-table tbody tr.admin-row-first {
+  background-color: #FAF8F4;
+}
+
+.admin-table tbody tr.admin-row-first:hover {
+  background-color: #F5EFE6;
+}
+
 .table-prod-cell {
   display: flex;
   align-items: center;

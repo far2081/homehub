@@ -40,6 +40,9 @@ export const CATEGORY_INSPIRATION_DATA = {
       author: 'Urban Architecture Collective',
       description: 'Clever spatial layout strategies for compact bedrooms: floating nightstands, recessed platform beds, and diffuse bedside illumination.',
       thumbnail: 'assets/magazines/3ffa9485-4bd9-4392-a47d-7010d339117d.webp',
+      videoUrl: 'assets/videos/vid-bedroom-sanctuary.mp4',
+      localVideoUrl: 'assets/videos/vid-bedroom-sanctuary.mp4',
+      webmUrl: 'assets/videos/vid-bedroom-sanctuary.webm',
       embedUrl: 'https://www.youtube-nocookie.com/embed/zW8S_C3C_o0?autoplay=1&rel=0&modestbranding=1&playsinline=1',
       takeaways: [
         'A platform bed with recessed plinth creates the optical illusion of continuous floor space.',
@@ -87,6 +90,9 @@ export const CATEGORY_INSPIRATION_DATA = {
       author: 'HomeHub Editorial Studio',
       description: 'Discover how low-slung bouclé seating, monolithic travertine tables, and linen drapery compose a tranquil sanctuary for modern living.',
       thumbnail: 'assets/pexels-fotografiagmazg-12420730.jpg',
+      videoUrl: 'assets/videos/vid-living-styling.mp4',
+      localVideoUrl: 'assets/videos/vid-living-styling.mp4',
+      webmUrl: 'assets/videos/vid-living-styling.webm',
       embedUrl: 'https://www.youtube-nocookie.com/embed/2V1a44eBsp4?rel=0&modestbranding=1&playsinline=1',
       takeaways: [
         'Keep primary seating heights under 45cm for continuous eye level.',
@@ -134,6 +140,9 @@ export const CATEGORY_INSPIRATION_DATA = {
       author: 'Atelier Dining Architecture',
       description: 'Composing a warm gathering space: balancing stone table proportions, acoustic seating upholstery, and focused pendant lighting.',
       thumbnail: 'assets/clay-banks-BnDI_MVomAI-unsplash.jpg',
+      videoUrl: 'assets/videos/vid-dining-styling.mp4',
+      localVideoUrl: 'assets/videos/vid-dining-styling.mp4',
+      webmUrl: 'assets/videos/vid-dining-styling.webm',
       embedUrl: 'https://www.youtube-nocookie.com/embed/2V1a44eBsp4?rel=0&modestbranding=1&playsinline=1',
       takeaways: [
         'Maintain at least 90cm clearance between table edge and walls for effortless chair egress.',
@@ -181,6 +190,9 @@ export const CATEGORY_INSPIRATION_DATA = {
       author: 'HomeHub Craft Workshop',
       description: 'Inside the atelier: how solid wood frames, double-density foam cores, and hand-finished stone slabs are crafted to last generations.',
       thumbnail: 'assets/pexels-pixabay-276746.jpg',
+      videoUrl: 'assets/videos/vid-furniture-craft.mp4',
+      localVideoUrl: 'assets/videos/vid-furniture-craft.mp4',
+      webmUrl: 'assets/videos/vid-furniture-craft.webm',
       embedUrl: 'https://www.youtube-nocookie.com/embed/1z48Yp95wls?rel=0&modestbranding=1&playsinline=1',
       takeaways: [
         'Inspect structural joint integrity rather than relying on surface finishes alone.',
@@ -228,6 +240,9 @@ export const CATEGORY_INSPIRATION_DATA = {
       author: 'Compact Living Studio',
       description: 'Watch how compact telescoping desks and floating storage adapt seamlessly between work hours and evening relaxation.',
       thumbnail: 'assets/magazines/de179757-6ab3-4cb0-9b56-84039d2ba4dc.webp',
+      videoUrl: 'assets/videos/vid-space-saving.mp4',
+      localVideoUrl: 'assets/videos/vid-space-saving.mp4',
+      webmUrl: 'assets/videos/vid-space-saving.webm',
       embedUrl: 'https://www.youtube-nocookie.com/embed/1z48Yp95wls?rel=0&modestbranding=1&playsinline=1',
       takeaways: [
         'Telescoping console desks offer full work ergonomics without consuming permanent floor footprint.',
@@ -275,6 +290,9 @@ export const CATEGORY_INSPIRATION_DATA = {
       author: 'Atelier Culinary Architecture',
       description: 'Designing high-efficiency kitchen workstations with concealed pantries, acoustic timber paneling, and tactile ceramic storage.',
       thumbnail: 'assets/magazines/15db50fe-f290-462b-ae89-457ee3ab948a.webp',
+      videoUrl: 'assets/videos/vid-dining-styling.mp4',
+      localVideoUrl: 'assets/videos/vid-dining-styling.mp4',
+      webmUrl: 'assets/videos/vid-dining-styling.webm',
       embedUrl: 'https://www.youtube-nocookie.com/embed/kJQP7kiw5Fk?rel=0&modestbranding=1&playsinline=1',
       takeaways: [
         'Store everyday culinary tools within one arm’s reach using concealed modular drawers.',
@@ -322,6 +340,9 @@ export const CATEGORY_INSPIRATION_DATA = {
       author: 'Lumina Architectural Labs',
       description: 'Layering three tiers of 2700K illumination to eliminate ceiling glare and create an intimate, cocooning atmospheric temperature.',
       thumbnail: 'assets/pexels-pixabay-276746.jpg',
+      videoUrl: 'assets/videos/vid-lighting-insp.mp4',
+      localVideoUrl: 'assets/videos/vid-lighting-insp.mp4',
+      webmUrl: 'assets/videos/vid-lighting-insp.webm',
       embedUrl: 'https://www.youtube-nocookie.com/embed/Q5aQ9mE5u9Q?rel=0&modestbranding=1&playsinline=1',
       takeaways: [
         'Avoid single-source central downlights; distribute light at three distinct eye-height levels.',
@@ -369,6 +390,9 @@ export const CATEGORY_INSPIRATION_DATA = {
       author: 'Atelier Nord Ceramics',
       description: 'Styling coffee tables, mantels, and entryway consoles using the rule of odd numbers, asymmetric heights, and raw earthen vessels.',
       thumbnail: 'assets/magazines/923e4bb3-ccc1-4efb-806a-bfc42fdd3565.webp',
+      videoUrl: 'assets/videos/vid-living-styling.mp4',
+      localVideoUrl: 'assets/videos/vid-living-styling.mp4',
+      webmUrl: 'assets/videos/vid-living-styling.webm',
       embedUrl: 'https://www.youtube-nocookie.com/embed/kJQP7kiw5Fk?rel=0&modestbranding=1&playsinline=1',
       takeaways: [
         'Pair one tall ceramic vessel with one low flat stone tray or art monograph.',
@@ -416,6 +440,9 @@ export const CATEGORY_INSPIRATION_DATA = {
       author: 'HomeHub Atelier Joinery',
       description: 'How floating consoles, recessed plinths, and concealed tambour doors transform chaotic rooms into serene, minimalist architecture.',
       thumbnail: 'assets/magazines/ca22619b-3da0-49d0-9829-0146c7dcc909.webp',
+      videoUrl: 'assets/videos/vid-space-saving.mp4',
+      localVideoUrl: 'assets/videos/vid-space-saving.mp4',
+      webmUrl: 'assets/videos/vid-space-saving.webm',
       embedUrl: 'https://www.youtube-nocookie.com/embed/1z48Yp95wls?rel=0&modestbranding=1&playsinline=1',
       takeaways: [
         'Concealed cable passages keep desktops and entertainment units free of visual clutter.',

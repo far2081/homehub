@@ -144,6 +144,11 @@ export class AdminPortal {
 
   async open() {
     await this.checkSessionAuth();
+    // Synchronize active product state with storage backup
+    const stored = storage.get('custom_products', storage.get('homehub_products', null));
+    if (Array.isArray(stored) && stored.length > 0) {
+      this.products = stored;
+    }
     await this.render();
     if (this.container) {
       this.container.classList.add('is-open');
@@ -334,6 +339,24 @@ export class AdminPortal {
 
   saveLocalProductsBackup() {
     storage.set('custom_products', this.products);
+    storage.set('homehub_products', this.products);
+    if (typeof window !== 'undefined' && window.localStorage) {
+      try {
+        window.localStorage.setItem('homehub_products', JSON.stringify(this.products));
+        window.localStorage.setItem('homehub_custom_products', JSON.stringify(this.products));
+      } catch (_) {}
+    }
+    if (typeof window !== 'undefined' && window.homehub) {
+      window.homehub.products = this.products;
+      if (window.homehub.catalogue) {
+        window.homehub.catalogue.products = this.products;
+        if (typeof window.homehub.catalogue.renderProducts === 'function') {
+          window.homehub.catalogue.renderProducts();
+        } else if (typeof window.homehub.catalogue.renderGrid === 'function') {
+          window.homehub.catalogue.renderGrid();
+        }
+      }
+    }
     this.onProductsUpdated(this.products);
   }
 
@@ -589,6 +612,16 @@ export class AdminPortal {
 
   renderProductsTab() {
     const isConnected = isSupabaseConfigured();
+    let displayedProducts = this.products;
+    if (this.productFilterQuery) {
+      const q = this.productFilterQuery.toLowerCase();
+      displayedProducts = this.products.filter(p => 
+        (p.name && p.name.toLowerCase().includes(q)) ||
+        (p.sku && p.sku.toLowerCase().includes(q)) ||
+        (p.category && p.category.toLowerCase().includes(q)) ||
+        (p.categoryLabel && p.categoryLabel.toLowerCase().includes(q))
+      );
+    }
 
     return `
       <div class="admin-tab-panel">
@@ -603,6 +636,22 @@ export class AdminPortal {
             </button>
             <button class="admin-btn-primary" id="open-add-product-btn">+ Add New Product</button>
           </div>
+        </div>
+
+        <!-- Product Table Search and Stats Bar -->
+        <div class="admin-table-toolbar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; gap: 1rem; flex-wrap: wrap;">
+          <div style="flex: 1; max-width: 400px;">
+            <input 
+              type="text" 
+              id="admin-products-search" 
+              placeholder="Search piece by name, SKU or category..." 
+              value="${this.productFilterQuery || ''}" 
+              style="width: 100%; padding: 8px 14px; border: 1px solid #DFD5C6; border-radius: 4px; font-size: 0.85rem; background: #FFFFFF;"
+            />
+          </div>
+          <span style="font-size: 0.82rem; color: #6E6863; font-weight: 500;">
+            Showing <strong>${displayedProducts.length}</strong> of ${this.products.length} pieces (Full Catalogue)
+          </span>
         </div>
 
         <div class="admin-table-wrap">
@@ -620,14 +669,14 @@ export class AdminPortal {
               </tr>
             </thead>
             <tbody>
-              ${this.products.map(p => `
-                <tr data-sku="${p.sku}">
+              ${displayedProducts.map((p, idx) => `
+                <tr data-sku="${p.sku}" class="${idx === 0 ? 'admin-row-first' : ''}">
                   <td>
                     <div class="table-prod-cell">
-                      <img src="${(p.images && p.images[0]) ? p.images[0].url : 'assets/logo-dark.svg'}" alt="${p.name}" class="table-thumb" />
+                      <img src="${(p.images && p.images[0]) ? (p.images[0].url || p.images[0]) : 'assets/logo-dark.svg'}" alt="${p.name}" class="table-thumb" />
                       <div>
                         <strong>${p.name}</strong>
-                        <span class="table-subdesc">${(p.shortDesc || '').substring(0, 45)}...</span>
+                        <span class="table-subdesc">${(p.shortDesc || p.description || '').substring(0, 45)}...</span>
                       </div>
                     </div>
                   </td>
@@ -636,7 +685,7 @@ export class AdminPortal {
                   <td><strong>${formatPKR(p.price)}</strong></td>
                   <td>
                     <span class="stock-badge ${p.stock <= 5 ? 'stock-low' : 'stock-ok'}">
-                      ${p.stock} units
+                      ${p.stock !== undefined ? p.stock : 10} units
                     </span>
                   </td>
                   <td>${p.isFeatured ? '★ Yes' : '—'}</td>
@@ -1370,6 +1419,19 @@ export class AdminPortal {
 
   bindTabSpecificEvents() {
     if (this.activeTab === 'products') {
+      const searchInput = this.container.querySelector('#admin-products-search');
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+          this.productFilterQuery = e.target.value;
+          this.renderTabContentArea();
+          const nextInput = this.container.querySelector('#admin-products-search');
+          if (nextInput) {
+            nextInput.focus();
+            nextInput.setSelectionRange(nextInput.value.length, nextInput.value.length);
+          }
+        });
+      }
+
       const addBtn = this.container.querySelector('#open-add-product-btn');
       if (addBtn) {
         addBtn.addEventListener('click', () => {
@@ -1895,7 +1957,8 @@ export class AdminPortal {
               showToast(`Piece ${sku} updated in Supabase database.`, 'success');
             } else {
               const created = await adminCreateProduct(productPayload);
-              this.products.unshift(created);
+              const itemToAdd = { ...productPayload, ...(created || {}) };
+              this.products.unshift(itemToAdd);
               cloudSynced = true;
               showToast(`New piece "${name}" saved to Supabase!`, 'success');
             }
@@ -1916,9 +1979,12 @@ export class AdminPortal {
           }
         }
 
+        // Clear search query so newly prepended product appears at row 1 immediately
+        this.productFilterQuery = '';
+
         this.saveLocalProductsBackup();
         closeForm();
-        this.render();
+        await this.render();
       } catch (err) {
         console.error('Save product error:', err);
         showToast(`Save error: ${err.message}`, 'warning');
@@ -2071,38 +2137,44 @@ export class AdminPortal {
       });
     }
 
-    const idx = stored.findIndex(p => p.sku === productData.sku);
+    // Format images safely whether string array or object array
+    const normalizedImages = Array.isArray(productData.images) && productData.images.length > 0
+      ? productData.images.map(img => (typeof img === 'string' ? { url: img, caption: productData.name, type: 'main' } : img))
+      : [{ url: 'assets/minh-pham-OtXADkUh3-I-unsplash.jpg', caption: productData.name, type: 'main' }];
+
+    const payload = {
+      ...productData,
+      id: productData.sku || productData.id,
+      images: normalizedImages
+    };
+
+    const idx = stored.findIndex(p => p.sku === payload.sku);
     if (idx > -1) {
-      stored[idx] = { ...stored[idx], ...productData };
+      stored[idx] = { ...stored[idx], ...payload };
     } else {
-      stored.unshift({ ...productData, id: productData.sku });
+      stored.unshift(payload);
     }
     storage.set('custom_products', stored);
     storage.set('homehub_products', stored);
     if (typeof window !== 'undefined' && window.localStorage) {
       try {
         window.localStorage.setItem('homehub_products', JSON.stringify(stored));
+        window.localStorage.setItem('homehub_custom_products', JSON.stringify(stored));
       } catch (_) {}
     }
     this.products = stored;
+    this.productFilterQuery = '';
+    this.saveLocalProductsBackup();
 
-    if (typeof window !== 'undefined' && window.homehub) {
-      window.homehub.products = stored;
-      if (window.homehub.catalogue) {
-        window.homehub.catalogue.products = stored;
-        if (typeof window.homehub.catalogue.renderProducts === 'function') {
-          window.homehub.catalogue.renderProducts();
-        } else if (typeof window.homehub.catalogue.renderGrid === 'function') {
-          window.homehub.catalogue.renderGrid();
-        }
-      }
+    if (this.isOpen()) {
+      this.renderTabContentArea();
     }
 
     try {
-      await adminCreateProduct(productData);
+      await adminCreateProduct(payload);
     } catch (_) {}
 
-    return productData;
+    return payload;
   }
 
   async handleUpdateProductDirect(sku, updates) {
@@ -2130,6 +2202,10 @@ export class AdminPortal {
         } catch (_) {}
       }
       this.products = stored;
+      this.saveLocalProductsBackup();
+      if (this.isOpen()) {
+        this.renderTabContentArea();
+      }
 
       if (typeof window !== 'undefined' && window.homehub) {
         window.homehub.products = stored;
@@ -2176,6 +2252,10 @@ export class AdminPortal {
       } catch (_) {}
     }
     this.products = stored;
+    this.saveLocalProductsBackup();
+    if (this.isOpen()) {
+      this.renderTabContentArea();
+    }
 
     if (typeof window !== 'undefined' && window.homehub) {
       window.homehub.products = stored;

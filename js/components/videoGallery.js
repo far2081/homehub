@@ -84,7 +84,18 @@ export class VideoGallery {
     grid.innerHTML = filtered.map(vid => `
       <div class="video-card" data-video-id="${vid.id}">
         <div class="video-card-thumb">
-          <img src="${vid.thumbnail}" alt="${vid.title}" loading="lazy" />
+          <video 
+            class="video-card-element"
+            muted 
+            playsinline 
+            loop 
+            preload="metadata" 
+            poster="${vid.thumbnail}"
+            aria-label="${vid.title}"
+          >
+            <source src="${vid.videoUrl || vid.localVideoUrl}" type="video/mp4">
+            ${vid.webmUrl ? `<source src="${vid.webmUrl}" type="video/webm">` : ''}
+          </video>
           <div class="video-play-btn" aria-label="Play Video">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
               <polygon points="5 3 19 12 5 21 5 3"></polygon>
@@ -108,6 +119,15 @@ export class VideoGallery {
     `).join('');
 
     grid.querySelectorAll('.video-card').forEach(card => {
+      const vidEl = card.querySelector('.video-card-element');
+      if (vidEl) {
+        card.addEventListener('mouseenter', () => {
+          vidEl.play().catch(() => {});
+        });
+        card.addEventListener('mouseleave', () => {
+          vidEl.pause();
+        });
+      }
       card.addEventListener('click', (e) => {
         const id = e.currentTarget.dataset.videoId;
         this.openVideoModal(id);
