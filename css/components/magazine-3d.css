@@ -170,9 +170,11 @@
   min-height: 640px;
   height: 640px;
   transform-style: preserve-3d;
-  background-color: #F5F1E8;
+  background-color: #1C1917; /* Dark base prevents white flash during transitions */
   border-radius: 4px;
   cursor: default;
+  box-sizing: border-box;
+  overflow: hidden;
   /* Multi-layered soft ambient and physical book drop-shadow */
   box-shadow: 
     0 35px 70px -15px rgba(24, 21, 18, 0.3),
@@ -239,8 +241,12 @@
 .flipbook-viewport.mode-spread .magazine-pages-container {
   display: flex;
   width: 100%;
+  max-width: 100%;
   height: 100%;
   min-height: 640px;
+  box-sizing: border-box;
+  overflow: hidden;
+  background-color: #1C1917;
 }
 
 /* Mobile Single-Page Mode */
@@ -248,11 +254,18 @@
   display: block;
   min-height: 620px;
   height: auto;
+  box-sizing: border-box;
+  overflow: hidden;
+  background-color: #1C1917;
 }
 
 .flipbook-viewport.mode-single .magazine-pages-container {
   width: 100%;
+  max-width: 100%;
   min-height: 620px;
+  box-sizing: border-box;
+  overflow: hidden;
+  background-color: #1C1917;
 }
 
 .mode-single .book-edge-stack {
@@ -303,7 +316,7 @@
   width: 2px;
   margin-left: -1px;
   background-color: rgba(15, 12, 10, 0.35);
-  box-shadow: 0 0 2px rgba(255, 255, 255, 0.2);
+  box-shadow: none;
 }
 
 .spine-staple {
@@ -372,10 +385,11 @@
 /* Individual Pages — Premium Coated Art Paper */
 .magazine-page {
   position: relative;
-  flex: 1;
+  flex: 1 1 50%;
+  width: 50%;
+  max-width: 50%;
   background-color: #F5F1E8;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   height: 640px;
@@ -552,7 +566,7 @@
   overflow: hidden;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  background-color: #FAF8F5;
+  background-color: #1C1917;
   box-sizing: border-box;
   contain: strict;
 }
@@ -563,7 +577,7 @@
 
 .strip-back {
   transform: rotateY(180deg);
-  background-color: #F8F5F0;
+  background-color: #1C1917;
 }
 
 .strip-content-wrap {
@@ -582,9 +596,9 @@
   pointer-events: none;
   background: linear-gradient(90deg, 
     rgba(255, 255, 255, 0) 0%, 
-    rgba(255, 255, 255, 0.45) 45%, 
-    rgba(255, 255, 255, 0.8) 50%, 
-    rgba(255, 255, 255, 0.3) 55%, 
+    rgba(255, 255, 255, 0.15) 45%, 
+    rgba(255, 255, 255, 0.25) 50%, 
+    rgba(255, 255, 255, 0.12) 55%, 
     rgba(255, 255, 255, 0) 100%
   );
   opacity: 0;
@@ -644,7 +658,13 @@
 
 /* 1. Flyleaf Page */
 .page-flyleaf {
+  position: relative;
   flex: 1;
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
   padding: 3.5rem 3rem;
   display: flex;
   flex-direction: column;
@@ -653,7 +673,6 @@
   text-align: center;
   background-color: #F8F5EF;
   border-right: 1px solid var(--color-border);
-  height: 100%;
 }
 
 .mag-brand-mark {
@@ -778,14 +797,19 @@
 .page-cover {
   position: relative;
   flex: 1;
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   padding: clamp(2rem, 4vw, 3.5rem);
   color: #FFFFFF;
-  height: 100%;
 }
 
 .cover-brand-header {
@@ -956,6 +980,11 @@
 .page-backcover {
   position: relative;
   flex: 1;
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
   background-size: cover;
   background-position: center;
   display: flex;
@@ -964,7 +993,6 @@
   text-align: center;
   padding: 3rem;
   color: #FFFFFF;
-  height: 100%;
 }
 
 .backcover-content {
@@ -1762,13 +1790,15 @@
    -------------------------------------------------------------------------- */
 .page-layout-b {
   position: relative;
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  height: 100%;
   background-color: #FAF8F5;
   padding: 2.2rem 2rem 1.8rem;
-  box-sizing: border-box;
-  overflow-y: auto;
 }
 
 .layout-b-photo-frame {
@@ -1823,6 +1853,7 @@
 .page-layout-c {
   position: relative;
   width: 100%;
+  max-width: 100%;
   height: 100%;
   background-size: cover;
   background-position: center;
@@ -1875,13 +1906,15 @@
    -------------------------------------------------------------------------- */
 .page-layout-d {
   position: relative;
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  height: 100%;
   background-color: #FAF8F5;
   padding: 2.5rem 2.2rem 2rem;
-  box-sizing: border-box;
-  overflow-y: auto;
 }
 
 .layout-d-headline {
@@ -1962,13 +1995,15 @@
    -------------------------------------------------------------------------- */
 .page-layout-e {
   position: relative;
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  height: 100%;
   background-color: #FAF8F5;
   padding: 2rem 2.2rem 1.6rem;
-  box-sizing: border-box;
-  overflow-y: auto;
 }
 
 .layout-e-header {
@@ -2537,32 +2572,38 @@
     border-radius: 6px;
     box-shadow: 0 14px 34px -8px rgba(24, 21, 18, 0.28), 0 0 0 1px rgba(0, 0, 0, 0.08) !important;
     overflow: hidden !important;
-    box-sizing: border-box;
+    box-sizing: border-box !important;
+    background-color: #1C1917 !important;
     position: relative;
   }
 
   .flipbook-viewport .magazine-pages-container,
   .flipbook-viewport.mode-single .magazine-pages-container {
     width: 100% !important;
+    max-width: 100% !important;
     height: 100% !important;
     min-height: 100% !important;
     max-height: 100% !important;
     position: relative !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    background-color: #1C1917 !important;
   }
 
   .mode-single .magazine-page,
   .magazine-page.page-single {
     width: 100% !important;
+    max-width: 100% !important;
     height: 100% !important;
     min-height: 100% !important;
     max-height: 100% !important;
     border-radius: 6px;
-    box-sizing: border-box;
+    box-sizing: border-box !important;
     display: flex !important;
     flex-direction: column !important;
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
+    overflow: hidden !important;
     position: relative !important;
+    background-color: #1C1917 !important;
   }
 
   /* Turning Leaf in Mobile Single-Page Mode */
@@ -2832,11 +2873,12 @@
   /* Cover Page on Mobile */
   .page-cover {
     width: 100% !important;
+    max-width: 100% !important;
     height: 100% !important;
     min-height: 100% !important;
     padding: 2.2rem 1.4rem 1.6rem !important;
-    box-sizing: border-box;
-    cursor: pointer !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
     touch-action: manipulation !important;
     display: flex !important;
     flex-direction: column !important;

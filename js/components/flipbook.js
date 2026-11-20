@@ -26,11 +26,23 @@ export class Flipbook {
     this.onProductSelect = options.onProductSelect || (() => {});
     this.onAddToCart = options.onAddToCart || (() => {});
     this.onBookChange = options.onBookChange || (() => {});
+    this.autoAdvance = false;
+    this.autoPlayTimer = null;
 
     this.init();
   }
 
+  stopAutoAdvance() {
+    this.autoAdvance = false;
+    if (this.autoPlayTimer) {
+      clearInterval(this.autoPlayTimer);
+      clearTimeout(this.autoPlayTimer);
+      this.autoPlayTimer = null;
+    }
+  }
+
   init() {
+    this.stopAutoAdvance();
     if (typeof window === 'undefined') return;
 
     window.addEventListener('resize', () => {
@@ -59,6 +71,7 @@ export class Flipbook {
   }
 
   loadBook(bookId, targetPage = 0) {
+    this.stopAutoAdvance();
     if (!MAGAZINE_BOOKS[bookId]) return;
     this.currentBookId = bookId;
     this.currentPageIndex = targetPage;
@@ -158,6 +171,7 @@ export class Flipbook {
   }
 
   goToPage(pageIdx) {
+    this.stopAutoAdvance();
     if (this.isFlipping) return;
     const total = this.getTotalPages();
     if (pageIdx >= 0 && pageIdx < total) {
@@ -882,13 +896,7 @@ export class Flipbook {
       // 1. TAP HANDLING (no turning leaf was created, so gestures and clicks never lock up)
       if (!hasStartedDrag) {
         // Let explicit interactive controls handle their own clicks
-        if (touchTarget && touchTarget.closest('.magazine-hotspot-pin, button, a, input, select, textarea, .shop-chip-btn, .shop-chip-add-btn, .backcover-shop-btn, .backcover-reopen-btn')) {
-          return;
-        }
-
-        // Tapping the magazine cover on mobile or desktop opens it immediately
-        if (this.currentPageIndex === 0) {
-          this.nextPage();
+        if (touchTarget && touchTarget.closest('.magazine-hotspot-pin, button, a, input, select, textarea, .shop-chip-btn, .shop-chip-add-btn, .cover-open-btn, .backcover-shop-btn, .backcover-reopen-btn')) {
           return;
         }
 
@@ -902,16 +910,6 @@ export class Flipbook {
           return;
         }
 
-        // On single-page view (<= 768px): tapping right side advances, left side goes back
-        if (!this.isDesktopSpread && isQuickTap) {
-          const rect = viewport.getBoundingClientRect();
-          const relX = clientX - rect.left;
-          if (relX > rect.width * 0.5) {
-            this.nextPage();
-          } else {
-            this.prevPage();
-          }
-        }
         return;
       }
 
@@ -1052,7 +1050,7 @@ export class Flipbook {
 
     slot.innerHTML = html;
 
-    // 1. Attach "Open Magazine" buttons on the cover with both click and touch support
+    // 1. Attach explicit "Open Magazine" button on the cover with both click and touch support
     const openCoverBtns = slot.querySelectorAll('.cover-open-btn');
     const triggerOpen = (e) => {
       if (e) {
@@ -1069,28 +1067,7 @@ export class Flipbook {
       }, { passive: false });
     });
 
-    // 2. When on Cover (page 0), tapping anywhere on the cover opens the magazine
-    if (this.currentPageIndex === 0) {
-      const coverEls = slot.querySelectorAll('.page-cover');
-      coverEls.forEach(cover => {
-        cover.style.cursor = 'pointer';
-        cover.setAttribute('role', 'button');
-        cover.setAttribute('tabindex', '0');
-        cover.setAttribute('aria-label', 'Open Magazine - Tap to read issue');
-
-        const onCoverTap = (e) => {
-          if (e.target.closest('a, button, input, select, textarea, .magazine-hotspot-pin')) return;
-          triggerOpen(e);
-        };
-
-        cover.addEventListener('click', onCoverTap);
-        cover.addEventListener('touchend', (e) => {
-          if (!this.isDragging) onCoverTap(e);
-        }, { passive: false });
-      });
-    }
-
-    // 3. Mobile quick navigation bar buttons (#mobile-turn-prev-btn, #mobile-turn-next-btn)
+    // 2. Mobile quick navigation bar buttons (#mobile-turn-prev-btn, #mobile-turn-next-btn)
     const mobilePrevBtn = this.container.querySelector('#mobile-turn-prev-btn');
     const mobileNextBtn = this.container.querySelector('#mobile-turn-next-btn');
 
