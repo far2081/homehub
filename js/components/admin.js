@@ -293,11 +293,26 @@ export class AdminPortal {
     const cleanPass = (password || '').trim();
 
     // 1. Built-in Super Admin (Farhana Aamir)
-    if (cleanEmail === 'farzunmir@gmail.com' && (cleanPass === 'homehub2026' || cleanPass === 'admin123')) {
+    if ((cleanEmail === 'farzunmir@gmail.com' || cleanEmail === 'farzunmir') && (cleanPass === '2081' || cleanPass === 'homehub2026' || cleanPass === 'admin123')) {
       await this.authenticateAdminDirect('farzunmir@gmail.com', cleanPass);
       this.authenticated = true;
       this.currentUser = { email: 'farzunmir@gmail.com' };
       this.adminProfile = { role: 'SUPER_ADMIN', full_name: 'Farhana Aamir' };
+      this.adminSession = {
+        email: 'farzunmir@gmail.com',
+        name: 'Farhana Aamir',
+        role: 'super_admin',
+        loginTime: new Date().toISOString(),
+        permissions: {
+          manageProducts: true,
+          manageCategories: true,
+          manageInventory: true,
+          manageOrders: true,
+          manageCoupons: true,
+          manageRoles: true
+        }
+      };
+      storage.set('homehub_admin_session', this.adminSession);
       this.isSupabaseAuth = false;
       try {
         if (typeof window !== 'undefined' && window.sessionStorage) {
@@ -2141,7 +2156,8 @@ export class AdminPortal {
 
   async authenticateAdminDirect(email, password) {
     const cleanEmail = (email || '').trim().toLowerCase();
-    if (cleanEmail === 'farzunmir@gmail.com' && (password === 'homehub2026' || password === 'admin123')) {
+    const cleanPass = (password || '').trim();
+    if ((cleanEmail === 'farzunmir@gmail.com' || cleanEmail === 'farzunmir') && (cleanPass === '2081' || cleanPass === 'homehub2026' || cleanPass === 'admin123')) {
       this.adminSession = {
         email: 'farzunmir@gmail.com',
         name: 'Farhana Aamir',

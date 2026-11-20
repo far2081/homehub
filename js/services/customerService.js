@@ -224,7 +224,8 @@ class CustomerService {
     }
 
     // Default registered demo account for founder / VIP testing
-    if (cleanEmail === 'farzunmir@gmail.com' && (password === 'homehub2026' || password === 'admin123')) {
+    const cleanPass = (password || '').trim();
+    if ((cleanEmail === 'farzunmir@gmail.com' || cleanEmail === 'farzunmir') && (cleanPass === '2081' || cleanPass === 'homehub2026' || cleanPass === 'admin123')) {
       const founderUser = {
         id: 'farzunmir@gmail.com',
         name: 'Farhana Aamir',

@@ -47,6 +47,7 @@ import {
 } from './js/services/supabaseClient.js';
 import { AdminPortal } from './js/components/admin.js';
 import { Cart } from './js/components/cart.js';
+import { customerService } from './js/services/customerService.js';
 import { INITIAL_PRODUCTS, CATEGORIES } from './js/data/products.js';
 import { server } from './server.js';
 
@@ -185,6 +186,33 @@ async function runTests() {
     assert.ok(typeof portal.handleDeleteProduct === 'function', 'handleDeleteProduct should exist');
     assert.ok(typeof portal.loadRemoteData === 'function', 'loadRemoteData should exist');
     assert.ok(typeof portal.openOrderShippingModal === 'function', 'openOrderShippingModal should exist');
+  });
+
+  // 3b. Test Admin Portal Authentication with farzunmir@gmail.com + 2081
+  await asyncTest('AdminPortal authenticates farzunmir@gmail.com with PIN 2081', async () => {
+    const portal = new AdminPortal('admin-portal-container', {
+      products: INITIAL_PRODUCTS,
+      categories: CATEGORIES
+    });
+
+    const session = await portal.authenticateAdminDirect('farzunmir@gmail.com', '2081');
+    assert.ok(session, 'Session should be created for farzunmir@gmail.com');
+    assert.strictEqual(session.email, 'farzunmir@gmail.com');
+    assert.strictEqual(session.role, 'super_admin');
+    assert.strictEqual(portal.authenticated, true);
+
+    // Case insensitivity & trimming test
+    const sessionCase = await portal.authenticateAdminDirect('  FARZUNMIR@GMAIL.COM  ', ' 2081 ');
+    assert.ok(sessionCase, 'Session should be created with trimmed & uppercase email');
+
+    // Invalid password rejection
+    const badSession = await portal.authenticateAdminDirect('farzunmir@gmail.com', 'wrongpassword');
+    assert.strictEqual(badSession, false, 'Invalid password should be rejected');
+
+    // Customer Service login
+    const clientUser = customerService.login('farzunmir@gmail.com', '2081');
+    assert.ok(clientUser, 'Customer service should authenticate farzunmir@gmail.com with 2081');
+    assert.strictEqual(clientUser.email, 'farzunmir@gmail.com');
   });
 
   // 4. Test Cart Guest Checkout Initialization
