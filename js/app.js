@@ -831,7 +831,7 @@ class HomeHubApp {
           showToast('Platform Owner authenticated', 'success');
         } else {
           if (pinError) {
-            pinError.textContent = 'Invalid Master PIN. Use demo key: OWNER-2026';
+            pinError.textContent = 'Invalid Master PIN. Please enter a valid owner PIN.';
             pinError.style.display = 'block';
           }
           if (pinInput) pinInput.select();

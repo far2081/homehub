@@ -164,58 +164,6 @@
   margin-top: 2px;
 }
 
-.admin-demo-creds-box {
-  background-color: #F8F7F4;
-  border: 1px dashed var(--color-border);
-  padding: 1rem 1.2rem;
-  border-radius: var(--radius-sm);
-  margin-bottom: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.demo-creds-info {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.demo-tag {
-  font-size: 0.65rem;
-  letter-spacing: 0.15em;
-  font-weight: 700;
-  color: var(--color-muted-olive);
-}
-
-.demo-creds-info code {
-  font-family: monospace;
-  font-size: 0.78rem;
-  color: var(--color-charcoal);
-  background-color: rgba(0,0,0,0.04);
-  padding: 2px 6px;
-  border-radius: 3px;
-  width: fit-content;
-}
-
-.admin-autofill-btn {
-  background-color: var(--color-surface-pure);
-  border: 1px solid var(--color-border);
-  color: var(--color-noir);
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 7px 12px;
-  border-radius: var(--radius-pill);
-  margin-top: 4px;
-  align-self: flex-start;
-  transition: all var(--transition-fast);
-}
-
-.admin-autofill-btn:hover {
-  background-color: var(--color-noir);
-  color: var(--color-soft-ivory);
-  border-color: var(--color-noir);
-}
 
 .admin-login-form {
   display: flex;

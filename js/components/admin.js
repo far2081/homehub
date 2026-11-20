@@ -445,7 +445,7 @@ export class AdminPortal {
 
     const cfg = getSupabaseConfig();
     const isConnected = isSupabaseConfigured();
-    const userEmail = this.currentUser ? this.currentUser.email : 'admin@homehub.atelier';
+    const userEmail = this.currentUser ? this.currentUser.email : 'Administrator';
     const roleTag = this.adminProfile ? this.adminProfile.role : 'SUPER_ADMIN';
 
     this.container.innerHTML = `
@@ -570,8 +570,9 @@ export class AdminPortal {
                 type="email" 
                 id="admin-email" 
                 required 
-                placeholder="admin@homehub.atelier" 
+                placeholder="Enter administrator email" 
                 autocomplete="username"
+                value=""
               />
             </div>
 
@@ -581,8 +582,9 @@ export class AdminPortal {
                 type="password" 
                 id="admin-pass" 
                 required 
-                placeholder="••••••••••••••••" 
+                placeholder="Enter password" 
                 autocomplete="current-password"
+                value=""
               />
             </div>
 
@@ -590,18 +592,6 @@ export class AdminPortal {
               Authenticate & Access Console →
             </button>
           </form>
-
-          <!-- Staging Demo Credentials Helper -->
-          <div class="admin-demo-creds-box">
-            <div class="demo-creds-info">
-              <span class="demo-tag">ATELIER STAGING CREDENTIALS:</span>
-              <code>User: admin@homehub.atelier</code>
-              <code>Key: HomeHub@Atelier2026</code>
-            </div>
-            <button type="button" class="admin-autofill-btn" id="admin-autofill-btn">
-              ⚡ One-Click Fill Credentials
-            </button>
-          </div>
 
           <div class="admin-security-explanation">
             <h4>Supabase Architecture Details:</h4>
@@ -619,19 +609,9 @@ export class AdminPortal {
     const backdrop = this.container.querySelector('#admin-backdrop');
     const closeBtn = this.container.querySelector('#admin-close-btn');
     const form = this.container.querySelector('#admin-login-form');
-    const autofillBtn = this.container.querySelector('#admin-autofill-btn');
 
     if (backdrop) backdrop.addEventListener('click', () => this.close());
     if (closeBtn) closeBtn.addEventListener('click', () => this.close());
-
-    if (autofillBtn) {
-      autofillBtn.addEventListener('click', () => {
-        const emailInput = this.container.querySelector('#admin-email');
-        const passInput = this.container.querySelector('#admin-pass');
-        if (emailInput) emailInput.value = 'admin@homehub.atelier';
-        if (passInput) passInput.value = 'HomeHub@Atelier2026';
-      });
-    }
 
     if (form) {
       form.addEventListener('submit', async (e) => {

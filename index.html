@@ -746,9 +746,9 @@
         <!-- Platform Owner Master PIN (Optional Instant Live Activation) -->
         <div class="form-group owner-key-group">
           <label for="tenant-input-owner-key">Platform Owner Activation Key <small class="text-muted">(Optional)</small></label>
-          <input type="password" id="tenant-input-owner-key" placeholder="Enter OWNER-2026 for instant live approval" autocomplete="off" />
+          <input type="password" id="tenant-input-owner-key" placeholder="Enter owner activation key" autocomplete="off" />
           <span class="form-hint" style="font-size: 0.76rem; color: var(--color-ink-secondary, #6E675F); margin-top: 4px; display: block;">
-            💡 Hint: Enter <code>OWNER-2026</code> to bypass trial and immediately activate live paid store.
+            Platform owners may enter authorization key for instant live approval.
           </span>
         </div>
 
@@ -790,10 +790,10 @@
           <form id="owner-pin-form" class="owner-pin-form">
             <div class="form-group">
               <label for="owner-pin-input">Master Platform PIN</label>
-              <input type="password" id="owner-pin-input" placeholder="Enter PIN (Demo: OWNER-2026)" autocomplete="off" required />
+              <input type="password" id="owner-pin-input" placeholder="Enter Master Platform PIN" autocomplete="off" required />
             </div>
             <div class="owner-pin-hint">
-              💡 Demo Access: Enter <code>OWNER-2026</code> to unlock the super-admin console.
+              Enter master platform administrator credentials to unlock.
             </div>
             <div id="owner-pin-error" class="owner-error-alert" style="display: none;"></div>
             <button type="submit" class="btn-owner-unlock" id="owner-unlock-submit-btn">Unlock SaaS Console →</button>
@@ -916,7 +916,7 @@
 
       <div class="store-lock-actions">
         <button type="button" class="btn-lock-activate" id="lock-overlay-activate-btn">
-          <span>🔑 Platform Owner Master Unlock (PIN: OWNER-2026)</span>
+          <span>🔑 Platform Owner Master Unlock</span>
         </button>
         <button type="button" class="btn-lock-owner-portal" id="lock-overlay-owner-portal-btn">
           <span>Open Platform Owner Suite</span>
