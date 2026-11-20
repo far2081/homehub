@@ -134,6 +134,7 @@
 .wishlist-item-thumb {
   width: 84px;
   height: 84px;
+  aspect-ratio: 1 / 1;
   border-radius: var(--radius-xs);
   overflow: hidden;
   background-color: #F4F1EA;
