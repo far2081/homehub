@@ -894,11 +894,11 @@ class HomeHubApp {
 
         let actionBtns = '';
         if (t.status !== 'active') {
-          actionBtns += `<button type="button" class="btn-action-activate" data-owner-activate="${t.slug}" title="Approve & Activate Paid Plan">Approve Paid</button>`;
+          actionBtns += `<button type="button" class="btn-action-activate" data-owner-activate="${t.slug}" title="Approve & Activate Paid Plan">Approve & Activate</button>`;
         }
         if (!isPreseeded) {
           actionBtns += `<button type="button" class="btn-action-extend" data-owner-extend-trial="${t.slug}" title="Extend 7-day trial by +7 days">+7D Trial</button>`;
-          actionBtns += `<button type="button" class="btn-action-expire" data-owner-expire-trial="${t.slug}" title="Simulate immediate 7-day trial expiry">Simulate Expiry</button>`;
+          actionBtns += `<button type="button" class="btn-action-expire" data-owner-expire-trial="${t.slug}" title="Simulate immediate 7-day trial expiry">Simulate Trial Expiry</button>`;
           if (t.status === 'active') {
             actionBtns += `<button type="button" class="btn-action-suspend" data-owner-suspend="${t.slug}" title="Suspend Store">Suspend</button>`;
           }
