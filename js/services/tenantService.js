@@ -327,6 +327,37 @@ const AURELIA_LIVING_PRODUCTS = [
   }
 ];
 
+export const SAAS_PLANS = {
+  starter: {
+    id: 'starter',
+    name: 'Starter',
+    price: 19,
+    billing: 'mo',
+    maxProducts: 15,
+    tagline: 'Standard Storefront',
+    features: ['Up to 15 Products', 'Standard Storefront & Catalog', 'Integrated Cart & Orders', 'SSL Security']
+  },
+  pro: {
+    id: 'pro',
+    name: 'Studio Pro',
+    price: 49,
+    billing: 'mo',
+    maxProducts: -1,
+    tagline: 'Full Studio Experience',
+    badge: 'Popular',
+    features: ['Unlimited Products', '3D Editorial Magazine', 'PWA Installable Mobile App', 'Custom Color Themes']
+  },
+  enterprise: {
+    id: 'enterprise',
+    name: 'Enterprise',
+    price: 99,
+    billing: 'mo',
+    maxProducts: -1,
+    tagline: 'Multi-Branch & Custom Domain',
+    features: ['Multi-Branch Stores', 'Custom Domain Support', 'Priority SLA & Cloud Sync', 'Dedicated Manager']
+  }
+};
+
 export const PRESEEDED_TENANTS = {
   'homehub': {
     slug: 'homehub',
@@ -347,6 +378,11 @@ export const PRESEEDED_TENANTS = {
       accentColor: '#C26E4B',
       bgLight: '#FDFBF7'
     },
+    plan: 'enterprise',
+    planPrice: 99,
+    status: 'active',
+    paymentMethod: 'Platform Master',
+    paymentRef: 'PLATFORM-DIRECT',
     description: 'Heirloom modern furniture, Italian bouclé, and monolithic stone living.',
     products: null // Default HomeHub catalog (INITIAL_PRODUCTS + stored custom)
   },
@@ -370,6 +406,11 @@ export const PRESEEDED_TENANTS = {
       accentColor: '#7A8C7C',
       bgLight: '#F7F8F6'
     },
+    plan: 'pro',
+    planPrice: 49,
+    status: 'active',
+    paymentMethod: 'Credit Card',
+    paymentRef: 'CARD-AUTH-8821',
     description: 'Raw hinoki timber, textured washi illumination, and serene low-profile living.',
     products: STUDIO_NOOR_PRODUCTS
   },
@@ -393,6 +434,11 @@ export const PRESEEDED_TENANTS = {
       accentColor: '#458594',
       bgLight: '#F5F9FA'
     },
+    plan: 'pro',
+    planPrice: 49,
+    status: 'active',
+    paymentMethod: 'Bank Wire',
+    paymentRef: 'WIRE-DE-4401',
     description: 'Sun-bleached linen, porous calcarenite stone, and Aegean seaside ambiance.',
     products: AURELIA_LIVING_PRODUCTS
   }
@@ -410,6 +456,9 @@ export class TenantService {
     if (Array.isArray(customList)) {
       customList.forEach(t => {
         if (t && t.slug) {
+          if (!t.status) t.status = 'pending_payment';
+          if (!t.plan) t.plan = 'pro';
+          if (!t.planPrice) t.planPrice = (SAAS_PLANS[t.plan] || SAAS_PLANS.pro).price;
           this.tenants[t.slug] = t;
         }
       });
@@ -493,7 +542,18 @@ export class TenantService {
     return this.getActiveTenant();
   }
 
-  createTenant({ name, slug, tagline, currencyCode = 'USD', themeColor = '#5C6B5E', badge = '✨' }) {
+  createTenant({
+    name,
+    slug,
+    tagline,
+    currencyCode = 'USD',
+    themeColor = '#5C6B5E',
+    badge = '✨',
+    planId = 'pro',
+    paymentMethod = 'Credit Card',
+    paymentRef = '',
+    ownerPin = ''
+  }) {
     if (!name || !slug) {
       throw new Error('Tenant brand name and slug are required.');
     }
@@ -504,6 +564,9 @@ export class TenantService {
       throw new Error('Invalid slug format. Use letters, numbers, and hyphens.');
     }
 
+    // Resolve plan
+    const plan = SAAS_PLANS[planId] || SAAS_PLANS.pro;
+
     // Currency metadata map
     const CURRENCY_MAP = {
       'USD': { code: 'USD', symbol: '$', locale: 'en-US', label: 'US Dollar' },
@@ -513,6 +576,10 @@ export class TenantService {
     };
 
     const currency = CURRENCY_MAP[currencyCode] || CURRENCY_MAP['USD'];
+
+    // Check if owner PIN provided for instant activation
+    const isOwnerActivated = (ownerPin && ownerPin.trim() === 'OWNER-2026');
+    const initialStatus = isOwnerActivated ? 'active' : 'pending_payment';
 
     // Create starter products cloned from existing catalog with tailored prices/skus
     const starterProducts = STUDIO_NOOR_PRODUCTS.slice(0, 4).map((p, idx) => ({
@@ -537,14 +604,51 @@ export class TenantService {
         accentColor: themeColor,
         bgLight: '#FAFAFA'
       },
+      plan: plan.id,
+      planName: plan.name,
+      planPrice: plan.price,
+      status: initialStatus,
+      paymentMethod: paymentMethod || 'Credit Card',
+      paymentRef: paymentRef || (isOwnerActivated ? 'OWNER-KEY-ACTIVATED' : 'PENDING-TRANS-REF'),
       description: `Bespoke storefront powered by HomeHub Multi-Tenant SaaS.`,
       products: starterProducts,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      activatedAt: isOwnerActivated ? new Date().toISOString() : null
     };
 
     this.tenants[cleanSlug] = newTenant;
     this.saveCustomTenants();
     return newTenant;
+  }
+
+  isTenantActive(slug) {
+    if (!slug || slug === 'homehub') return true;
+    const t = this.tenants[slug];
+    if (!t) return false;
+    return t.status === 'active';
+  }
+
+  updateTenantStatus(slug, newStatus) {
+    if (!this.tenants[slug]) {
+      throw new Error(`Tenant "${slug}" not found.`);
+    }
+    const tenant = this.tenants[slug];
+    tenant.status = newStatus;
+    if (newStatus === 'active') {
+      tenant.activatedAt = new Date().toISOString();
+    }
+    this.saveCustomTenants();
+    return tenant;
+  }
+
+  calculateMRR() {
+    return Object.values(this.tenants)
+      .filter(t => t.status === 'active')
+      .reduce((sum, t) => sum + (t.planPrice || 0), 0);
+  }
+
+  verifyOwnerPin(pin) {
+    return typeof pin === 'string' && pin.trim() === 'OWNER-2026';
   }
 
   adjustBrightness(hex, percent) {

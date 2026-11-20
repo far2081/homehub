@@ -168,6 +168,7 @@ class HomeHubApp {
     this.videoGallery = null;
     this.adminPortal = null;
     this.bookNav = null;
+    this.isOwnerAuthenticated = false;
 
     this.init();
   }
@@ -178,6 +179,8 @@ class HomeHubApp {
     this.tenantService.applyTenantTheme(this.currentTenant);
     this.initTenantSwitcher();
     this.initLaunchStoreModal();
+    this.initPlatformOwnerBilling();
+    this.updateStoreLockState(this.currentTenant);
     this.initCart();
     this.initWishlist();
     this.initProductDetail();
@@ -612,7 +615,269 @@ class HomeHubApp {
       drawer.classList.remove('is-open');
     }
 
+    // 8. Update Storefront Lock Overlay (Pending Payment or Suspended stores)
+    this.updateStoreLockState(tenant);
+
     showToast(`Switched storefront to ${tenant.name}`, 'info');
+  }
+
+  updateStoreLockState(tenant) {
+    const lockOverlay = document.getElementById('store-lock-overlay');
+    if (!lockOverlay) return;
+
+    if (!tenant) tenant = this.currentTenant;
+    if (!tenant) return;
+
+    const isActive = this.tenantService.isTenantActive(tenant.slug);
+
+    if (isActive) {
+      lockOverlay.style.display = 'none';
+      lockOverlay.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      return;
+    }
+
+    // Inactive store: populate overlay details and show
+    const statusPill = document.getElementById('lock-overlay-status');
+    const storeTitle = document.getElementById('lock-overlay-store-name');
+    const subtitle = document.getElementById('lock-overlay-subtitle');
+    const planEl = document.getElementById('lock-overlay-plan');
+    const methodEl = document.getElementById('lock-overlay-payment-method');
+    const refEl = document.getElementById('lock-overlay-payment-ref');
+
+    if (statusPill) {
+      if (tenant.status === 'suspended') {
+        statusPill.textContent = 'Storefront Suspended';
+        statusPill.className = 'store-lock-status-pill suspended';
+      } else {
+        statusPill.textContent = 'Pending Platform Approval';
+        statusPill.className = 'store-lock-status-pill pending';
+      }
+    }
+    if (storeTitle) storeTitle.textContent = tenant.name || 'Custom Storefront';
+    if (subtitle) subtitle.textContent = `${tenant.slug} • Awaiting platform owner verification`;
+    if (planEl) planEl.textContent = `${tenant.planName || tenant.plan || 'Studio Pro'} ($${tenant.planPrice || 49}/mo)`;
+    if (methodEl) methodEl.textContent = tenant.paymentMethod || 'Credit / Debit Card';
+    if (refEl) refEl.textContent = tenant.paymentRef || 'TXN-PENDING';
+
+    lockOverlay.style.display = 'flex';
+    lockOverlay.setAttribute('aria-hidden', 'false');
+  }
+
+  initPlatformOwnerBilling() {
+    const modal = document.getElementById('platform-owner-modal');
+    if (!modal) return;
+
+    const closeBtn = document.getElementById('platform-owner-close');
+    const backdrop = document.getElementById('platform-owner-backdrop');
+    const headerBtn = document.getElementById('header-owner-billing-btn');
+    const mobileBtn = document.getElementById('mobile-owner-billing-btn');
+    const overlayOwnerBtn = document.getElementById('lock-overlay-owner-portal-btn');
+    const overlayActivateBtn = document.getElementById('lock-overlay-activate-btn');
+    const overlayReturnBtn = document.getElementById('lock-overlay-return-btn');
+    const pinForm = document.getElementById('owner-pin-form');
+    const pinInput = document.getElementById('owner-pin-input');
+    const pinError = document.getElementById('owner-pin-error');
+    const pinScreen = document.getElementById('owner-pin-screen');
+    const dashScreen = document.getElementById('owner-dashboard-screen');
+    const lockSessionBtn = document.getElementById('owner-lock-session-btn');
+
+    const closeModal = () => {
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    };
+
+    const openModal = () => {
+      const switcherWrap = document.getElementById('tenant-switcher-wrap');
+      if (switcherWrap) switcherWrap.classList.remove('is-open');
+      const drawer = document.getElementById('mobile-nav-drawer');
+      if (drawer && drawer.classList.contains('is-open')) drawer.classList.remove('is-open');
+
+      if (this.isOwnerAuthenticated) {
+        if (pinScreen) pinScreen.style.display = 'none';
+        if (dashScreen) dashScreen.style.display = 'block';
+        this.renderOwnerDashboard();
+      } else {
+        if (pinScreen) pinScreen.style.display = 'block';
+        if (dashScreen) dashScreen.style.display = 'none';
+        if (pinInput) {
+          pinInput.value = '';
+          setTimeout(() => pinInput.focus(), 60);
+        }
+        if (pinError) pinError.style.display = 'none';
+      }
+
+      modal.style.display = 'flex';
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    };
+
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (backdrop) backdrop.addEventListener('click', closeModal);
+    if (headerBtn) headerBtn.addEventListener('click', (e) => { e.stopPropagation(); openModal(); });
+    if (mobileBtn) mobileBtn.addEventListener('click', (e) => { e.stopPropagation(); openModal(); });
+    if (overlayOwnerBtn) overlayOwnerBtn.addEventListener('click', (e) => { e.stopPropagation(); openModal(); });
+
+    if (overlayReturnBtn) {
+      overlayReturnBtn.addEventListener('click', () => {
+        this.switchStore('homehub');
+      });
+    }
+
+    if (overlayActivateBtn) {
+      overlayActivateBtn.addEventListener('click', () => {
+        if (this.isOwnerAuthenticated) {
+          this.tenantService.updateTenantStatus(this.currentTenantSlug, 'active');
+          this.updateStoreLockState();
+          this.renderTenantSwitcherList();
+          showToast(`Store "${this.currentTenant.name}" approved and live!`, 'success');
+        } else {
+          openModal();
+        }
+      });
+    }
+
+    if (lockSessionBtn) {
+      lockSessionBtn.addEventListener('click', () => {
+        this.isOwnerAuthenticated = false;
+        if (dashScreen) dashScreen.style.display = 'none';
+        if (pinScreen) pinScreen.style.display = 'block';
+        if (pinInput) pinInput.value = '';
+        if (pinError) pinError.style.display = 'none';
+        showToast('Platform Owner session locked', 'info');
+      });
+    }
+
+    if (pinForm) {
+      pinForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const pin = (pinInput?.value || '').trim();
+        if (this.tenantService.verifyOwnerPin(pin)) {
+          this.isOwnerAuthenticated = true;
+          if (pinError) pinError.style.display = 'none';
+          if (pinScreen) pinScreen.style.display = 'none';
+          if (dashScreen) dashScreen.style.display = 'block';
+          this.renderOwnerDashboard();
+          showToast('Platform Owner authenticated', 'success');
+        } else {
+          if (pinError) {
+            pinError.textContent = 'Invalid Master PIN. Use demo key: OWNER-2026';
+            pinError.style.display = 'block';
+          }
+          if (pinInput) pinInput.select();
+        }
+      });
+    }
+  }
+
+  renderOwnerDashboard() {
+    const mrrVal = document.getElementById('owner-mrr-val');
+    const activeCountEl = document.getElementById('owner-active-stores-count');
+    const pendingCountEl = document.getElementById('owner-pending-stores-count');
+    const totalCountEl = document.getElementById('owner-total-stores-count');
+    const tbody = document.getElementById('owner-stores-table-body');
+
+    const allTenants = this.tenantService.getAllTenants();
+    const mrr = this.tenantService.calculateMRR();
+    const activeStores = allTenants.filter(t => t.status === 'active');
+    const pendingStores = allTenants.filter(t => t.status === 'pending_payment');
+
+    if (mrrVal) mrrVal.innerHTML = `$${mrr}<small>/mo</small>`;
+    if (activeCountEl) activeCountEl.textContent = activeStores.length;
+    if (pendingCountEl) pendingCountEl.textContent = pendingStores.length;
+    if (totalCountEl) totalCountEl.textContent = allTenants.length;
+
+    if (tbody) {
+      tbody.innerHTML = allTenants.map(t => {
+        let badgeHtml = '';
+        if (t.status === 'active') {
+          badgeHtml = '<span class="badge-status-active">● Active</span>';
+        } else if (t.status === 'pending_payment') {
+          badgeHtml = '<span class="badge-status-pending">● Pending</span>';
+        } else {
+          badgeHtml = '<span class="badge-status-suspended">● Suspended</span>';
+        }
+
+        const isHomeHub = t.slug === 'homehub';
+        let actionBtns = '';
+        if (t.status !== 'active') {
+          actionBtns += `<button type="button" class="btn-action-activate" data-owner-activate="${t.slug}" title="Approve & Publish Live">Approve & Live</button>`;
+        } else if (!isHomeHub) {
+          actionBtns += `<button type="button" class="btn-action-suspend" data-owner-suspend="${t.slug}" title="Suspend Store">Suspend</button>`;
+        }
+        actionBtns += `<button type="button" class="btn-action-switch" data-owner-switch="${t.slug}" title="Switch to this Storefront">View</button>`;
+
+        return `
+          <tr>
+            <td>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 1.1rem;">${t.badge || '✨'}</span>
+                <div>
+                  <strong style="color: var(--color-charcoal); display: block;">${t.name}</strong>
+                  <span style="font-size: 0.72rem; color: var(--color-muted-earth);">${t.slug}</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span style="font-weight: 600;">${t.planName || t.plan || 'Studio Pro'}</span>
+            </td>
+            <td>
+              <span style="color: var(--color-terracotta); font-weight: 700;">$${t.planPrice || 49}<small style="font-weight: 500; color: var(--color-muted-earth);">/mo</small></span>
+            </td>
+            <td>${badgeHtml}</td>
+            <td>
+              <code style="font-size: 0.75rem; background: #ECE7DF; padding: 2px 6px; border-radius: 4px;">${t.paymentRef || 'N/A'}</code>
+            </td>
+            <td style="text-align: right;">
+              <div class="owner-table-actions">${actionBtns}</div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      tbody.querySelectorAll('[data-owner-activate]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const slug = btn.dataset.ownerActivate;
+          this.tenantService.updateTenantStatus(slug, 'active');
+          showToast(`Store "${slug}" has been approved and activated live!`, 'success');
+          this.renderOwnerDashboard();
+          this.renderTenantSwitcherList();
+          if (this.currentTenantSlug === slug) {
+            this.updateStoreLockState();
+          }
+        });
+      });
+
+      tbody.querySelectorAll('[data-owner-suspend]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const slug = btn.dataset.ownerSuspend;
+          this.tenantService.updateTenantStatus(slug, 'suspended');
+          showToast(`Store "${slug}" suspended.`, 'info');
+          this.renderOwnerDashboard();
+          this.renderTenantSwitcherList();
+          if (this.currentTenantSlug === slug) {
+            this.updateStoreLockState();
+          }
+        });
+      });
+
+      tbody.querySelectorAll('[data-owner-switch]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const slug = btn.dataset.ownerSwitch;
+          const modal = document.getElementById('platform-owner-modal');
+          if (modal) {
+            modal.style.display = 'none';
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+          }
+          this.switchStore(slug);
+        });
+      });
+    }
   }
 
   initLaunchStoreModal() {
@@ -658,6 +923,17 @@ class HomeHubApp {
       });
     });
 
+    // Plan card selection
+    const planCards = modal.querySelectorAll('.saas-plan-card');
+    planCards.forEach(card => {
+      card.addEventListener('click', () => {
+        planCards.forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        const radio = card.querySelector('input[type="radio"]');
+        if (radio) radio.checked = true;
+      });
+    });
+
     // Form submit
     if (form) {
       form.addEventListener('submit', (e) => {
@@ -670,21 +946,44 @@ class HomeHubApp {
           const themeColor = colorInput ? colorInput.value : '#5C6B5E';
           const badge = (document.getElementById('tenant-input-badge')?.value || '').trim() || '✨';
 
+          const selectedPlanRadio = modal.querySelector('input[name="tenant-plan"]:checked');
+          const planId = selectedPlanRadio ? selectedPlanRadio.value : 'pro';
+          const paymentMethod = document.getElementById('tenant-input-payment-method')?.value || 'Credit / Debit Card';
+          const paymentRef = (document.getElementById('tenant-input-payment-ref')?.value || '').trim();
+          const ownerPin = (document.getElementById('tenant-input-owner-key')?.value || '').trim();
+
           const newTenant = this.tenantService.createTenant({
             name,
             slug,
             tagline,
             currencyCode,
             themeColor,
-            badge
+            badge,
+            planId,
+            paymentMethod,
+            paymentRef,
+            ownerPin
           });
 
           closeModal();
           form.reset();
           if (slugInput) delete slugInput.dataset.manuallyEdited;
 
+          // Reset plan card selection to Pro default
+          planCards.forEach(c => c.classList.remove('selected'));
+          const proCard = modal.querySelector('.saas-plan-card[data-plan="pro"]');
+          if (proCard) {
+            proCard.classList.add('selected');
+            const r = proCard.querySelector('input[type="radio"]');
+            if (r) r.checked = true;
+          }
+
           this.switchStore(newTenant.slug);
-          showToast(`✨ Store "${newTenant.name}" launched successfully!`, 'success');
+          if (newTenant.status === 'active') {
+            showToast(`✨ Store "${newTenant.name}" launched and live!`, 'success');
+          } else {
+            showToast(`Store "${newTenant.name}" submitted! Awaiting platform owner review.`, 'info');
+          }
         } catch (err) {
           showToast(`Could not launch store: ${err.message}`, 'error');
         }

@@ -95,6 +95,9 @@
             <button type="button" class="launch-store-open-btn" id="header-launch-store-btn">
               <span>✨ Launch Your Store</span>
             </button>
+            <button type="button" class="owner-billing-open-btn" id="header-owner-billing-btn" title="Platform Owner SaaS Billing & Approvals">
+              <span>🔒 SaaS Billing (Owner)</span>
+            </button>
           </div>
         </div>
       </div>
@@ -242,9 +245,14 @@
         <div class="mobile-tenant-list" id="mobile-tenant-list">
           <!-- Dynamically populated -->
         </div>
-        <button type="button" class="launch-store-open-btn" id="mobile-launch-store-btn" style="width: 100%; margin-top: 10px; padding: 10px; font-size: 0.82rem; justify-content: center;">
-          <span>✨ Launch Your Store</span>
-        </button>
+        <div style="display: flex; gap: 8px; margin-top: 10px;">
+          <button type="button" class="launch-store-open-btn" id="mobile-launch-store-btn" style="flex: 1; padding: 10px; font-size: 0.8rem; justify-content: center;">
+            <span>✨ Launch Store</span>
+          </button>
+          <button type="button" class="owner-billing-open-btn" id="mobile-owner-billing-btn" style="flex: 1; padding: 10px; font-size: 0.8rem; justify-content: center;" title="Platform Owner Billing">
+            <span>🔒 SaaS Billing</span>
+          </button>
+        </div>
       </div>
 
       <div class="mobile-nav-group-title">Primary Navigation</div>
@@ -652,6 +660,72 @@
           <label for="tenant-input-badge">Brand Icon / Emoji</label>
           <input type="text" id="tenant-input-badge" value="✨" maxlength="4" style="width: 80px; text-align: center; font-size: 1.2rem;" />
         </div>
+
+        <!-- SaaS Subscription Pricing Plans -->
+        <div class="form-group saas-plan-select-group">
+          <label class="plan-section-label">Select SaaS Subscription Tier <span class="req">*</span></label>
+          <div class="saas-plan-cards" id="saas-plan-cards">
+            <label class="saas-plan-card" data-plan="starter">
+              <input type="radio" name="tenant-plan" value="starter" class="sr-only" />
+              <div class="plan-card-body">
+                <div class="plan-card-top">
+                  <span class="plan-name">Starter</span>
+                  <span class="plan-price">$19<small>/mo</small></span>
+                </div>
+                <p class="plan-desc">Up to 15 products, standard storefront</p>
+              </div>
+            </label>
+            <label class="saas-plan-card selected" data-plan="pro">
+              <input type="radio" name="tenant-plan" value="pro" checked class="sr-only" />
+              <div class="plan-card-body">
+                <div class="plan-card-top">
+                  <span class="plan-name">Studio Pro</span>
+                  <span class="plan-tag-popular">Popular</span>
+                  <span class="plan-price">$49<small>/mo</small></span>
+                </div>
+                <p class="plan-desc">Unlimited products, 3D magazine & PWA</p>
+              </div>
+            </label>
+            <label class="saas-plan-card" data-plan="enterprise">
+              <input type="radio" name="tenant-plan" value="enterprise" class="sr-only" />
+              <div class="plan-card-body">
+                <div class="plan-card-top">
+                  <span class="plan-name">Enterprise</span>
+                  <span class="plan-price">$99<small>/mo</small></span>
+                </div>
+                <p class="plan-desc">Multi-branch, custom domain & SLA</p>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Payment Method & Transaction Reference -->
+        <div class="form-row">
+          <div class="form-group col-half">
+            <label for="tenant-input-payment-method">Payment Method <span class="req">*</span></label>
+            <select id="tenant-input-payment-method" required>
+              <option value="Credit / Debit Card (Stripe)" selected>Credit / Debit Card</option>
+              <option value="Direct Bank Wire Transfer">Direct Bank Wire</option>
+              <option value="JazzCash Mobile Wallet">JazzCash Wallet</option>
+              <option value="EasyPaisa Mobile Wallet">EasyPaisa Wallet</option>
+              <option value="Platform Owner Activation">Owner Direct / Demo</option>
+            </select>
+          </div>
+          <div class="form-group col-half">
+            <label for="tenant-input-payment-ref">Transaction / Payment Ref <span class="req">*</span></label>
+            <input type="text" id="tenant-input-payment-ref" required placeholder="e.g. TXN-CARD-9921 or WIRE-402" />
+          </div>
+        </div>
+
+        <!-- Platform Owner Master PIN (Optional Instant Live Activation) -->
+        <div class="form-group owner-key-group">
+          <label for="tenant-input-owner-key">Platform Owner Activation Key <small class="text-muted">(Optional)</small></label>
+          <input type="password" id="tenant-input-owner-key" placeholder="Enter OWNER-2026 for instant live approval" autocomplete="off" />
+          <span class="form-hint" style="font-size: 0.76rem; color: var(--color-ink-secondary, #6E675F); margin-top: 4px; display: block;">
+            💡 Hint: Enter <code>OWNER-2026</code> to bypass pending status and immediately activate live.
+          </span>
+        </div>
+
         <div class="launch-store-actions">
           <button type="button" class="btn-cancel" id="launch-store-cancel-btn">Cancel</button>
           <button type="submit" class="btn-launch-submit" id="launch-store-submit-btn">
@@ -659,6 +733,152 @@
           </button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- Platform Owner SaaS Billing & Approvals Modal -->
+  <div class="modal platform-owner-modal" id="platform-owner-modal" role="dialog" aria-labelledby="platform-owner-title" aria-modal="true" style="display: none;" aria-hidden="true">
+    <div class="modal-backdrop" id="platform-owner-backdrop"></div>
+    <div class="modal-dialog owner-dialog-container">
+      <div class="modal-header">
+        <div class="owner-header-titles">
+          <div class="owner-pill-badge">Platform Super-Admin</div>
+          <h2 id="platform-owner-title" class="modal-title">SaaS Billing & Storefront Approvals</h2>
+          <p class="modal-subtitle">Master Revenue Governance, Subscription Tiers & Store Activation</p>
+        </div>
+        <button type="button" class="modal-close" id="platform-owner-close" aria-label="Close Platform Owner Dashboard">&times;</button>
+      </div>
+
+      <!-- Screen 1: Master PIN Challenge -->
+      <div class="owner-screen" id="owner-pin-screen">
+        <div class="owner-pin-card">
+          <div class="owner-lock-icon-wrap">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+          </div>
+          <h3>Platform Owner Authentication</h3>
+          <p>Please enter the master platform PIN to access subscription revenue metrics, approve pending storefronts, and manage tenant stores.</p>
+          
+          <form id="owner-pin-form" class="owner-pin-form">
+            <div class="form-group">
+              <label for="owner-pin-input">Master Platform PIN</label>
+              <input type="password" id="owner-pin-input" placeholder="Enter PIN (Demo: OWNER-2026)" autocomplete="off" required />
+            </div>
+            <div class="owner-pin-hint">
+              💡 Demo Access: Enter <code>OWNER-2026</code> to unlock the super-admin console.
+            </div>
+            <div id="owner-pin-error" class="owner-error-alert" style="display: none;"></div>
+            <button type="submit" class="btn-owner-unlock" id="owner-unlock-submit-btn">Unlock SaaS Console →</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Screen 2: Owner Dashboard & Management (Displayed after PIN verification) -->
+      <div class="owner-screen" id="owner-dashboard-screen" style="display: none;">
+        <!-- KPI Metrics Grid -->
+        <div class="owner-kpi-grid">
+          <div class="owner-kpi-card mrr-card">
+            <span class="kpi-label">Monthly Recurring Revenue (MRR)</span>
+            <div class="kpi-value" id="owner-mrr-val">$197<small>/mo</small></div>
+            <span class="kpi-subtext">Active billable subscriptions</span>
+          </div>
+          <div class="owner-kpi-card">
+            <span class="kpi-label">Active Stores</span>
+            <div class="kpi-value" id="owner-active-stores-count">3</div>
+            <span class="kpi-subtext text-success">Live & Published</span>
+          </div>
+          <div class="owner-kpi-card">
+            <span class="kpi-label">Pending Approval</span>
+            <div class="kpi-value" id="owner-pending-stores-count">0</div>
+            <span class="kpi-subtext text-warning">Awaiting payment verification</span>
+          </div>
+          <div class="owner-kpi-card">
+            <span class="kpi-label">Total Tenanted Stores</span>
+            <div class="kpi-value" id="owner-total-stores-count">3</div>
+            <span class="kpi-subtext">Onboarding platform total</span>
+          </div>
+        </div>
+
+        <!-- Toolbar / Quick Actions -->
+        <div class="owner-toolbar">
+          <div class="owner-toolbar-title">
+            <h3>Registered Tenant Storefronts</h3>
+            <span class="owner-table-legend">Manage approvals, toggle live publication, and monitor payment references</span>
+          </div>
+          <button type="button" class="btn-owner-lock-session" id="owner-lock-session-btn" title="Lock Console">
+            <span>🔒 Lock Session</span>
+          </button>
+        </div>
+
+        <!-- Stores Table -->
+        <div class="owner-table-wrap">
+          <table class="owner-stores-table">
+            <thead>
+              <tr>
+                <th>Storefront / Brand</th>
+                <th>Tier / Plan</th>
+                <th>Monthly Price</th>
+                <th>Status</th>
+                <th>Payment Ref</th>
+                <th style="text-align: right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="owner-stores-table-body">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Store Lock Overlay for Pending/Suspended Custom Stores -->
+  <div class="store-lock-overlay" id="store-lock-overlay" style="display: none;" role="alertdialog" aria-labelledby="lock-overlay-store-name" aria-modal="true">
+    <div class="store-lock-card">
+      <div class="store-lock-badge-wrap">
+        <span class="store-lock-status-pill pending" id="lock-overlay-status">Pending Platform Approval</span>
+      </div>
+      <div class="store-lock-icon">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+      </div>
+      <h2 class="store-lock-title" id="lock-overlay-store-name">Custom Storefront</h2>
+      <p class="store-lock-subtitle" id="lock-overlay-subtitle">Storefront setup submitted • Awaiting platform owner activation</p>
+
+      <div class="store-lock-details-box">
+        <div class="lock-detail-row">
+          <span class="detail-label">Subscription Tier</span>
+          <span class="detail-val font-medium" id="lock-overlay-plan">Studio Pro ($49/mo)</span>
+        </div>
+        <div class="lock-detail-row">
+          <span class="detail-label">Payment Method</span>
+          <span class="detail-val" id="lock-overlay-payment-method">Credit / Debit Card</span>
+        </div>
+        <div class="lock-detail-row">
+          <span class="detail-label">Payment Ref / TXN</span>
+          <code class="detail-code" id="lock-overlay-payment-ref">TXN-CARD-9921</code>
+        </div>
+      </div>
+
+      <p class="store-lock-notice">
+        This tenant store is currently offline to public visitors pending subscription verification. Once approved by the platform owner, live catalog checkout and 3D magazine will activate immediately.
+      </p>
+
+      <div class="store-lock-actions">
+        <button type="button" class="btn-lock-activate" id="lock-overlay-activate-btn">
+          <span>🔑 Quick-Activate Store (Owner PIN)</span>
+        </button>
+        <button type="button" class="btn-lock-owner-portal" id="lock-overlay-owner-portal-btn">
+          <span>Open Platform Owner Suite</span>
+        </button>
+        <button type="button" class="btn-lock-return" id="lock-overlay-return-btn">
+          <span>← Return to HomeHub Showcase</span>
+        </button>
+      </div>
     </div>
   </div>
 
