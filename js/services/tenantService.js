@@ -641,6 +641,12 @@ export class TenantService {
     const preloaderTag = document.querySelector('.preloader-tagline');
     if (preloaderBrand) preloaderBrand.textContent = (t.shortName || t.name).toUpperCase();
     if (preloaderTag) preloaderTag.textContent = t.tagline;
+
+    // Update PWA Theme Color Meta Tag
+    const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+    if (themeColorMeta && t.theme && t.theme.primaryColor) {
+      themeColorMeta.setAttribute('content', t.theme.primaryColor);
+    }
   }
 }
 

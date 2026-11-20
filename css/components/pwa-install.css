@@ -1,0 +1,349 @@
+/**
+ * HomeHub Multi-Tenant SaaS — PWA Mobile App Experience Styles
+ * Mobile Install Banner, iOS Add-to-Home-Screen Modal, and Touch App Shell Integration
+ */
+
+/* ==========================================================================
+   PWA Floating Install Banner
+   ========================================================================== */
+.pwa-install-banner {
+  position: fixed;
+  bottom: calc(66px + env(safe-area-inset-bottom, 0px) + 12px); /* Above mobile bottom nav */
+  left: 12px;
+  right: 12px;
+  max-width: 440px;
+  margin: 0 auto;
+  z-index: 9980;
+  animation: pwaBannerSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes pwaBannerSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.pwa-banner-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background-color: rgba(253, 251, 247, 0.96);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(194, 110, 75, 0.25);
+  border-radius: 14px;
+  padding: 10px 14px;
+  box-shadow: 0 12px 32px -4px rgba(27, 25, 23, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.04);
+}
+
+.pwa-banner-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  flex: 1;
+}
+
+.pwa-banner-icon-wrap {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  overflow: visible;
+  background: #1B1917;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pwa-banner-icon {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.pwa-banner-badge {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  font-size: 0.95rem;
+  background: var(--color-surface, #FDFBF7);
+  border-radius: 50%;
+  padding: 1px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  line-height: 1;
+}
+
+.pwa-banner-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.pwa-banner-title {
+  font-family: var(--font-sans);
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--color-noir, #1B1917);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.01em;
+}
+
+.pwa-banner-subtitle {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  color: var(--color-ink-secondary, #6E675F);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 1px;
+}
+
+.pwa-banner-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.pwa-banner-install-btn {
+  background-color: var(--color-terracotta, #C26E4B);
+  color: #FFFFFF;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 8px 15px;
+  border-radius: var(--radius-pill, 9999px);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: all var(--transition-fast, 0.2s);
+  box-shadow: 0 2px 8px rgba(194, 110, 75, 0.3);
+  white-space: nowrap;
+}
+
+.pwa-banner-install-btn:hover {
+  background-color: var(--color-terracotta-dark, #A85735);
+  transform: translateY(-1px);
+}
+
+.pwa-banner-close-btn {
+  background: none;
+  border: none;
+  color: var(--color-ink-muted, #948B80);
+  font-size: 1.1rem;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all var(--transition-fast, 0.2s);
+}
+
+.pwa-banner-close-btn:hover {
+  background-color: rgba(0, 0, 0, 0.06);
+  color: var(--color-noir, #1B1917);
+}
+
+/* Desktop positioning for install banner */
+@media (min-width: 769px) {
+  .pwa-install-banner {
+    left: auto;
+    right: 28px;
+    bottom: 28px;
+    width: 380px;
+  }
+}
+
+/* ==========================================================================
+   iOS Safari "Add to Home Screen" Instructions Modal
+   ========================================================================== */
+.pwa-ios-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.pwa-ios-backdrop {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(27, 25, 23, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: pwaFadeIn 0.25s ease-out forwards;
+}
+
+@keyframes pwaFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.pwa-ios-sheet {
+  position: relative;
+  z-index: 10;
+  background: var(--color-surface, #FDFBF7);
+  width: 100%;
+  max-width: 440px;
+  border-radius: 24px 24px 0 0;
+  padding: 2rem 1.6rem calc(1.8rem + env(safe-area-inset-bottom, 0px));
+  box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.28);
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  animation: pwaSheetSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes pwaSheetSlideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.pwa-ios-close {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.2rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border, #E6E1DA);
+  background: #FFFFFF;
+  color: var(--color-noir, #1B1917);
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pwa-ios-close:hover {
+  background: var(--color-bg-alt, #F3EFE9);
+}
+
+.pwa-ios-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.pwa-ios-icon-box {
+  width: 58px;
+  height: 58px;
+  border-radius: 14px;
+  background: #1B1917;
+  margin: 0 auto 0.8rem;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.pwa-ios-app-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pwa-ios-header h3 {
+  font-family: var(--font-serif, 'Newsreader', serif);
+  font-size: 1.45rem;
+  font-weight: 500;
+  color: var(--color-noir, #1B1917);
+  margin: 0 0 0.4rem;
+}
+
+.pwa-ios-header p {
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  color: var(--color-ink-secondary, #6E675F);
+  line-height: 1.45;
+  margin: 0;
+}
+
+.pwa-ios-steps {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pwa-ios-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #FFFFFF;
+  border: 1px solid var(--color-border, #E6E1DA);
+  border-radius: 12px;
+  padding: 10px 14px;
+}
+
+.step-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-terracotta, #C26E4B);
+  color: #FFFFFF;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.step-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-sans);
+  font-size: 0.84rem;
+  color: var(--color-noir, #1B1917);
+  flex-wrap: wrap;
+}
+
+.step-icon {
+  color: #007AFF; /* Apple Cupertino Blue */
+  stroke-width: 2.2;
+}
+
+.pwa-ios-dismiss-btn {
+  width: 100%;
+  min-height: 48px;
+  background: var(--color-noir, #1B1917);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-pill, 9999px);
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: all 0.2s;
+}
+
+.pwa-ios-dismiss-btn:hover {
+  background: #33302C;
+}
+
+@media (min-width: 769px) {
+  .pwa-ios-modal {
+    align-items: center;
+  }
+  .pwa-ios-sheet {
+    border-radius: 20px;
+    padding: 2.2rem;
+  }
+}

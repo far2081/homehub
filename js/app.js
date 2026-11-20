@@ -174,6 +174,7 @@ class HomeHubApp {
 
   init() {
     this.initServiceWorker();
+    this.initPWAInstall();
     this.tenantService.applyTenantTheme(this.currentTenant);
     this.initTenantSwitcher();
     this.initLaunchStoreModal();
@@ -193,7 +194,7 @@ class HomeHubApp {
 
   initServiceWorker() {
     if (typeof window !== 'undefined' && 'serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
-      window.addEventListener('load', () => {
+      const registerSW = () => {
         navigator.serviceWorker.register('/sw.js')
           .then((reg) => {
             console.log('HomeHub PWA ServiceWorker registered with scope:', reg.scope);
@@ -201,6 +202,140 @@ class HomeHubApp {
           .catch((err) => {
             console.warn('ServiceWorker registration skipped:', err.message);
           });
+      };
+
+      if (document.readyState === 'complete') {
+        registerSW();
+      } else {
+        window.addEventListener('load', registerSW);
+      }
+    }
+  }
+
+  openInstallModal() {
+    const iosModal = document.getElementById('pwa-ios-modal');
+    if (iosModal) {
+      iosModal.style.display = 'flex';
+      iosModal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  closeInstallModal() {
+    const iosModal = document.getElementById('pwa-ios-modal');
+    if (iosModal) {
+      iosModal.style.display = 'none';
+      iosModal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+  }
+
+  initPWAInstall() {
+    let deferredPrompt = null;
+    const banner = document.getElementById('pwa-install-banner');
+    const closeBtn = document.getElementById('pwa-banner-close-btn');
+    const iosModal = document.getElementById('pwa-ios-modal');
+    const iosClose = document.getElementById('pwa-ios-close');
+    const iosDismiss = document.getElementById('pwa-ios-dismiss-btn');
+    const iosBackdrop = document.getElementById('pwa-ios-backdrop');
+
+    const isStandalone = (typeof window !== 'undefined') && (
+      Boolean(window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
+      window.navigator.standalone === true
+    );
+
+    const isIOS = (typeof navigator !== 'undefined') && (
+      /iPad|iPhone|iPod/.test(navigator.userAgent || '') ||
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+    );
+
+    if (iosClose) iosClose.addEventListener('click', () => this.closeInstallModal());
+    if (iosDismiss) iosDismiss.addEventListener('click', () => this.closeInstallModal());
+    if (iosBackdrop) iosBackdrop.addEventListener('click', () => this.closeInstallModal());
+
+    // Listen for beforeinstallprompt event (Chromium, Android, Chrome OS, Edge)
+    if (typeof window !== 'undefined') {
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+
+        // Sync banner title and badge to active tenant
+        const activeTenant = this.currentTenant || { name: 'HomeHub', badge: '🏛️' };
+        const bannerTitle = document.getElementById('pwa-banner-title');
+        const bannerBadge = document.getElementById('pwa-banner-badge');
+        if (bannerTitle) bannerTitle.textContent = `Install ${activeTenant.shortName || activeTenant.name} App`;
+        if (bannerBadge) bannerBadge.textContent = activeTenant.badge || '🏛️';
+
+        let dismissed = false;
+        try {
+          dismissed = sessionStorage.getItem('pwa_banner_dismissed') === 'true';
+        } catch (_) {}
+
+        if (!isStandalone && !dismissed && banner) {
+          setTimeout(() => {
+            banner.style.display = 'block';
+          }, 2500);
+        }
+      });
+    }
+
+    // Dismiss banner for current session
+    if (closeBtn && banner) {
+      closeBtn.addEventListener('click', () => {
+        banner.style.display = 'none';
+        try {
+          sessionStorage.setItem('pwa_banner_dismissed', 'true');
+        } catch (_) {}
+      });
+    }
+
+    // Trigger install on click using document-level event delegation
+    const handleInstallClick = (e) => {
+      if (e && e.preventDefault) e.preventDefault();
+
+      if (isStandalone) {
+        showToast('App is already installed and running in standalone mode!', 'info');
+        return;
+      }
+
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choice) => {
+          if (choice && choice.outcome === 'accepted') {
+            showToast('Thank you for installing the HomeHub Atelier app!', 'success');
+            if (banner) banner.style.display = 'none';
+          }
+        }).catch(() => {});
+        deferredPrompt = null;
+      } else {
+        this.openInstallModal();
+      }
+    };
+
+    const bindTriggers = () => {
+      document.querySelectorAll('.install-app-trigger, #pwa-banner-install-btn').forEach(btn => {
+        if (!btn.dataset.pwaBound) {
+          btn.dataset.pwaBound = 'true';
+          btn.addEventListener('click', handleInstallClick);
+        }
+      });
+    };
+    bindTriggers();
+
+    if (typeof document !== 'undefined') {
+      document.addEventListener('click', (e) => {
+        const trigger = e.target.closest && e.target.closest('.install-app-trigger, #pwa-banner-install-btn');
+        if (trigger) {
+          handleInstallClick(e);
+        }
+      });
+    }
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('appinstalled', () => {
+        showToast('App installed to your device successfully!', 'success');
+        if (banner) banner.style.display = 'none';
+        deferredPrompt = null;
       });
     }
   }
@@ -460,6 +595,12 @@ class HomeHubApp {
 
     // 6. Refresh Switcher UI
     this.renderTenantSwitcherList();
+
+    // 7. Update PWA Install Banner branding for active tenant
+    const pwaTitle = document.getElementById('pwa-banner-title');
+    const pwaBadge = document.getElementById('pwa-banner-badge');
+    if (pwaTitle) pwaTitle.textContent = `Install ${tenant.shortName || tenant.name} App`;
+    if (pwaBadge) pwaBadge.textContent = tenant.badge || '🏛️';
 
     // Close dropdown
     const switcherWrap = document.getElementById('tenant-switcher-wrap');

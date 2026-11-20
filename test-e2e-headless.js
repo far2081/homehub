@@ -433,6 +433,52 @@ console.log('\n[10] Testing Multi-Tenant SaaS Architecture & Tenant Isolation:')
   assert(tenantService.getActiveSlug() === 'homehub', 'Active tenant successfully restored to homehub');
 }
 
+// --- 11. PROGRESSIVE WEB APP (PWA) & MOBILE APP SHELL TESTS ---
+console.log('\n[11] Testing PWA Manifest, Service Worker & Mobile Shell:');
+{
+  const fs = await import('fs');
+  const path = await import('path');
+
+  // 1. Verify manifest.json integrity
+  const manifestRaw = fs.readFileSync(path.join(process.cwd(), 'manifest.json'), 'utf8');
+  const manifest = JSON.parse(manifestRaw);
+
+  assert(manifest.name.includes('HomeHub'), 'Manifest name is HomeHub');
+  assert(manifest.short_name === 'HomeHub', 'Manifest short_name is HomeHub');
+  assert(manifest.display === 'standalone', 'Manifest display mode is standalone');
+  assert(manifest.start_url === '/', 'Manifest start_url is /');
+  assert(manifest.theme_color === '#C26E4B', 'Manifest theme_color is terracotta');
+  assert(Array.isArray(manifest.icons) && manifest.icons.length >= 3, `Manifest has at least 3 icons (got ${manifest.icons.length})`);
+
+  // Verify icon files physically exist on disk
+  const icon192 = manifest.icons.find(i => i.sizes === '192x192');
+  const icon512 = manifest.icons.find(i => i.sizes === '512x512');
+  assert(Boolean(icon192), '192x192 icon declared in manifest');
+  assert(Boolean(icon512), '512x512 icon declared in manifest');
+  assert(fs.existsSync(path.join(process.cwd(), icon192.src)), '192x192 icon exists on disk');
+  assert(fs.existsSync(path.join(process.cwd(), icon512.src)), '512x512 icon exists on disk');
+
+  // 2. Verify sw.js service worker integrity
+  const swCode = fs.readFileSync(path.join(process.cwd(), 'sw.js'), 'utf8');
+  assert(swCode.includes('CACHE_NAME'), 'Service worker declares CACHE_NAME');
+  assert(swCode.includes('STATIC_ASSETS'), 'Service worker declares pre-cache assets');
+  assert(swCode.includes('/css/components/tenant-saas.css'), 'Service worker precaches tenant-saas.css');
+  assert(swCode.includes('/css/components/pwa-install.css'), 'Service worker precaches pwa-install.css');
+  assert(swCode.includes('/js/services/tenantService.js'), 'Service worker precaches tenantService.js');
+  assert(swCode.includes('event.request.mode === \'navigate\''), 'Service worker handles navigation requests network-first');
+  assert(swCode.includes('/api/'), 'Service worker bypasses /api/ routes without stale caching');
+
+  // 3. Verify index.html mobile app meta tags & PWA components
+  const indexHtml = fs.readFileSync(path.join(process.cwd(), 'index.html'), 'utf8');
+  assert(indexHtml.includes('rel="manifest" href="manifest.json"'), 'index.html links manifest.json');
+  assert(indexHtml.includes('name="apple-mobile-web-app-capable" content="yes"'), 'index.html enables apple-mobile-web-app-capable');
+  assert(indexHtml.includes('name="theme-color"'), 'index.html declares theme-color');
+  assert(indexHtml.includes('id="mobile-bottom-nav"'), 'index.html includes mobile app bottom navigation');
+  assert(indexHtml.includes('id="pwa-install-banner"'), 'index.html includes floating PWA install banner');
+  assert(indexHtml.includes('id="pwa-ios-modal"'), 'index.html includes iOS Add to Home Screen modal');
+  assert(indexHtml.includes('header-install-app-btn'), 'index.html includes header install button');
+}
+
 console.log('\n======================================================');
 console.log(`  E2E TEST SUMMARY: ${passed} PASSED, ${failed} FAILED`);
 console.log('======================================================\n');
