@@ -6,10 +6,10 @@
   "trailingSlash": false,
   "functions": {
     "index.js": {
-      "includeFiles": "{index.html,manifest.json,sw.js,css/**,js/**,assets/**}"
+      "includeFiles": "{index.html,manifest.json,public/**,sw.js,css/**,js/**,assets/**}"
     },
     "server.js": {
-      "includeFiles": "{index.html,manifest.json,sw.js,css/**,js/**,assets/**}"
+      "includeFiles": "{index.html,manifest.json,public/**,sw.js,css/**,js/**,assets/**}"
     },
     "api/**/*.js": {
       "includeFiles": "{index.html,css/**,js/**,assets/**}"
@@ -38,6 +38,10 @@
     },
     {
       "source": "/manifest.json",
+      "destination": "/manifest.json"
+    },
+    {
+      "source": "/public/manifest.json",
       "destination": "/manifest.json"
     },
     {

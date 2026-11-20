@@ -551,16 +551,21 @@
   font-size: 0.68rem;
   font-weight: 500;
   letter-spacing: 0.02em;
-  padding: 4px 10px;
+  padding: 4px 8px;
   border-radius: 10px;
   cursor: pointer;
   transition: all var(--transition-fast);
   text-decoration: none;
-  min-width: 54px;
+  min-width: 48px;
+  min-height: 48px;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .mobile-bottom-nav-item:active {
-  transform: scale(0.92);
+  transform: scale(0.97);
 }
 
 .mobile-bottom-nav-item.active,

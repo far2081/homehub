@@ -1563,14 +1563,14 @@
   }
 
   .owner-table-wrap {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    overflow-x: visible;
     width: 100%;
     box-sizing: border-box;
   }
 
   .owner-stores-table {
-    min-width: 680px;
+    width: 100%;
+    min-width: 0;
   }
 
   .store-lock-card {
@@ -1622,6 +1622,7 @@
   }
 
   .owner-stores-table {
-    min-width: 660px;
+    width: 100%;
+    min-width: 0;
   }
 }
