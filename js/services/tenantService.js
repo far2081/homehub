@@ -588,8 +588,8 @@ export class TenantService {
 
     const currency = CURRENCY_MAP[currencyCode] || CURRENCY_MAP['USD'];
 
-    // Check if owner PIN provided for instant activation
-    const isOwnerActivated = (ownerPin && ownerPin.trim() === 'OWNER-2026');
+    // Check if owner PIN provided for instant activation (Master PIN: 2081)
+    const isOwnerActivated = Boolean(ownerPin && (ownerPin.trim() === '2081' || ownerPin.trim() === 'OWNER-2026'));
     const now = new Date();
     const trialEnds = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
     const initialStatus = isOwnerActivated ? 'active' : 'trial';
@@ -730,7 +730,9 @@ export class TenantService {
   }
 
   verifyOwnerPin(pin) {
-    return typeof pin === 'string' && pin.trim() === 'OWNER-2026';
+    if (typeof pin !== 'string') return false;
+    const clean = pin.trim();
+    return clean === '2081' || clean === 'OWNER-2026';
   }
 
   adjustBrightness(hex, percent) {

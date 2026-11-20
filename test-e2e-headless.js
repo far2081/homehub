@@ -576,6 +576,7 @@ console.log('\n[12] Testing 7-Day Free Trial, Paid SaaS Subscription Plans & Pla
   assert(tenantService.calculateMRR() === initialMRR + 99, `MRR increased by $99/mo after instant active Enterprise store (got $${tenantService.calculateMRR()})`);
 
   // 10. Test Master PIN Verification
+  assert(tenantService.verifyOwnerPin('2081') === true, 'verifyOwnerPin accepts valid 2081 master PIN');
   assert(tenantService.verifyOwnerPin('OWNER-2026') === true, 'verifyOwnerPin accepts valid OWNER-2026 master key');
   assert(tenantService.verifyOwnerPin('WRONG-PIN') === false, 'verifyOwnerPin rejects invalid PIN');
   assert(tenantService.verifyOwnerPin('') === false, 'verifyOwnerPin rejects empty PIN');
