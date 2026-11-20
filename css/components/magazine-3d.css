@@ -2494,6 +2494,165 @@
   padding: 3rem 0;
 }
 
+/* Mobile Quick Navigation Controls */
+.mobile-book-nav-bar {
+  display: none;
+}
+
+/* ==========================================================================
+   Mobile Viewport Styles (<= 768px)
+   Clean single-page view, responsive sizing, touch-first interactions
+   ========================================================================== */
+@media (max-width: 768px) {
+  .flipbook-stage {
+    min-height: auto;
+    padding: 0.5rem 0 1rem;
+    perspective: none;
+    -webkit-perspective: none;
+    overflow-x: hidden;
+    width: 100%;
+  }
+
+  .flipbook-viewport,
+  .flipbook-viewport.mode-single {
+    width: min(92vw, 380px) !important;
+    max-width: 380px !important;
+    min-height: 520px !important;
+    height: auto !important;
+    margin: 0 auto !important;
+    border-radius: 6px;
+    box-shadow: 0 14px 34px -8px rgba(24, 21, 18, 0.28), 0 0 0 1px rgba(0, 0, 0, 0.08) !important;
+    overflow: hidden !important;
+    box-sizing: border-box;
+  }
+
+  .flipbook-viewport.mode-single .magazine-pages-container {
+    width: 100% !important;
+    min-height: 520px !important;
+    height: auto !important;
+  }
+
+  .mode-single .magazine-page {
+    width: 100% !important;
+    min-height: 520px !important;
+    height: auto !important;
+    border-radius: 6px;
+    box-sizing: border-box;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+
+  /* Cover Page on Mobile */
+  .page-cover {
+    width: 100% !important;
+    min-height: 520px !important;
+    padding: 2.2rem 1.4rem 1.6rem !important;
+    box-sizing: border-box;
+    cursor: pointer !important;
+    touch-action: manipulation !important;
+  }
+
+  .cover-title {
+    font-size: clamp(1.6rem, 6.5vw, 2.2rem) !important;
+    line-height: 1.15 !important;
+  }
+
+  .cover-deck {
+    font-size: 0.85rem !important;
+    line-height: 1.4 !important;
+    margin-top: 0.4rem !important;
+  }
+
+  .cover-lines-box {
+    margin-top: 0.8rem !important;
+    padding: 0.8rem !important;
+  }
+
+  .cover-open-btn {
+    width: 100% !important;
+    min-height: 48px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0.9rem 1.4rem !important;
+    font-size: 0.88rem !important;
+    letter-spacing: 0.08em !important;
+    touch-action: manipulation !important;
+    cursor: pointer !important;
+    z-index: 25 !important;
+    position: relative !important;
+  }
+
+  /* Mobile Turn Controls Bar */
+  .mobile-book-nav-bar {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 14px auto 0;
+    width: min(92vw, 380px);
+    box-sizing: border-box;
+  }
+
+  .mobile-nav-turn-btn {
+    flex: 1;
+    min-height: 46px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-surface-pure);
+    color: var(--color-charcoal);
+    cursor: pointer;
+    touch-action: manipulation;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-fast);
+  }
+
+  .mobile-nav-turn-btn.mobile-turn-next {
+    background-color: var(--color-terracotta);
+    color: #FFFFFF;
+    border-color: var(--color-terracotta);
+  }
+
+  .mobile-nav-turn-btn:disabled {
+    opacity: 0.35;
+    pointer-events: none;
+  }
+
+  /* Arrows on Mobile */
+  .flip-arrow {
+    width: 40px !important;
+    height: 40px !important;
+    z-index: 35 !important;
+  }
+
+  .flip-prev {
+    left: 4px !important;
+  }
+
+  .flip-next {
+    right: 4px !important;
+  }
+
+  /* Hide two-page artifacts */
+  .flipbook-viewport.mode-spread {
+    display: none !important;
+  }
+
+  .magazine-spine,
+  .spine-crease-overlay,
+  .book-edge-stack,
+  .ambient-specular-light {
+    display: none !important;
+  }
+}
+
 /* Accessibility: Respect Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
   .curved-strip,

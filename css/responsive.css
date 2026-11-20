@@ -49,15 +49,6 @@ select {
     display: none; /* Collapsed into mobile drawer */
   }
 
-  .flipbook-viewport.mode-spread {
-    display: none;
-  }
-
-  .flipbook-viewport {
-    min-height: auto;
-    box-shadow: var(--shadow-md);
-  }
-
   .flip-prev {
     left: 8px;
   }

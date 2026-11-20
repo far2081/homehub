@@ -18,7 +18,7 @@ export class Flipbook {
     this.container = document.getElementById(containerId);
     this.currentBookId = options.initialBook || 'living-edit';
     this.currentPageIndex = 0; // 0-indexed page number
-    this.isDesktopSpread = typeof window !== 'undefined' ? window.innerWidth >= 992 : true;
+    this.isDesktopSpread = typeof window !== 'undefined' ? window.innerWidth > 768 : true;
     this.isFlipping = false;
     this.isDragging = false;
     this.dragProgress = 0;
@@ -35,7 +35,7 @@ export class Flipbook {
 
     window.addEventListener('resize', () => {
       const wasDesktop = this.isDesktopSpread;
-      this.isDesktopSpread = window.innerWidth >= 992;
+      this.isDesktopSpread = window.innerWidth > 768;
       if (wasDesktop !== this.isDesktopSpread) {
         this.render();
       }
@@ -355,7 +355,7 @@ export class Flipbook {
       backPage = this.isDesktopSpread ? targetPages.leftPage : targetPages.rightPage;
     } else {
       frontPage = targetPages.rightPage;
-      backPage = curPages.leftPage;
+      backPage = this.isDesktopSpread ? curPages.leftPage : curPages.rightPage;
     }
 
     const turningLeaf = document.createElement('div');
@@ -610,6 +610,16 @@ export class Flipbook {
           </button>
         </div>
 
+        <!-- Mobile Quick Turn Controls (<= 768px) -->
+        <div class="mobile-book-nav-bar" id="mobile-book-nav-bar">
+          <button class="mobile-nav-turn-btn mobile-turn-prev" id="mobile-turn-prev-btn" aria-label="Previous Page">
+            <span>← Previous</span>
+          </button>
+          <button class="mobile-nav-turn-btn mobile-turn-next" id="mobile-turn-next-btn" aria-label="Next Page or Open Magazine">
+            <span class="mobile-next-label">${this.currentPageIndex === 0 ? 'Open Magazine →' : 'Next Page →'}</span>
+          </button>
+        </div>
+
         <!-- Shop This Spread Lookbook Tray Slot -->
         <div id="spread-lookbook-slot"></div>
 
@@ -696,8 +706,35 @@ export class Flipbook {
     const prevBtn = this.container.querySelector('#flip-prev-btn');
     const nextBtn = this.container.querySelector('#flip-next-btn');
 
-    if (prevBtn) prevBtn.addEventListener('click', () => this.prevPage());
-    if (nextBtn) nextBtn.addEventListener('click', () => this.nextPage());
+    const handlePrev = (e) => {
+      if (e) {
+        e.stopPropagation();
+        if (e.cancelable) e.preventDefault();
+      }
+      this.prevPage();
+    };
+
+    const handleNext = (e) => {
+      if (e) {
+        e.stopPropagation();
+        if (e.cancelable) e.preventDefault();
+      }
+      this.nextPage();
+    };
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', handlePrev);
+      prevBtn.addEventListener('touchend', (e) => {
+        if (!this.isDragging) handlePrev(e);
+      }, { passive: false });
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener('click', handleNext);
+      nextBtn.addEventListener('touchend', (e) => {
+        if (!this.isDragging) handleNext(e);
+      }, { passive: false });
+    }
 
     // Interactive Ambient Light Tracking (mouse sheen across glossy coated paper)
     const viewport = this.container.querySelector('#flipbook-viewport');
@@ -716,47 +753,60 @@ export class Flipbook {
   }
 
   /**
-   * Interactive Drag Engine
-   * Allows clicking/touching on the page and dragging horizontally to peel & curl the paper in real-time.
+   * Interactive Drag & Tap Engine
+   * Separates tap/click gestures from drag/peel gestures:
+   * - Taps on cover or "Open / Next Page" controls immediately open and turn pages.
+   * - Dragging horizontally curls the paper with 3D mesh curvature.
+   * - Vertical scrolling on mobile is smoothly passed through without interception.
    */
   bindDragEvents(viewport) {
     let startX = 0;
     let startY = 0;
     let startTime = 0;
+    let isTracking = false;
+    let hasStartedDrag = false;
+    let isTouch = false;
     let direction = null;
     let activeDrag = null;
+    let touchTarget = null;
 
-    const onStart = (clientX, clientY, target) => {
+    const onPointerDown = (clientX, clientY, target, fromTouch = false) => {
       if (this.isFlipping) return;
-      // Do not initiate drag on buttons, pins, or links
-      if (target.closest('.magazine-hotspot-pin, button, a, input, select, textarea, .shop-chip-btn, .shop-chip-add-btn, .cover-open-btn, .backcover-shop-btn, .backcover-reopen-btn')) {
-        return;
-      }
-
-      const rect = viewport.getBoundingClientRect();
-      const relativeX = clientX - rect.left;
-      const isRightHalf = relativeX > rect.width / 2;
-
-      // Determine direction
-      if (isRightHalf) {
-        direction = 'forward';
-        const total = this.getTotalPages();
-        const isEnd = this.isDesktopSpread
-          ? (this.currentPageIndex >= total - 2)
-          : (this.currentPageIndex >= total - 1);
-        if (isEnd) return;
-      } else {
-        direction = 'backward';
-        if (this.currentPageIndex === 0) return;
-      }
-
+      isTouch = fromTouch;
+      isTracking = true;
+      hasStartedDrag = false;
       startX = clientX;
       startY = clientY;
       startTime = performance.now();
-      this.isDragging = true;
+      touchTarget = target;
+      direction = null;
+      activeDrag = null;
+    };
 
-      // Determine target spread and pre-render underlying slot
+    const startActualDrag = (clientX, clientY) => {
+      const deltaX = clientX - startX;
+      const rect = viewport.getBoundingClientRect();
+      const relativeX = startX - rect.left;
+
+      if (this.isDesktopSpread) {
+        direction = relativeX > rect.width / 2 ? 'forward' : 'backward';
+      } else {
+        direction = deltaX < 0 ? 'forward' : 'backward';
+      }
+
       const total = this.getTotalPages();
+      if (direction === 'forward') {
+        const isEnd = this.isDesktopSpread
+          ? (this.currentPageIndex >= total - 2)
+          : (this.currentPageIndex >= total - 1);
+        if (isEnd) return false;
+      } else {
+        if (this.currentPageIndex === 0) return false;
+      }
+
+      this.isDragging = true;
+      hasStartedDrag = true;
+
       let targetIndex = this.currentPageIndex;
       if (direction === 'forward') {
         const step = this.isDesktopSpread ? (this.currentPageIndex === 0 ? 1 : 2) : 1;
@@ -765,137 +815,208 @@ export class Flipbook {
         const step = this.isDesktopSpread ? (this.currentPageIndex <= 2 ? this.currentPageIndex : 2) : 1;
         targetIndex = Math.max(0, this.currentPageIndex - step);
       }
+
       const curPages = this.getSpreadPages(this.currentPageIndex);
       const targetPages = this.getSpreadPages(targetIndex);
 
       this.renderUnderlyingSpread(direction, curPages, targetPages);
 
-      // Create live turning leaf
       activeDrag = this.createCurvedTurningLeaf(direction, curPages, targetPages);
       if (activeDrag && activeDrag.turningLeaf) {
         activeDrag.targetIndex = targetIndex;
         viewport.appendChild(activeDrag.turningLeaf);
         this.updateCurl(0, direction, activeDrag.strips, activeDrag.underShadow, activeDrag.pageWidth);
       }
+      return true;
     };
 
-    const onMove = (clientX, clientY) => {
-      if (!this.isDragging || !activeDrag) return;
+    const onPointerMove = (clientX, clientY) => {
+      if (!isTracking) return;
       const deltaX = clientX - startX;
-      const pageWidth = activeDrag.pageWidth;
+      const deltaY = clientY - startY;
 
-      let p = 0;
-      if (direction === 'forward') {
-        p = Math.max(0, Math.min(1, -deltaX / (pageWidth * 0.9)));
-      } else {
-        p = Math.max(0, Math.min(1, deltaX / (pageWidth * 0.9)));
+      if (!hasStartedDrag) {
+        // On touch: if vertical movement is dominant, allow normal page scrolling and abort drag
+        if (isTouch && Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > 8) {
+          isTracking = false;
+          return;
+        }
+
+        // Only begin curling the leaf after deliberate horizontal movement (>12px)
+        if (Math.abs(deltaX) > 12) {
+          if (touchTarget && touchTarget.closest('.magazine-hotspot-pin, button, a, input, select, textarea, .shop-chip-btn, .shop-chip-add-btn, .cover-open-btn, .backcover-shop-btn, .backcover-reopen-btn')) {
+            isTracking = false;
+            return;
+          }
+          if (!startActualDrag(clientX, clientY)) {
+            isTracking = false;
+            return;
+          }
+        }
       }
 
-      this.dragProgress = p;
-      this.updateCurl(p, direction, activeDrag.strips, activeDrag.underShadow, pageWidth);
+      if (hasStartedDrag && activeDrag) {
+        const pageWidth = activeDrag.pageWidth;
+        let p = 0;
+        if (direction === 'forward') {
+          p = Math.max(0, Math.min(1, -deltaX / (pageWidth * 0.9)));
+        } else {
+          p = Math.max(0, Math.min(1, deltaX / (pageWidth * 0.9)));
+        }
+        this.dragProgress = p;
+        this.updateCurl(p, direction, activeDrag.strips, activeDrag.underShadow, pageWidth);
+      }
     };
 
-    const onEnd = (clientX) => {
-      if (!this.isDragging || !activeDrag) return;
-      this.isDragging = false;
-      const duration = performance.now() - startTime;
+    const onPointerEnd = (clientX, clientY) => {
+      if (!isTracking) return;
+      isTracking = false;
+
       const deltaX = clientX - startX;
-      const velocity = Math.abs(deltaX) / Math.max(1, duration);
+      const deltaY = clientY - startY;
+      const duration = performance.now() - startTime;
+      const isQuickTap = duration < 380 && Math.abs(deltaX) < 16 && Math.abs(deltaY) < 16;
 
-      const p = this.dragProgress;
-      const shouldFlip = p > 0.35 || (velocity > 0.35 && p > 0.1);
+      // 1. TAP HANDLING (no turning leaf was created, so gestures and clicks never lock up)
+      if (!hasStartedDrag) {
+        // Let explicit interactive controls handle their own clicks
+        if (touchTarget && touchTarget.closest('.magazine-hotspot-pin, button, a, input, select, textarea, .shop-chip-btn, .shop-chip-add-btn, .backcover-shop-btn, .backcover-reopen-btn')) {
+          return;
+        }
 
-      const leaf = activeDrag.turningLeaf;
-      const strips = activeDrag.strips;
-      const underShadow = activeDrag.underShadow;
-      const pageWidth = activeDrag.pageWidth;
-      const dir = direction;
-      const targetIndex = activeDrag.targetIndex;
+        // Tapping the magazine cover on mobile or desktop opens it immediately
+        if (this.currentPageIndex === 0) {
+          this.nextPage();
+          return;
+        }
 
-      this.isFlipping = true;
+        // Tapping on corner cues
+        if (touchTarget && touchTarget.closest('.corner-cue-right')) {
+          this.nextPage();
+          return;
+        }
+        if (touchTarget && touchTarget.closest('.corner-cue-left')) {
+          this.prevPage();
+          return;
+        }
 
-      if (shouldFlip) {
-        // Complete the flip smoothly to 1.0 with cosine ease
-        const animDuration = Math.max(160, (1 - p) * 380);
-        const animStart = performance.now();
-        const startP = p;
-
-        const animateComplete = (now) => {
-          const t = Math.min(1, (now - animStart) / animDuration);
-          const currentP = startP + (1 - startP) * (0.5 - 0.5 * Math.cos(Math.PI * t));
-          this.updateCurl(currentP, dir, strips, underShadow, pageWidth);
-
-          if (t < 1) {
-            requestAnimationFrame(animateComplete);
+        // On single-page view (<= 768px): tapping right side advances, left side goes back
+        if (!this.isDesktopSpread && isQuickTap) {
+          const rect = viewport.getBoundingClientRect();
+          const relX = clientX - rect.left;
+          if (relX > rect.width * 0.5) {
+            this.nextPage();
           } else {
-            this.currentPageIndex = targetIndex;
-            this.renderSpreadContent();
-            if (leaf.parentNode) leaf.parentNode.removeChild(leaf);
-            this.isFlipping = false;
-            activeDrag = null;
+            this.prevPage();
           }
-        };
-        requestAnimationFrame(animateComplete);
-      } else {
-        // Snap back to 0.0 with cosine ease
-        const animDuration = Math.max(140, p * 280);
-        const animStart = performance.now();
-        const startP = p;
+        }
+        return;
+      }
 
-        const animateSnap = (now) => {
-          const t = Math.min(1, (now - animStart) / animDuration);
-          const currentP = startP * (0.5 + 0.5 * Math.cos(Math.PI * t));
-          this.updateCurl(currentP, dir, strips, underShadow, pageWidth);
+      // 2. ACTUAL DRAG COMPLETION
+      if (hasStartedDrag && activeDrag) {
+        this.isDragging = false;
+        hasStartedDrag = false;
+        const velocity = Math.abs(deltaX) / Math.max(1, duration);
+        const p = this.dragProgress;
+        const shouldFlip = p > 0.35 || (velocity > 0.35 && p > 0.1);
 
-          if (t < 1) {
-            requestAnimationFrame(animateSnap);
-          } else {
-            this.renderSpreadContent();
-            if (leaf.parentNode) leaf.parentNode.removeChild(leaf);
-            this.isFlipping = false;
-            activeDrag = null;
-          }
-        };
-        requestAnimationFrame(animateSnap);
+        const leaf = activeDrag.turningLeaf;
+        const strips = activeDrag.strips;
+        const underShadow = activeDrag.underShadow;
+        const pageWidth = activeDrag.pageWidth;
+        const dir = direction;
+        const targetIndex = activeDrag.targetIndex;
+
+        this.isFlipping = true;
+
+        if (shouldFlip) {
+          const animDuration = Math.max(160, (1 - p) * 380);
+          const animStart = performance.now();
+          const startP = p;
+
+          const animateComplete = (now) => {
+            const t = Math.min(1, (now - animStart) / animDuration);
+            const currentP = startP + (1 - startP) * (0.5 - 0.5 * Math.cos(Math.PI * t));
+            this.updateCurl(currentP, dir, strips, underShadow, pageWidth);
+
+            if (t < 1) {
+              requestAnimationFrame(animateComplete);
+            } else {
+              this.currentPageIndex = targetIndex;
+              this.renderSpreadContent();
+              if (leaf && leaf.parentNode) leaf.parentNode.removeChild(leaf);
+              this.isFlipping = false;
+              activeDrag = null;
+            }
+          };
+          requestAnimationFrame(animateComplete);
+        } else {
+          const animDuration = Math.max(140, p * 280);
+          const animStart = performance.now();
+          const startP = p;
+
+          const animateSnap = (now) => {
+            const t = Math.min(1, (now - animStart) / animDuration);
+            const currentP = startP * (0.5 + 0.5 * Math.cos(Math.PI * t));
+            this.updateCurl(currentP, dir, strips, underShadow, pageWidth);
+
+            if (t < 1) {
+              requestAnimationFrame(animateSnap);
+            } else {
+              this.renderSpreadContent();
+              if (leaf && leaf.parentNode) leaf.parentNode.removeChild(leaf);
+              this.isFlipping = false;
+              activeDrag = null;
+            }
+          };
+          requestAnimationFrame(animateSnap);
+        }
       }
     };
 
     // Mouse listeners
     viewport.addEventListener('mousedown', (e) => {
-      onStart(e.clientX, e.clientY, e.target);
+      onPointerDown(e.clientX, e.clientY, e.target, false);
     });
-
     window.addEventListener('mousemove', (e) => {
-      onMove(e.clientX, e.clientY);
+      onPointerMove(e.clientX, e.clientY);
     });
-
     window.addEventListener('mouseup', (e) => {
-      onEnd(e.clientX);
+      onPointerEnd(e.clientX, e.clientY);
     });
 
-    // Touch listeners (Android mobile viewport)
+    // Touch listeners (Mobile viewports)
     viewport.addEventListener('touchstart', (e) => {
       if (e.touches && e.touches.length === 1) {
-        onStart(e.touches[0].clientX, e.touches[0].clientY, e.target);
+        onPointerDown(e.touches[0].clientX, e.touches[0].clientY, e.target, true);
       }
     }, { passive: true });
 
     window.addEventListener('touchmove', (e) => {
       if (e.touches && e.touches.length === 1) {
-        onMove(e.touches[0].clientX, e.touches[0].clientY);
+        onPointerMove(e.touches[0].clientX, e.touches[0].clientY);
       }
     }, { passive: true });
 
     window.addEventListener('touchend', (e) => {
-      const clientX = e.changedTouches && e.changedTouches[0] ? e.changedTouches[0].clientX : 0;
-      onEnd(clientX);
+      const touch = e.changedTouches && e.changedTouches[0] ? e.changedTouches[0] : null;
+      const clientX = touch ? touch.clientX : startX;
+      const clientY = touch ? touch.clientY : startY;
+      onPointerEnd(clientX, clientY);
     });
 
     // Corner cues click
     const cornerRight = this.container.querySelector('.corner-cue-right');
     const cornerLeft = this.container.querySelector('.corner-cue-left');
-    if (cornerRight) cornerRight.addEventListener('click', () => this.nextPage());
-    if (cornerLeft) cornerLeft.addEventListener('click', () => this.prevPage());
+    if (cornerRight) {
+      cornerRight.addEventListener('click', () => this.nextPage());
+      cornerRight.addEventListener('touchend', (e) => { e.stopPropagation(); this.nextPage(); });
+    }
+    if (cornerLeft) {
+      cornerLeft.addEventListener('click', () => this.prevPage());
+      cornerLeft.addEventListener('touchend', (e) => { e.stopPropagation(); this.prevPage(); });
+    }
   }
 
   renderSpreadContent() {
@@ -929,14 +1050,74 @@ export class Flipbook {
 
     slot.innerHTML = html;
 
-    // Attach "Open Magazine" buttons on the cover
+    // 1. Attach "Open Magazine" buttons on the cover with both click and touch support
     const openCoverBtns = slot.querySelectorAll('.cover-open-btn');
-    openCoverBtns.forEach(btn => {
-      btn.addEventListener('click', (e) => {
+    const triggerOpen = (e) => {
+      if (e) {
         e.stopPropagation();
-        this.nextPage();
-      });
+        if (e.cancelable) e.preventDefault();
+      }
+      this.nextPage();
+    };
+
+    openCoverBtns.forEach(btn => {
+      btn.addEventListener('click', triggerOpen);
+      btn.addEventListener('touchend', (e) => {
+        if (!this.isDragging) triggerOpen(e);
+      }, { passive: false });
     });
+
+    // 2. When on Cover (page 0), tapping anywhere on the cover opens the magazine
+    if (this.currentPageIndex === 0) {
+      const coverEls = slot.querySelectorAll('.page-cover');
+      coverEls.forEach(cover => {
+        cover.style.cursor = 'pointer';
+        cover.setAttribute('role', 'button');
+        cover.setAttribute('tabindex', '0');
+        cover.setAttribute('aria-label', 'Open Magazine - Tap to read issue');
+
+        const onCoverTap = (e) => {
+          if (e.target.closest('a, button, input, select, textarea, .magazine-hotspot-pin')) return;
+          triggerOpen(e);
+        };
+
+        cover.addEventListener('click', onCoverTap);
+        cover.addEventListener('touchend', (e) => {
+          if (!this.isDragging) onCoverTap(e);
+        }, { passive: false });
+      });
+    }
+
+    // 3. Mobile quick navigation bar buttons (#mobile-turn-prev-btn, #mobile-turn-next-btn)
+    const mobilePrevBtn = this.container.querySelector('#mobile-turn-prev-btn');
+    const mobileNextBtn = this.container.querySelector('#mobile-turn-next-btn');
+
+    if (mobilePrevBtn) {
+      mobilePrevBtn.disabled = this.currentPageIndex === 0;
+      const onPrev = (e) => {
+        e.stopPropagation();
+        if (e.cancelable) e.preventDefault();
+        this.prevPage();
+      };
+      mobilePrevBtn.onclick = onPrev;
+      mobilePrevBtn.ontouchend = (e) => { if (!this.isDragging) onPrev(e); };
+    }
+
+    if (mobileNextBtn) {
+      const isEnd = this.currentPageIndex >= total - 1;
+      mobileNextBtn.disabled = isEnd;
+      const nextLabel = mobileNextBtn.querySelector('.mobile-next-label');
+      if (nextLabel) {
+        nextLabel.textContent = this.currentPageIndex === 0 ? 'Open Magazine →' : 'Next Page →';
+      }
+      const onNext = (e) => {
+        e.stopPropagation();
+        if (e.cancelable) e.preventDefault();
+        this.nextPage();
+      };
+      mobileNextBtn.onclick = onNext;
+      mobileNextBtn.ontouchend = (e) => { if (!this.isDragging) onNext(e); };
+    }
 
     // Attach Hotspot & Product click triggers
     this.attachProductTriggers(slot);
@@ -1312,8 +1493,8 @@ export class Flipbook {
           <div class="cover-footer-meta">
             <p class="cover-colophon">${page.colophon || ''}</p>
             <div class="cover-action-wrap">
-              <button class="cover-open-btn" aria-label="Read Issue">
-                <span>Read Issue</span>
+              <button class="cover-open-btn" id="cover-open-btn" aria-label="Open Magazine • Read Issue">
+                <span>Open Magazine • Read Issue</span>
                 <span class="open-arrow">→</span>
               </button>
             </div>
