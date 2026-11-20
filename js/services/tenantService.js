@@ -333,28 +333,34 @@ export const SAAS_PLANS = {
     name: 'Starter',
     price: 19,
     billing: 'mo',
+    trialDays: 7,
     maxProducts: 15,
     tagline: 'Standard Storefront',
-    features: ['Up to 15 Products', 'Standard Storefront & Catalog', 'Integrated Cart & Orders', 'SSL Security']
+    desc: '$19 / mo after 7-day free trial',
+    features: ['7-Day Free Trial Included', 'Up to 15 Products', 'Standard Storefront & Catalog', 'Integrated Cart & Orders']
   },
   pro: {
     id: 'pro',
     name: 'Studio Pro',
     price: 49,
     billing: 'mo',
+    trialDays: 7,
     maxProducts: -1,
     tagline: 'Full Studio Experience',
     badge: 'Popular',
-    features: ['Unlimited Products', '3D Editorial Magazine', 'PWA Installable Mobile App', 'Custom Color Themes']
+    desc: '$49 / mo after 7-day free trial',
+    features: ['7-Day Free Trial Included', 'Unlimited Products', '3D Editorial Magazine', 'PWA Installable Mobile App', 'Custom Color Themes']
   },
   enterprise: {
     id: 'enterprise',
     name: 'Enterprise',
     price: 99,
     billing: 'mo',
+    trialDays: 7,
     maxProducts: -1,
     tagline: 'Multi-Branch & Custom Domain',
-    features: ['Multi-Branch Stores', 'Custom Domain Support', 'Priority SLA & Cloud Sync', 'Dedicated Manager']
+    desc: '$99 / mo after 7-day free trial',
+    features: ['7-Day Free Trial Included', 'Multi-Branch Stores', 'Custom Domain Support', 'Priority SLA & Cloud Sync', 'Dedicated Manager']
   }
 };
 
@@ -456,9 +462,14 @@ export class TenantService {
     if (Array.isArray(customList)) {
       customList.forEach(t => {
         if (t && t.slug) {
-          if (!t.status) t.status = 'pending_payment';
+          if (!t.status) t.status = 'trial';
           if (!t.plan) t.plan = 'pro';
           if (!t.planPrice) t.planPrice = (SAAS_PLANS[t.plan] || SAAS_PLANS.pro).price;
+          if (t.status === 'trial' && !t.trialEndsAt) {
+            t.trialStartedAt = t.createdAt || new Date().toISOString();
+            t.trialEndsAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+            t.trialDays = 7;
+          }
           this.tenants[t.slug] = t;
         }
       });
@@ -579,7 +590,9 @@ export class TenantService {
 
     // Check if owner PIN provided for instant activation
     const isOwnerActivated = (ownerPin && ownerPin.trim() === 'OWNER-2026');
-    const initialStatus = isOwnerActivated ? 'active' : 'pending_payment';
+    const now = new Date();
+    const trialEnds = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+    const initialStatus = isOwnerActivated ? 'active' : 'trial';
 
     // Create starter products cloned from existing catalog with tailored prices/skus
     const starterProducts = STUDIO_NOOR_PRODUCTS.slice(0, 4).map((p, idx) => ({
@@ -608,12 +621,15 @@ export class TenantService {
       planName: plan.name,
       planPrice: plan.price,
       status: initialStatus,
-      paymentMethod: paymentMethod || 'Credit Card',
-      paymentRef: paymentRef || (isOwnerActivated ? 'OWNER-KEY-ACTIVATED' : 'PENDING-TRANS-REF'),
+      trialStartedAt: isOwnerActivated ? null : now.toISOString(),
+      trialEndsAt: isOwnerActivated ? null : trialEnds.toISOString(),
+      trialDays: 7,
+      paymentMethod: paymentMethod || 'Credit / Debit Card',
+      paymentRef: paymentRef || (isOwnerActivated ? 'OWNER-KEY-ACTIVATED' : 'TRIAL-FREE-7D'),
       description: `Bespoke storefront powered by HomeHub Multi-Tenant SaaS.`,
       products: starterProducts,
-      createdAt: new Date().toISOString(),
-      activatedAt: isOwnerActivated ? new Date().toISOString() : null
+      createdAt: now.toISOString(),
+      activatedAt: isOwnerActivated ? now.toISOString() : null
     };
 
     this.tenants[cleanSlug] = newTenant;
@@ -621,11 +637,40 @@ export class TenantService {
     return newTenant;
   }
 
+  checkTrialStatus(slug) {
+    if (!slug || slug === 'homehub' || PRESEEDED_TENANTS[slug]) {
+      return 'active';
+    }
+    const t = this.tenants[slug];
+    if (!t) return 'unknown';
+
+    if (t.status === 'trial') {
+      if (t.trialEndsAt && new Date(t.trialEndsAt).getTime() <= Date.now()) {
+        t.status = 'trial_expired';
+        this.saveCustomTenants();
+      }
+    }
+    return t.status;
+  }
+
+  getTrialDaysRemaining(slug) {
+    const t = typeof slug === 'string' ? this.tenants[slug] : slug;
+    if (!t || t.status !== 'trial' || !t.trialEndsAt) return 0;
+    const diff = new Date(t.trialEndsAt).getTime() - Date.now();
+    if (diff <= 0) return 0;
+    return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
+  }
+
   isTenantActive(slug) {
-    if (!slug || slug === 'homehub') return true;
+    if (!slug || slug === 'homehub' || PRESEEDED_TENANTS[slug]) return true;
     const t = this.tenants[slug];
     if (!t) return false;
-    return t.status === 'active';
+    this.checkTrialStatus(slug);
+    if (t.status === 'active') return true;
+    if (t.status === 'trial') {
+      return Boolean(t.trialEndsAt && new Date(t.trialEndsAt).getTime() > Date.now());
+    }
+    return false;
   }
 
   updateTenantStatus(slug, newStatus) {
@@ -637,6 +682,43 @@ export class TenantService {
     if (newStatus === 'active') {
       tenant.activatedAt = new Date().toISOString();
     }
+    this.saveCustomTenants();
+    return tenant;
+  }
+
+  extendTenantTrial(slug, days = 7) {
+    if (!this.tenants[slug]) {
+      throw new Error(`Tenant "${slug}" not found.`);
+    }
+    const tenant = this.tenants[slug];
+    const currentEnd = tenant.trialEndsAt ? new Date(tenant.trialEndsAt).getTime() : Date.now();
+    const baseTime = Math.max(Date.now(), currentEnd);
+    tenant.trialEndsAt = new Date(baseTime + days * 24 * 60 * 60 * 1000).toISOString();
+    tenant.status = 'trial';
+    this.saveCustomTenants();
+    return tenant;
+  }
+
+  simulateTrialExpiry(slug) {
+    if (!this.tenants[slug]) {
+      throw new Error(`Tenant "${slug}" not found.`);
+    }
+    const tenant = this.tenants[slug];
+    tenant.trialEndsAt = new Date(Date.now() - 3600 * 1000).toISOString();
+    tenant.status = 'trial_expired';
+    this.saveCustomTenants();
+    return tenant;
+  }
+
+  activatePaidPlan(slug, paymentMethod, paymentRef) {
+    if (!this.tenants[slug]) {
+      throw new Error(`Tenant "${slug}" not found.`);
+    }
+    const tenant = this.tenants[slug];
+    tenant.status = 'active';
+    tenant.activatedAt = new Date().toISOString();
+    if (paymentMethod) tenant.paymentMethod = paymentMethod;
+    if (paymentRef) tenant.paymentRef = paymentRef;
     this.saveCustomTenants();
     return tenant;
   }

@@ -58,6 +58,21 @@
     </div>
   </div>
 
+  <!-- 7-Day Free Trial Active Countdown Banner -->
+  <aside class="store-trial-banner" id="store-trial-banner" style="display: none;" role="region" aria-label="7-Day Free Trial Notice">
+    <div class="trial-banner-container">
+      <div class="trial-banner-left">
+        <span class="trial-pill">7-Day Free Trial Active</span>
+        <span class="trial-msg" id="trial-banner-msg">7 days remaining on your trial • Selected: Studio Pro ($49/mo after trial)</span>
+      </div>
+      <div class="trial-banner-right">
+        <button type="button" class="btn-trial-upgrade" id="trial-banner-upgrade-btn">
+          <span>Upgrade & Activate Paid Plan →</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
   <!-- Sticky Luxury Header -->
   <header class="site-header" role="banner">
     <div class="header-container">
@@ -617,6 +632,12 @@
         <p>Deploy a branded storefront instance with isolated catalogue, cart, orders, and custom currency in seconds.</p>
       </div>
       <form id="launch-store-form" class="launch-store-form">
+        <!-- 7-Day Free Trial Intro Banner -->
+        <div class="trial-intro-box">
+          <span class="trial-intro-badge">🎁 7-Day Free Trial Included on All Tiers</span>
+          <p class="trial-intro-text">Start previewing and selling with full storefront capabilities for 7 days. Monthly fee applies only after trial expires.</p>
+        </div>
+
         <div class="form-group">
           <label for="tenant-input-name">Storefront Brand Name <span class="req">*</span></label>
           <input type="text" id="tenant-input-name" required placeholder="e.g. Nordic Haven Atelier" autocomplete="off" />
@@ -672,6 +693,7 @@
                   <span class="plan-name">Starter</span>
                   <span class="plan-price">$19<small>/mo</small></span>
                 </div>
+                <span class="plan-trial-note">after 7-day free trial</span>
                 <p class="plan-desc">Up to 15 products, standard storefront</p>
               </div>
             </label>
@@ -683,6 +705,7 @@
                   <span class="plan-tag-popular">Popular</span>
                   <span class="plan-price">$49<small>/mo</small></span>
                 </div>
+                <span class="plan-trial-note">after 7-day free trial</span>
                 <p class="plan-desc">Unlimited products, 3D magazine & PWA</p>
               </div>
             </label>
@@ -693,6 +716,7 @@
                   <span class="plan-name">Enterprise</span>
                   <span class="plan-price">$99<small>/mo</small></span>
                 </div>
+                <span class="plan-trial-note">after 7-day free trial</span>
                 <p class="plan-desc">Multi-branch, custom domain & SLA</p>
               </div>
             </label>
@@ -713,7 +737,7 @@
           </div>
           <div class="form-group col-half">
             <label for="tenant-input-payment-ref">Transaction / Payment Ref <span class="req">*</span></label>
-            <input type="text" id="tenant-input-payment-ref" required placeholder="e.g. TXN-CARD-9921 or WIRE-402" />
+            <input type="text" id="tenant-input-payment-ref" required placeholder="e.g. TXN-CARD-9921 or TRIAL-FREE-7D" value="TRIAL-FREE-7D" />
           </div>
         </div>
 
@@ -722,14 +746,14 @@
           <label for="tenant-input-owner-key">Platform Owner Activation Key <small class="text-muted">(Optional)</small></label>
           <input type="password" id="tenant-input-owner-key" placeholder="Enter OWNER-2026 for instant live approval" autocomplete="off" />
           <span class="form-hint" style="font-size: 0.76rem; color: var(--color-ink-secondary, #6E675F); margin-top: 4px; display: block;">
-            💡 Hint: Enter <code>OWNER-2026</code> to bypass pending status and immediately activate live.
+            💡 Hint: Enter <code>OWNER-2026</code> to bypass trial and immediately activate live paid store.
           </span>
         </div>
 
         <div class="launch-store-actions">
           <button type="button" class="btn-cancel" id="launch-store-cancel-btn">Cancel</button>
           <button type="submit" class="btn-launch-submit" id="launch-store-submit-btn">
-            <span>Launch Storefront →</span>
+            <span>Launch 7-Day Free Trial Store →</span>
           </button>
         </div>
       </form>
@@ -782,22 +806,22 @@
           <div class="owner-kpi-card mrr-card">
             <span class="kpi-label">Monthly Recurring Revenue (MRR)</span>
             <div class="kpi-value" id="owner-mrr-val">$197<small>/mo</small></div>
-            <span class="kpi-subtext">Active billable subscriptions</span>
+            <span class="kpi-subtext">Active paid subscriptions</span>
           </div>
           <div class="owner-kpi-card">
-            <span class="kpi-label">Active Stores</span>
+            <span class="kpi-label">Active Paid Stores</span>
             <div class="kpi-value" id="owner-active-stores-count">3</div>
             <span class="kpi-subtext text-success">Live & Published</span>
           </div>
           <div class="owner-kpi-card">
-            <span class="kpi-label">Pending Approval</span>
-            <div class="kpi-value" id="owner-pending-stores-count">0</div>
-            <span class="kpi-subtext text-warning">Awaiting payment verification</span>
+            <span class="kpi-label">Active 7-Day Trials</span>
+            <div class="kpi-value" id="owner-trial-stores-count">0</div>
+            <span class="kpi-subtext" style="color: #4F46E5; font-weight: 600;">Complimentary access</span>
           </div>
           <div class="owner-kpi-card">
-            <span class="kpi-label">Total Tenanted Stores</span>
-            <div class="kpi-value" id="owner-total-stores-count">3</div>
-            <span class="kpi-subtext">Onboarding platform total</span>
+            <span class="kpi-label">Expired / Pending</span>
+            <div class="kpi-value" id="owner-pending-stores-count">0</div>
+            <span class="kpi-subtext text-warning">Trial ended • Fee required</span>
           </div>
         </div>
 
@@ -805,7 +829,7 @@
         <div class="owner-toolbar">
           <div class="owner-toolbar-title">
             <h3>Registered Tenant Storefronts</h3>
-            <span class="owner-table-legend">Manage approvals, toggle live publication, and monitor payment references</span>
+            <span class="owner-table-legend">Manage trial lifecycle, 7-day extensions, simulated expiry, and paid approvals</span>
           </div>
           <button type="button" class="btn-owner-lock-session" id="owner-lock-session-btn" title="Lock Console">
             <span>🔒 Lock Session</span>
@@ -819,7 +843,8 @@
               <tr>
                 <th>Storefront / Brand</th>
                 <th>Tier / Plan</th>
-                <th>Monthly Price</th>
+                <th>Monthly Fee</th>
+                <th>Trial / Expiry</th>
                 <th>Status</th>
                 <th>Payment Ref</th>
                 <th style="text-align: right;">Actions</th>
@@ -834,11 +859,11 @@
     </div>
   </div>
 
-  <!-- Store Lock Overlay for Pending/Suspended Custom Stores -->
+  <!-- Store Lock Overlay for Expired Trials / Suspended Stores -->
   <div class="store-lock-overlay" id="store-lock-overlay" style="display: none;" role="alertdialog" aria-labelledby="lock-overlay-store-name" aria-modal="true">
     <div class="store-lock-card">
       <div class="store-lock-badge-wrap">
-        <span class="store-lock-status-pill pending" id="lock-overlay-status">Pending Platform Approval</span>
+        <span class="store-lock-status-pill expired" id="lock-overlay-status">7-Day Free Trial Ended</span>
       </div>
       <div class="store-lock-icon">
         <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -846,8 +871,8 @@
           <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
         </svg>
       </div>
-      <h2 class="store-lock-title" id="lock-overlay-store-name">Custom Storefront</h2>
-      <p class="store-lock-subtitle" id="lock-overlay-subtitle">Storefront setup submitted • Awaiting platform owner activation</p>
+      <h2 class="store-lock-title" id="lock-overlay-store-name">7-Day Free Trial Ended — Monthly Subscription Fee Required</h2>
+      <p class="store-lock-subtitle" id="lock-overlay-subtitle">Your 7-day complimentary storefront access has concluded. Enter payment reference below or contact platform owner to activate live publication.</p>
 
       <div class="store-lock-details-box">
         <div class="lock-detail-row">
@@ -864,13 +889,32 @@
         </div>
       </div>
 
-      <p class="store-lock-notice">
-        This tenant store is currently offline to public visitors pending subscription verification. Once approved by the platform owner, live catalog checkout and 3D magazine will activate immediately.
-      </p>
+      <!-- In-overlay Payment Reference Submission -->
+      <div class="lock-payment-box" id="lock-payment-box">
+        <h4 style="font-size: 0.84rem; font-weight: 700; color: var(--color-charcoal); margin-bottom: 8px;">Submit Monthly Subscription Fee</h4>
+        <div class="form-row" style="margin-bottom: 8px;">
+          <div class="form-group col-half" style="margin-bottom: 0;">
+            <label for="lock-input-payment-method" style="font-size: 0.75rem;">Payment Method</label>
+            <select id="lock-input-payment-method" style="padding: 7px 10px; font-size: 0.8rem;">
+              <option value="Credit / Debit Card (Stripe)" selected>Credit / Debit Card</option>
+              <option value="Direct Bank Wire Transfer">Direct Bank Wire</option>
+              <option value="JazzCash Mobile Wallet">JazzCash Wallet</option>
+              <option value="EasyPaisa Mobile Wallet">EasyPaisa Wallet</option>
+            </select>
+          </div>
+          <div class="form-group col-half" style="margin-bottom: 0;">
+            <label for="lock-input-payment-ref" style="font-size: 0.75rem;">Payment / TXN Ref</label>
+            <input type="text" id="lock-input-payment-ref" placeholder="e.g. TXN-SUB-4421" style="padding: 7px 10px; font-size: 0.8rem;" />
+          </div>
+        </div>
+        <button type="button" class="btn-lock-submit-payment" id="lock-submit-payment-btn">
+          <span>Submit Payment & Request Live Activation →</span>
+        </button>
+      </div>
 
       <div class="store-lock-actions">
         <button type="button" class="btn-lock-activate" id="lock-overlay-activate-btn">
-          <span>🔑 Quick-Activate Store (Owner PIN)</span>
+          <span>🔑 Platform Owner Master Unlock (PIN: OWNER-2026)</span>
         </button>
         <button type="button" class="btn-lock-owner-portal" id="lock-overlay-owner-portal-btn">
           <span>Open Platform Owner Suite</span>

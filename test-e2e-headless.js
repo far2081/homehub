@@ -479,24 +479,27 @@ console.log('\n[11] Testing PWA Manifest, Service Worker & Mobile Shell:');
   assert(indexHtml.includes('header-install-app-btn'), 'index.html includes header install button');
 }
 
-// --- 12. SAAS SUBSCRIPTION PLANS, PAYMENT GATING & OWNER APPROVAL TESTS ---
-console.log('\n[12] Testing SaaS Subscription Plans, Payment Gating & Platform Owner Approvals:');
+// --- 12. 7-DAY FREE TRIAL + PAID SAAS SUBSCRIPTION PLANS & OWNER APPROVAL TESTS ---
+console.log('\n[12] Testing 7-Day Free Trial, Paid SaaS Subscription Plans & Platform Owner Controls:');
 {
   const { tenantService, SAAS_PLANS } = await import('./js/services/tenantService.js');
   const fs = await import('fs');
   const path = await import('path');
 
-  // 1. Verify SAAS_PLANS structure
+  // 1. Verify SAAS_PLANS structure with 7-Day Free Trial
   assert(Boolean(SAAS_PLANS.starter), 'SaaS Starter tier is defined');
   assert(SAAS_PLANS.starter.price === 19, 'Starter plan price is $19/mo');
+  assert(SAAS_PLANS.starter.trialDays === 7, 'Starter plan includes 7-day free trial');
   assert(SAAS_PLANS.starter.maxProducts === 15, 'Starter plan caps products at 15');
 
   assert(Boolean(SAAS_PLANS.pro), 'SaaS Studio Pro tier is defined');
   assert(SAAS_PLANS.pro.price === 49, 'Studio Pro plan price is $49/mo');
+  assert(SAAS_PLANS.pro.trialDays === 7, 'Studio Pro plan includes 7-day free trial');
   assert(SAAS_PLANS.pro.badge === 'Popular', 'Studio Pro marked as Popular');
 
   assert(Boolean(SAAS_PLANS.enterprise), 'SaaS Enterprise tier is defined');
   assert(SAAS_PLANS.enterprise.price === 99, 'Enterprise plan price is $99/mo');
+  assert(SAAS_PLANS.enterprise.trialDays === 7, 'Enterprise plan includes 7-day free trial');
 
   // 2. Verify Pre-Seeded Showcases are Active and Billable
   const homehubTenant = tenantService.getTenant('homehub');
@@ -511,78 +514,89 @@ console.log('\n[12] Testing SaaS Subscription Plans, Payment Gating & Platform O
   assert(tenantService.isTenantActive('studio-noor') === true, 'isTenantActive("studio-noor") returns true');
   assert(tenantService.isTenantActive('aurelia-living') === true, 'isTenantActive("aurelia-living") returns true');
 
-  // 3. Verify MRR Calculation for Active Tenants ($99 + $49 + $49 = $197)
+  // 3. Verify MRR Calculation for Active Paid Showcases ($99 + $49 + $49 = $197)
   const initialMRR = tenantService.calculateMRR();
   assert(initialMRR >= 197, `Initial MRR calculation is billable (got $${initialMRR}/mo)`);
 
-  // 4. Test Tenant Creation with Payment Reference -> Pending Gating
-  const pendingTenant = tenantService.createTenant({
+  // 4. Test Tenant Creation with 7-Day Free Trial
+  const trialTenant = tenantService.createTenant({
     name: 'Zenith Atelier',
     slug: 'zenith-atelier',
     tagline: 'Minimalist Monolithic Architecture',
     currencyCode: 'USD',
-    planId: 'starter',
-    paymentMethod: 'Direct Bank Wire Transfer',
-    paymentRef: 'WIRE-US-99120',
+    planId: 'pro',
+    paymentMethod: 'Credit / Debit Card (Stripe)',
+    paymentRef: 'TRIAL-FREE-7D',
     badge: '🏛️'
   });
 
-  assert(pendingTenant.status === 'pending_payment', 'Custom tenant created without owner PIN starts as pending_payment');
-  assert(pendingTenant.plan === 'starter' && pendingTenant.planPrice === 19, 'Custom tenant recorded Starter tier ($19/mo)');
-  assert(pendingTenant.paymentRef === 'WIRE-US-99120', 'Payment reference saved accurately');
-  assert(tenantService.isTenantActive('zenith-atelier') === false, 'Pending tenant is NOT active (gated from live publication)');
+  assert(trialTenant.status === 'trial', 'Custom tenant created without owner PIN starts with status "trial"');
+  assert(Boolean(trialTenant.trialStartedAt), 'trialStartedAt timestamp recorded');
+  assert(Boolean(trialTenant.trialEndsAt), 'trialEndsAt timestamp recorded (~7 days in future)');
+  assert(tenantService.getTrialDaysRemaining('zenith-atelier') >= 6, 'Trial days remaining is calculated correctly (~7 days)');
+  assert(tenantService.isTenantActive('zenith-atelier') === true, 'Trial store is accessible during the 7-day free trial');
+  assert(tenantService.calculateMRR() === initialMRR, 'Active trial store does not artificially count towards billable paid MRR');
 
-  // MRR should NOT include pending tenant
-  assert(tenantService.calculateMRR() === initialMRR, 'Pending tenant does not artificially inflate billable MRR');
+  // 5. Test 7-Day Trial Expiry Simulation (Post-7-Day Lock)
+  tenantService.simulateTrialExpiry('zenith-atelier');
+  assert(trialTenant.status === 'trial_expired', 'simulateTrialExpiry sets tenant status to "trial_expired"');
+  assert(tenantService.isTenantActive('zenith-atelier') === false, 'Expired trial store is blocked (locked) from live storefront access');
 
-  // 5. Test Tenant Creation with Platform Owner PIN -> Instant Activation
+  // 6. Test Platform Owner Extending 7-Day Trial (+7 Days)
+  tenantService.extendTenantTrial('zenith-atelier', 7);
+  assert(trialTenant.status === 'trial', 'extendTenantTrial resets status to "trial"');
+  assert(tenantService.getTrialDaysRemaining('zenith-atelier') >= 6, 'Trial extended by 7 days');
+  assert(tenantService.isTenantActive('zenith-atelier') === true, 'Extended trial store is once again accessible');
+
+  // 7. Test Platform Owner Approving & Activating Paid Plan
+  const paidTenant = tenantService.activatePaidPlan('zenith-atelier', 'Credit Card', 'TXN-PAID-9090');
+  assert(paidTenant.status === 'active', 'activatePaidPlan sets tenant status to "active"');
+  assert(tenantService.isTenantActive('zenith-atelier') === true, 'Paid tenant is active live');
+  assert(tenantService.calculateMRR() === initialMRR + 49, `MRR increased by $49/mo after converting to paid plan (got $${tenantService.calculateMRR()})`);
+
+  // 8. Test Platform Owner Suspension
+  const suspendedTenant = tenantService.updateTenantStatus('zenith-atelier', 'suspended');
+  assert(suspendedTenant.status === 'suspended', 'Owner can suspend tenant');
+  assert(tenantService.isTenantActive('zenith-atelier') === false, 'Suspended tenant is blocked from active live publishing');
+  assert(tenantService.calculateMRR() === initialMRR, 'Suspended tenant deducted from billable MRR');
+
+  // 9. Test Tenant Creation with Platform Owner PIN -> Instant Paid Live Activation
   const instantActiveTenant = tenantService.createTenant({
     name: 'Atelier Kanso',
     slug: 'atelier-kanso',
     tagline: 'Wabi-sabi crafted stoneware',
     currencyCode: 'USD',
-    planId: 'pro',
-    paymentMethod: 'Platform Owner Activation',
-    paymentRef: 'VIP-INVITE',
+    planId: 'enterprise',
     ownerPin: 'OWNER-2026',
     badge: '🏺'
   });
 
-  assert(instantActiveTenant.status === 'active', 'Custom tenant with OWNER-2026 PIN activates immediately as active');
+  assert(instantActiveTenant.status === 'active', 'Custom tenant with OWNER-2026 PIN activates immediately as active paid');
   assert(tenantService.isTenantActive('atelier-kanso') === true, 'Instant tenant is active');
-  assert(tenantService.calculateMRR() === initialMRR + 49, `MRR increased by $49/mo after instant active tenant (got $${tenantService.calculateMRR()})`);
+  assert(tenantService.calculateMRR() === initialMRR + 99, `MRR increased by $99/mo after instant active Enterprise store (got $${tenantService.calculateMRR()})`);
 
-  // 6. Test Platform Owner Approval of Pending Tenant
-  const approvedTenant = tenantService.updateTenantStatus('zenith-atelier', 'active');
-  assert(approvedTenant.status === 'active', 'Owner approval updates tenant status to active');
-  assert(tenantService.isTenantActive('zenith-atelier') === true, 'Approved tenant is now active live');
-  assert(tenantService.calculateMRR() === initialMRR + 49 + 19, `MRR increased by $19/mo after approving Starter store (got $${tenantService.calculateMRR()})`);
-
-  // 7. Test Platform Owner Suspension
-  const suspendedTenant = tenantService.updateTenantStatus('zenith-atelier', 'suspended');
-  assert(suspendedTenant.status === 'suspended', 'Owner can suspend tenant');
-  assert(tenantService.isTenantActive('zenith-atelier') === false, 'Suspended tenant is blocked from active live publishing');
-  assert(tenantService.calculateMRR() === initialMRR + 49, 'Suspended tenant deducted from billable MRR');
-
-  // 8. Test Master PIN Verification
+  // 10. Test Master PIN Verification
   assert(tenantService.verifyOwnerPin('OWNER-2026') === true, 'verifyOwnerPin accepts valid OWNER-2026 master key');
   assert(tenantService.verifyOwnerPin('WRONG-PIN') === false, 'verifyOwnerPin rejects invalid PIN');
   assert(tenantService.verifyOwnerPin('') === false, 'verifyOwnerPin rejects empty PIN');
 
-  // 9. Verify HTML UI Components
+  // 11. Verify HTML UI Components
   const indexHtml = fs.readFileSync(path.join(process.cwd(), 'index.html'), 'utf8');
+  assert(indexHtml.includes('id="store-trial-banner"'), 'index.html contains #store-trial-banner countdown banner');
+  assert(indexHtml.includes('id="trial-banner-msg"'), 'index.html contains #trial-banner-msg');
+  assert(indexHtml.includes('id="trial-banner-upgrade-btn"'), 'index.html contains #trial-banner-upgrade-btn');
   assert(indexHtml.includes('id="platform-owner-modal"'), 'index.html contains #platform-owner-modal');
   assert(indexHtml.includes('id="owner-pin-screen"'), 'index.html contains #owner-pin-screen');
   assert(indexHtml.includes('id="owner-dashboard-screen"'), 'index.html contains #owner-dashboard-screen');
   assert(indexHtml.includes('id="owner-mrr-val"'), 'index.html contains #owner-mrr-val');
+  assert(indexHtml.includes('id="owner-trial-stores-count"'), 'index.html contains #owner-trial-stores-count');
   assert(indexHtml.includes('id="owner-stores-table-body"'), 'index.html contains #owner-stores-table-body');
   assert(indexHtml.includes('id="store-lock-overlay"'), 'index.html contains #store-lock-overlay');
+  assert(indexHtml.includes('id="lock-submit-payment-btn"'), 'index.html contains #lock-submit-payment-btn');
   assert(indexHtml.includes('id="lock-overlay-activate-btn"'), 'index.html contains #lock-overlay-activate-btn');
   assert(indexHtml.includes('id="header-owner-billing-btn"'), 'index.html contains #header-owner-billing-btn');
   assert(indexHtml.includes('id="mobile-owner-billing-btn"'), 'index.html contains #mobile-owner-billing-btn');
   assert(indexHtml.includes('name="tenant-plan"'), 'index.html contains subscription tier selector');
-  assert(indexHtml.includes('tenant-input-payment-ref'), 'index.html contains payment reference field');
-  assert(indexHtml.includes('tenant-input-owner-key'), 'index.html contains optional owner key bypass field');
 }
 
 console.log('\n======================================================');

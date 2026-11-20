@@ -180,6 +180,7 @@ class HomeHubApp {
     this.initTenantSwitcher();
     this.initLaunchStoreModal();
     this.initPlatformOwnerBilling();
+    this.updateTrialBanner(this.currentTenant);
     this.updateStoreLockState(this.currentTenant);
     this.initCart();
     this.initWishlist();
@@ -615,10 +616,41 @@ class HomeHubApp {
       drawer.classList.remove('is-open');
     }
 
-    // 8. Update Storefront Lock Overlay (Pending Payment or Suspended stores)
+    // 8. Update 7-Day Free Trial Banner & Storefront Lock Overlay
+    this.updateTrialBanner(tenant);
     this.updateStoreLockState(tenant);
 
     showToast(`Switched storefront to ${tenant.name}`, 'info');
+  }
+
+  updateTrialBanner(tenant) {
+    const banner = document.getElementById('store-trial-banner');
+    if (!banner) return;
+
+    if (!tenant) tenant = this.currentTenant;
+    if (!tenant) return;
+
+    this.tenantService.checkTrialStatus(tenant.slug);
+
+    if (tenant.status === 'trial') {
+      const daysRemaining = this.tenantService.getTrialDaysRemaining(tenant.slug);
+      const msgEl = document.getElementById('trial-banner-msg');
+      if (msgEl) {
+        msgEl.textContent = `${daysRemaining} days remaining on your 7-day trial • Selected: ${tenant.planName || tenant.plan || 'Studio Pro'} ($${tenant.planPrice || 49}/mo after trial)`;
+      }
+      banner.style.display = 'block';
+
+      const upgradeBtn = document.getElementById('trial-banner-upgrade-btn');
+      if (upgradeBtn && !upgradeBtn.dataset.bound) {
+        upgradeBtn.dataset.bound = 'true';
+        upgradeBtn.addEventListener('click', () => {
+          const headerOwnerBtn = document.getElementById('header-owner-billing-btn');
+          if (headerOwnerBtn) headerOwnerBtn.click();
+        });
+      }
+    } else {
+      banner.style.display = 'none';
+    }
   }
 
   updateStoreLockState(tenant) {
@@ -628,6 +660,7 @@ class HomeHubApp {
     if (!tenant) tenant = this.currentTenant;
     if (!tenant) return;
 
+    this.tenantService.checkTrialStatus(tenant.slug);
     const isActive = this.tenantService.isTenantActive(tenant.slug);
 
     if (isActive) {
@@ -646,19 +679,54 @@ class HomeHubApp {
     const refEl = document.getElementById('lock-overlay-payment-ref');
 
     if (statusPill) {
-      if (tenant.status === 'suspended') {
+      if (tenant.status === 'trial_expired') {
+        statusPill.textContent = '7-Day Free Trial Ended';
+        statusPill.className = 'store-lock-status-pill expired';
+      } else if (tenant.status === 'suspended') {
         statusPill.textContent = 'Storefront Suspended';
         statusPill.className = 'store-lock-status-pill suspended';
       } else {
-        statusPill.textContent = 'Pending Platform Approval';
+        statusPill.textContent = 'Monthly Fee Required';
         statusPill.className = 'store-lock-status-pill pending';
       }
     }
-    if (storeTitle) storeTitle.textContent = tenant.name || 'Custom Storefront';
-    if (subtitle) subtitle.textContent = `${tenant.slug} • Awaiting platform owner verification`;
+
+    if (storeTitle) {
+      if (tenant.status === 'trial_expired') {
+        storeTitle.textContent = '7-Day Free Trial Ended — Monthly Subscription Fee Required';
+      } else if (tenant.status === 'suspended') {
+        storeTitle.textContent = `${tenant.name} — Access Suspended`;
+      } else {
+        storeTitle.textContent = `${tenant.name} — Activation Required`;
+      }
+    }
+
+    if (subtitle) {
+      if (tenant.status === 'trial_expired') {
+        subtitle.textContent = `${tenant.slug} • Your 7-day complimentary storefront access has concluded. Enter payment reference below or activate via owner PIN.`;
+      } else {
+        subtitle.textContent = `${tenant.slug} • Awaiting platform owner activation.`;
+      }
+    }
+
     if (planEl) planEl.textContent = `${tenant.planName || tenant.plan || 'Studio Pro'} ($${tenant.planPrice || 49}/mo)`;
     if (methodEl) methodEl.textContent = tenant.paymentMethod || 'Credit / Debit Card';
-    if (refEl) refEl.textContent = tenant.paymentRef || 'TXN-PENDING';
+    if (refEl) refEl.textContent = tenant.paymentRef || 'TRIAL-EXPIRED';
+
+    // In-overlay payment submission
+    const submitPaymentBtn = document.getElementById('lock-submit-payment-btn');
+    if (submitPaymentBtn && !submitPaymentBtn.dataset.bound) {
+      submitPaymentBtn.dataset.bound = 'true';
+      submitPaymentBtn.addEventListener('click', () => {
+        const method = document.getElementById('lock-input-payment-method')?.value || 'Credit / Debit Card';
+        const ref = (document.getElementById('lock-input-payment-ref')?.value || '').trim() || 'TXN-PAID-SUB';
+        this.tenantService.activatePaidPlan(this.currentTenantSlug, method, ref);
+        this.updateTrialBanner();
+        this.updateStoreLockState();
+        this.renderTenantSwitcherList();
+        showToast(`Payment submitted! "${this.currentTenant.name}" is now active and live.`, 'success');
+      });
+    }
 
     lockOverlay.style.display = 'flex';
     lockOverlay.setAttribute('aria-hidden', 'false');
@@ -728,7 +796,8 @@ class HomeHubApp {
     if (overlayActivateBtn) {
       overlayActivateBtn.addEventListener('click', () => {
         if (this.isOwnerAuthenticated) {
-          this.tenantService.updateTenantStatus(this.currentTenantSlug, 'active');
+          this.tenantService.activatePaidPlan(this.currentTenantSlug);
+          this.updateTrialBanner();
           this.updateStoreLockState();
           this.renderTenantSwitcherList();
           showToast(`Store "${this.currentTenant.name}" approved and live!`, 'success');
@@ -774,17 +843,22 @@ class HomeHubApp {
   renderOwnerDashboard() {
     const mrrVal = document.getElementById('owner-mrr-val');
     const activeCountEl = document.getElementById('owner-active-stores-count');
+    const trialCountEl = document.getElementById('owner-trial-stores-count');
     const pendingCountEl = document.getElementById('owner-pending-stores-count');
     const totalCountEl = document.getElementById('owner-total-stores-count');
     const tbody = document.getElementById('owner-stores-table-body');
 
     const allTenants = this.tenantService.getAllTenants();
+    allTenants.forEach(t => this.tenantService.checkTrialStatus(t.slug));
+
     const mrr = this.tenantService.calculateMRR();
     const activeStores = allTenants.filter(t => t.status === 'active');
-    const pendingStores = allTenants.filter(t => t.status === 'pending_payment');
+    const trialStores = allTenants.filter(t => t.status === 'trial');
+    const pendingStores = allTenants.filter(t => t.status === 'trial_expired' || t.status === 'pending_payment' || t.status === 'suspended');
 
     if (mrrVal) mrrVal.innerHTML = `$${mrr}<small>/mo</small>`;
     if (activeCountEl) activeCountEl.textContent = activeStores.length;
+    if (trialCountEl) trialCountEl.textContent = trialStores.length;
     if (pendingCountEl) pendingCountEl.textContent = pendingStores.length;
     if (totalCountEl) totalCountEl.textContent = allTenants.length;
 
@@ -792,19 +866,42 @@ class HomeHubApp {
       tbody.innerHTML = allTenants.map(t => {
         let badgeHtml = '';
         if (t.status === 'active') {
-          badgeHtml = '<span class="badge-status-active">● Active</span>';
-        } else if (t.status === 'pending_payment') {
-          badgeHtml = '<span class="badge-status-pending">● Pending</span>';
-        } else {
+          badgeHtml = '<span class="badge-status-active">● Active Paid</span>';
+        } else if (t.status === 'trial') {
+          badgeHtml = '<span class="badge-status-trial">● 7-Day Trial</span>';
+        } else if (t.status === 'trial_expired') {
+          badgeHtml = '<span class="badge-status-expired">● Expired</span>';
+        } else if (t.status === 'suspended') {
           badgeHtml = '<span class="badge-status-suspended">● Suspended</span>';
+        } else {
+          badgeHtml = '<span class="badge-status-pending">● Pending</span>';
         }
 
-        const isHomeHub = t.slug === 'homehub';
+        const isPreseeded = t.slug === 'homehub' || t.slug === 'studio-noor' || t.slug === 'aurelia-living';
+        let expiryHtml = '';
+        if (isPreseeded) {
+          expiryHtml = '<span style="color: #15803D; font-weight: 600;">Flagship (Paid)</span>';
+        } else if (t.status === 'active') {
+          expiryHtml = '<span style="color: #15803D; font-weight: 600;">Paid Plan</span>';
+        } else if (t.status === 'trial') {
+          const daysLeft = this.tenantService.getTrialDaysRemaining(t.slug);
+          expiryHtml = `<span style="color: #4338CA; font-weight: 600;">${daysLeft}d left</span>`;
+        } else if (t.status === 'trial_expired') {
+          expiryHtml = '<span style="color: #B45309; font-weight: 600;">Expired</span>';
+        } else {
+          expiryHtml = '<span style="color: #78716C;">N/A</span>';
+        }
+
         let actionBtns = '';
         if (t.status !== 'active') {
-          actionBtns += `<button type="button" class="btn-action-activate" data-owner-activate="${t.slug}" title="Approve & Publish Live">Approve & Live</button>`;
-        } else if (!isHomeHub) {
-          actionBtns += `<button type="button" class="btn-action-suspend" data-owner-suspend="${t.slug}" title="Suspend Store">Suspend</button>`;
+          actionBtns += `<button type="button" class="btn-action-activate" data-owner-activate="${t.slug}" title="Approve & Activate Paid Plan">Approve Paid</button>`;
+        }
+        if (!isPreseeded) {
+          actionBtns += `<button type="button" class="btn-action-extend" data-owner-extend-trial="${t.slug}" title="Extend 7-day trial by +7 days">+7D Trial</button>`;
+          actionBtns += `<button type="button" class="btn-action-expire" data-owner-expire-trial="${t.slug}" title="Simulate immediate 7-day trial expiry">Simulate Expiry</button>`;
+          if (t.status === 'active') {
+            actionBtns += `<button type="button" class="btn-action-suspend" data-owner-suspend="${t.slug}" title="Suspend Store">Suspend</button>`;
+          }
         }
         actionBtns += `<button type="button" class="btn-action-switch" data-owner-switch="${t.slug}" title="Switch to this Storefront">View</button>`;
 
@@ -825,6 +922,7 @@ class HomeHubApp {
             <td>
               <span style="color: var(--color-terracotta); font-weight: 700;">$${t.planPrice || 49}<small style="font-weight: 500; color: var(--color-muted-earth);">/mo</small></span>
             </td>
+            <td>${expiryHtml}</td>
             <td>${badgeHtml}</td>
             <td>
               <code style="font-size: 0.75rem; background: #ECE7DF; padding: 2px 6px; border-radius: 4px;">${t.paymentRef || 'N/A'}</code>
@@ -840,11 +938,42 @@ class HomeHubApp {
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
           const slug = btn.dataset.ownerActivate;
-          this.tenantService.updateTenantStatus(slug, 'active');
-          showToast(`Store "${slug}" has been approved and activated live!`, 'success');
+          this.tenantService.activatePaidPlan(slug);
+          showToast(`Paid plan approved and activated for "${slug}"!`, 'success');
           this.renderOwnerDashboard();
           this.renderTenantSwitcherList();
           if (this.currentTenantSlug === slug) {
+            this.updateTrialBanner();
+            this.updateStoreLockState();
+          }
+        });
+      });
+
+      tbody.querySelectorAll('[data-owner-extend-trial]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const slug = btn.dataset.ownerExtendTrial;
+          this.tenantService.extendTenantTrial(slug, 7);
+          showToast(`7-Day Trial extended for "${slug}"!`, 'info');
+          this.renderOwnerDashboard();
+          this.renderTenantSwitcherList();
+          if (this.currentTenantSlug === slug) {
+            this.updateTrialBanner();
+            this.updateStoreLockState();
+          }
+        });
+      });
+
+      tbody.querySelectorAll('[data-owner-expire-trial]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const slug = btn.dataset.ownerExpireTrial;
+          this.tenantService.simulateTrialExpiry(slug);
+          showToast(`Simulated 7-day trial expiry for "${slug}". Store locked until paid.`, 'warning');
+          this.renderOwnerDashboard();
+          this.renderTenantSwitcherList();
+          if (this.currentTenantSlug === slug) {
+            this.updateTrialBanner();
             this.updateStoreLockState();
           }
         });
@@ -859,6 +988,7 @@ class HomeHubApp {
           this.renderOwnerDashboard();
           this.renderTenantSwitcherList();
           if (this.currentTenantSlug === slug) {
+            this.updateTrialBanner();
             this.updateStoreLockState();
           }
         });
@@ -980,9 +1110,9 @@ class HomeHubApp {
 
           this.switchStore(newTenant.slug);
           if (newTenant.status === 'active') {
-            showToast(`✨ Store "${newTenant.name}" launched and live!`, 'success');
+            showToast(`✨ Store "${newTenant.name}" launched and active live!`, 'success');
           } else {
-            showToast(`Store "${newTenant.name}" submitted! Awaiting platform owner review.`, 'info');
+            showToast(`🎁 7-Day Free Trial started for "${newTenant.name}"!`, 'success');
           }
         } catch (err) {
           showToast(`Could not launch store: ${err.message}`, 'error');
