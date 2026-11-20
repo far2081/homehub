@@ -18,6 +18,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: clamp(14px, 2vw, 24px);
   height: var(--header-height);
   padding: 0 clamp(1rem, 3vw, 2.5rem);
   max-width: var(--max-width);
@@ -92,6 +93,7 @@
   display: flex;
   align-items: center;
   gap: 1.5rem;
+  flex-shrink: 0;
 }
 
 .nav-books-label {
@@ -310,10 +312,11 @@
 .header-nav-list {
   display: flex;
   align-items: center;
-  gap: 1.8rem;
+  gap: clamp(0.75rem, 1.4vw, 1.6rem);
   list-style: none;
   margin: 0;
   padding: 0;
+  flex-shrink: 0;
 }
 
 .nav-item-link {
@@ -323,15 +326,17 @@
   letter-spacing: 0.04em;
   color: var(--color-deep-charcoal);
   text-decoration: none;
-  padding: 6px 0;
+  padding: 6px 12px;
   position: relative;
-  transition: color 0.2s ease;
+  transition: all 0.2s ease;
   background: transparent;
   border: none;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 5px;
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .nav-item-link:hover,
@@ -354,6 +359,31 @@
 .nav-item-link:hover::after,
 .nav-item-link.active::after {
   width: 100%;
+}
+
+/* Distinct visual separation & pill styling for #header-nav-home */
+#header-nav-home {
+  padding: 6px 16px !important;
+  border-radius: var(--radius-pill, 9999px);
+  font-weight: 600;
+  background: rgba(28, 25, 23, 0.05);
+  border: 1px solid rgba(28, 25, 23, 0.08);
+  color: var(--color-noir, #1C1917);
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  white-space: nowrap;
+  letter-spacing: 0.03em;
+}
+
+#header-nav-home:hover,
+#header-nav-home.active {
+  background: rgba(194, 110, 75, 0.1);
+  border-color: rgba(194, 110, 75, 0.35);
+  color: var(--color-terracotta, #C26E4B);
+}
+
+#header-nav-home::after {
+  display: none !important;
 }
 
 .nav-dropdown-chevron {

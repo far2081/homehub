@@ -271,18 +271,21 @@ button:active,
 
   /* Compact Tenant Switcher in Mobile Header */
   .tenant-switcher-wrap {
-    flex-shrink: 1;
+    flex-shrink: 0;
     min-width: 0;
-    margin-left: 4px;
+    margin-left: 6px;
+    margin-right: auto;
   }
 
   .tenant-switcher-btn {
-    padding: 4px 8px;
+    padding: 6px 12px;
     font-size: 0.74rem;
     min-height: 38px;
-    gap: 4px;
+    gap: 6px;
     border-radius: var(--radius-pill);
-    max-width: 120px;
+    max-width: 130px;
+    flex-shrink: 0;
+    white-space: nowrap;
   }
 
   .tenant-name {
