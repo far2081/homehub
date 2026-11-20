@@ -1417,6 +1417,15 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  box-sizing: border-box;
+}
+
+.footer-scrubber::-webkit-scrollbar {
+  display: none;
 }
 
 .scrubber-dot {
@@ -2287,10 +2296,14 @@
   flex-direction: column;
   transform: translateX(100%);
   transition: transform var(--transition-spring);
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .flipbook-toc-drawer.is-open {
   transform: translateX(0);
+  visibility: visible;
+  pointer-events: auto;
 }
 
 .flipbook-toc-backdrop {
@@ -2866,9 +2879,10 @@
     display: flex !important;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
+    gap: 8px;
     margin: 14px auto 0;
-    width: min(92vw, 380px);
+    width: 100%;
+    max-width: min(92vw, 360px);
     box-sizing: border-box;
   }
 
