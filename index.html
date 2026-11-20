@@ -86,35 +86,37 @@
         <span class="hamburger-line"></span>
       </button>
 
-      <!-- Brand Identity Logo & Name -->
-      <div class="header-brand-wrap" style="display: flex; align-items: center; gap: 10px;">
-        <a href="#home" class="header-brand" id="header-brand-logo" aria-label="HomeHub Homepage">
-          <img src="assets/logo.svg" alt="HomeHub — SHOP • STYLE • SMART" class="header-logo-img" />
-        </a>
-      </div>
+      <!-- Brand Identity Logo & Store Switcher Group -->
+      <div class="header-brand-group" id="header-brand-group">
+        <div class="header-brand-wrap" id="header-brand-wrap">
+          <a href="#home" class="header-brand" id="header-brand-logo" aria-label="HomeHub Homepage">
+            <img src="assets/logo.svg" alt="HomeHub — SHOP • STYLE • SMART" class="header-logo-img" />
+          </a>
+        </div>
 
-      <!-- Multi-Tenant SaaS Store Switcher -->
-      <div class="tenant-switcher-wrap" id="tenant-switcher-wrap">
-        <button class="tenant-switcher-btn" id="tenant-switcher-btn" aria-haspopup="true" aria-expanded="false" title="Switch Storefront Tenant">
-          <span class="tenant-badge" id="header-tenant-badge">🏛️</span>
-          <span class="tenant-name" id="header-tenant-name">HomeHub</span>
-          <span class="tenant-chevron">▾</span>
-        </button>
-        <div class="tenant-dropdown-menu" id="tenant-dropdown-menu" role="menu" aria-label="Switch Storefront">
-          <div class="tenant-dropdown-header">
-            <span class="tenant-menu-title">Select Storefront</span>
-            <span class="tenant-saas-pill">Multi-Tenant</span>
-          </div>
-          <div class="tenant-dropdown-list" id="tenant-dropdown-list">
-            <!-- Dynamically populated -->
-          </div>
-          <div class="tenant-dropdown-footer">
-            <button type="button" class="launch-store-open-btn" id="header-launch-store-btn">
-              <span>✨ Launch Your Store</span>
-            </button>
-            <button type="button" class="owner-billing-open-btn" id="header-owner-billing-btn" title="Platform Owner SaaS Billing & Approvals">
-              <span>🔒 SaaS Billing (Owner)</span>
-            </button>
+        <!-- Multi-Tenant SaaS Store Switcher -->
+        <div class="tenant-switcher-wrap" id="tenant-switcher-wrap">
+          <button class="tenant-switcher-btn" id="tenant-switcher-btn" aria-haspopup="true" aria-expanded="false" title="Switch Storefront Tenant">
+            <span class="tenant-badge" id="header-tenant-badge">🏛️</span>
+            <span class="tenant-name" id="header-tenant-name">HomeHub</span>
+            <span class="tenant-chevron">▾</span>
+          </button>
+          <div class="tenant-dropdown-menu" id="tenant-dropdown-menu" role="menu" aria-label="Switch Storefront">
+            <div class="tenant-dropdown-header">
+              <span class="tenant-menu-title">Select Storefront</span>
+              <span class="tenant-saas-pill">Multi-Tenant</span>
+            </div>
+            <div class="tenant-dropdown-list" id="tenant-dropdown-list">
+              <!-- Dynamically populated -->
+            </div>
+            <div class="tenant-dropdown-footer">
+              <button type="button" class="launch-store-open-btn" id="header-launch-store-btn">
+                <span>✨ Launch Your Store</span>
+              </button>
+              <button type="button" class="owner-billing-open-btn" id="header-owner-billing-btn" title="Platform Owner SaaS Billing & Approvals">
+                <span>🔒 SaaS Billing (Owner)</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
