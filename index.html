@@ -34,6 +34,7 @@
   <link rel="stylesheet" href="css/components/cart-wishlist.css" />
   <link rel="stylesheet" href="css/components/video-section.css" />
   <link rel="stylesheet" href="css/components/admin.css" />
+  <link rel="stylesheet" href="css/components/tenant-saas.css" />
   <link rel="stylesheet" href="css/components/footer.css" />
   <link rel="stylesheet" href="css/responsive.css" />
   <script>
@@ -72,6 +73,29 @@
         <a href="#home" class="header-brand" id="header-brand-logo" aria-label="HomeHub Homepage">
           <img src="assets/logo.svg" alt="HomeHub — SHOP • STYLE • SMART" class="header-logo-img" />
         </a>
+      </div>
+
+      <!-- Multi-Tenant SaaS Store Switcher -->
+      <div class="tenant-switcher-wrap" id="tenant-switcher-wrap">
+        <button class="tenant-switcher-btn" id="tenant-switcher-btn" aria-haspopup="true" aria-expanded="false" title="Switch Storefront Tenant">
+          <span class="tenant-badge" id="header-tenant-badge">🏛️</span>
+          <span class="tenant-name" id="header-tenant-name">HomeHub</span>
+          <span class="tenant-chevron">▾</span>
+        </button>
+        <div class="tenant-dropdown-menu" id="tenant-dropdown-menu" role="menu" aria-label="Switch Storefront">
+          <div class="tenant-dropdown-header">
+            <span class="tenant-menu-title">Select Storefront</span>
+            <span class="tenant-saas-pill">Multi-Tenant</span>
+          </div>
+          <div class="tenant-dropdown-list" id="tenant-dropdown-list">
+            <!-- Dynamically populated -->
+          </div>
+          <div class="tenant-dropdown-footer">
+            <button type="button" class="launch-store-open-btn" id="header-launch-store-btn">
+              <span>✨ Launch Your Store</span>
+            </button>
+          </div>
+        </div>
       </div>
 
       <!-- Professional Shopping Header Navigation: Home • Shop • Categories • Interior Ideas • Magazines -->
@@ -192,9 +216,23 @@
 
     <div class="mobile-nav-body">
       <!-- Prominent Mobile HOME Button -->
-      <div class="mobile-nav-home-wrap" style="margin-bottom: 1.5rem;">
+      <div class="mobile-nav-home-wrap" style="margin-bottom: 1.2rem;">
         <button class="page-home-btn" id="mobile-drawer-home-btn" style="width: 100%; justify-content: center; padding: 12px;">
           <span>🏠 HOME (Library Homepage)</span>
+        </button>
+      </div>
+
+      <!-- Mobile Multi-Tenant Store Switcher -->
+      <div class="mobile-tenant-switcher-section" style="margin-bottom: 1.5rem; padding-bottom: 1.2rem; border-bottom: 1px solid var(--color-border, #E6E1DA);">
+        <div class="mobile-nav-group-title" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <span>Active Storefront</span>
+          <span style="font-size: 0.72rem; text-transform: none; color: var(--color-terracotta); font-weight: 600;">SaaS Multi-Tenant</span>
+        </div>
+        <div class="mobile-tenant-list" id="mobile-tenant-list">
+          <!-- Dynamically populated -->
+        </div>
+        <button type="button" class="launch-store-open-btn" id="mobile-launch-store-btn" style="width: 100%; margin-top: 10px; padding: 10px; font-size: 0.82rem; justify-content: center;">
+          <span>✨ Launch Your Store</span>
         </button>
       </div>
 
@@ -544,6 +582,70 @@
 
   <!-- Social Channel Modal Container (Facebook, X/Twitter, YouTube, Instagram) -->
   <div class="social-modal-overlay" id="social-modal-container" role="dialog" aria-modal="true" aria-hidden="true" style="display: none;"></div>
+
+  <!-- SaaS "Launch Your Store" Onboarding Modal Container -->
+  <div class="launch-store-modal" id="launch-store-modal" role="dialog" aria-modal="true" aria-hidden="true" style="display: none;">
+    <div class="launch-store-backdrop" id="launch-store-backdrop"></div>
+    <div class="launch-store-dialog" role="dialog" aria-labelledby="launch-store-modal-title">
+      <button type="button" class="launch-store-close" id="launch-store-close" aria-label="Close modal">✕</button>
+      <div class="launch-store-header">
+        <div class="launch-store-kicker">Multi-Tenant SaaS Engine</div>
+        <h2 id="launch-store-modal-title">Launch Your Luxury Storefront</h2>
+        <p>Deploy a branded storefront instance with isolated catalogue, cart, orders, and custom currency in seconds.</p>
+      </div>
+      <form id="launch-store-form" class="launch-store-form">
+        <div class="form-group">
+          <label for="tenant-input-name">Storefront Brand Name <span class="req">*</span></label>
+          <input type="text" id="tenant-input-name" required placeholder="e.g. Nordic Haven Atelier" autocomplete="off" />
+        </div>
+        <div class="form-group">
+          <label for="tenant-input-slug">Store URL Identifier (Slug) <span class="req">*</span></label>
+          <div class="slug-input-wrapper">
+            <span class="slug-prefix">?store=</span>
+            <input type="text" id="tenant-input-slug" required placeholder="nordic-haven" pattern="[a-zA-Z0-9\-]+" title="Letters, numbers, and hyphens only" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="tenant-input-tagline">Brand Tagline</label>
+          <input type="text" id="tenant-input-tagline" placeholder="e.g. Organic Scandinavian Form & Natural Light" />
+        </div>
+        <div class="form-row">
+          <div class="form-group col-half">
+            <label for="tenant-input-currency">Store Currency</label>
+            <select id="tenant-input-currency">
+              <option value="USD" selected>USD ($ - US Dollar)</option>
+              <option value="EUR">EUR (€ - Euro)</option>
+              <option value="GBP">GBP (£ - British Pound)</option>
+              <option value="PKR">PKR (₨ - Pakistani Rupee)</option>
+            </select>
+          </div>
+          <div class="form-group col-half">
+            <label for="tenant-input-color">Theme Accent Color</label>
+            <div class="color-picker-row">
+              <input type="color" id="tenant-input-color" value="#7D6352" />
+              <div class="preset-color-chips">
+                <button type="button" class="color-chip" data-color="#C26E4B" style="background: #C26E4B;" title="Terracotta"></button>
+                <button type="button" class="color-chip" data-color="#5C6B5E" style="background: #5C6B5E;" title="Sage Olive"></button>
+                <button type="button" class="color-chip" data-color="#2E6875" style="background: #2E6875;" title="Aegean Sea"></button>
+                <button type="button" class="color-chip" data-color="#7D6352" style="background: #7D6352;" title="Warm Umber"></button>
+                <button type="button" class="color-chip" data-color="#1E232A" style="background: #1E232A;" title="Charcoal Obsidian"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="tenant-input-badge">Brand Icon / Emoji</label>
+          <input type="text" id="tenant-input-badge" value="✨" maxlength="4" style="width: 80px; text-align: center; font-size: 1.2rem;" />
+        </div>
+        <div class="launch-store-actions">
+          <button type="button" class="btn-cancel" id="launch-store-cancel-btn">Cancel</button>
+          <button type="submit" class="btn-launch-submit" id="launch-store-submit-btn">
+            <span>Launch Storefront →</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- SITE FOOTER (Clean Minimal Luxury Footer) -->
   <footer class="site-footer" role="contentinfo">

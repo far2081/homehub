@@ -30,28 +30,59 @@ import {
 } from '../services/supabaseClient.js';
 
 export class AdminPortal {
+  getProductsStorageKey() {
+    return (this.tenantSlug && this.tenantSlug !== 'homehub') ? `tenant_${this.tenantSlug}_products` : 'custom_products';
+  }
+
+  getOrdersStorageKey() {
+    return (this.tenantSlug && this.tenantSlug !== 'homehub') ? `tenant_${this.tenantSlug}_orders` : 'homehub_orders';
+  }
+
   getStoredProducts() {
+    const key = this.getProductsStorageKey();
     let stored = null;
     try {
-      stored = storage.get('custom_products', null) || storage.get('homehub_products', null);
+      stored = storage.get(key, null);
+      if ((!this.tenantSlug || this.tenantSlug === 'homehub') && !stored) {
+        stored = storage.get('homehub_products', null);
+      }
     } catch (_) {}
     if (!Array.isArray(stored) || stored.length === 0) {
       if (typeof window !== 'undefined' && window.localStorage) {
         try {
-          const raw1 = window.localStorage.getItem('homehub_custom_products');
-          const raw2 = window.localStorage.getItem('homehub_products');
-          const raw3 = window.localStorage.getItem('custom_products');
-          if (raw1) stored = JSON.parse(raw1);
-          else if (raw2) stored = JSON.parse(raw2);
-          else if (raw3) stored = JSON.parse(raw3);
+          if (!this.tenantSlug || this.tenantSlug === 'homehub') {
+            const raw1 = window.localStorage.getItem('homehub_custom_products');
+            const raw2 = window.localStorage.getItem('homehub_products');
+            const raw3 = window.localStorage.getItem('custom_products');
+            if (raw1) stored = JSON.parse(raw1);
+            else if (raw2) stored = JSON.parse(raw2);
+            else if (raw3) stored = JSON.parse(raw3);
+          } else {
+            const raw = window.localStorage.getItem(`homehub_${key}`) || window.localStorage.getItem(key);
+            if (raw) stored = JSON.parse(raw);
+          }
         } catch (_) {}
       }
     }
     return (Array.isArray(stored) && stored.length > 0) ? stored : null;
   }
 
+  switchTenant(newTenantSlug, newProducts = null) {
+    this.tenantSlug = newTenantSlug || 'homehub';
+    if (newProducts) {
+      this.products = newProducts;
+    } else {
+      const stored = this.getStoredProducts();
+      if (stored) this.products = stored;
+    }
+    if (this.isOpen()) {
+      this.renderTabContentArea();
+    }
+  }
+
   constructor(containerId, options = {}) {
-    this.container = document.getElementById(containerId);
+    this.container = typeof document !== 'undefined' ? document.getElementById(containerId) : null;
+    this.tenantSlug = options.tenantSlug || 'homehub';
     const stored = this.getStoredProducts();
     this.products = stored || options.products || [];
     this.categories = options.categories || [];
@@ -231,7 +262,8 @@ export class AdminPortal {
           console.warn('Admin: Supabase orders fetch error:', err.message);
         }
       }
-      const localOrders = storage.get('homehub_orders', []);
+      const ordersKey = this.getOrdersStorageKey();
+      const localOrders = storage.get(ordersKey, []);
       const orderMap = new Map();
       (remoteOrders || []).forEach(o => {
         const key = o.order_number || o.id;
@@ -370,14 +402,24 @@ export class AdminPortal {
   }
 
   saveLocalProductsBackup() {
-    storage.set('custom_products', this.products);
-    storage.set('homehub_products', this.products);
-    if (typeof window !== 'undefined' && window.localStorage) {
-      try {
-        window.localStorage.setItem('homehub_products', JSON.stringify(this.products));
-        window.localStorage.setItem('homehub_custom_products', JSON.stringify(this.products));
-        window.localStorage.setItem('custom_products', JSON.stringify(this.products));
-      } catch (_) {}
+    const key = this.getProductsStorageKey();
+    storage.set(key, this.products);
+    if (!this.tenantSlug || this.tenantSlug === 'homehub') {
+      storage.set('custom_products', this.products);
+      storage.set('homehub_products', this.products);
+      if (typeof window !== 'undefined' && window.localStorage) {
+        try {
+          window.localStorage.setItem('homehub_products', JSON.stringify(this.products));
+          window.localStorage.setItem('homehub_custom_products', JSON.stringify(this.products));
+          window.localStorage.setItem('custom_products', JSON.stringify(this.products));
+        } catch (_) {}
+      }
+    } else {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        try {
+          window.localStorage.setItem(`homehub_${key}`, JSON.stringify(this.products));
+        } catch (_) {}
+      }
     }
     if (typeof window !== 'undefined' && window.homehub) {
       window.homehub.products = this.products;
@@ -1529,12 +1571,13 @@ export class AdminPortal {
           const newStatus = e.currentTarget.value;
 
           // Always update in memory and local storage immediately
-          const localOrders = storage.get('homehub_orders', []);
+          const ordersKey = this.getOrdersStorageKey();
+      const localOrders = storage.get(ordersKey, []);
           const foundIdx = localOrders.findIndex(o => o.id === orderId || o.order_number === orderId);
           if (foundIdx > -1) {
             localOrders[foundIdx].status = newStatus;
             localOrders[foundIdx].order_status = newStatus;
-            storage.set('homehub_orders', localOrders);
+            storage.set(ordersKey, localOrders);
           }
           const memOrder = this.orders.find(o => o.id === orderId || o.order_number === orderId);
           if (memOrder) {

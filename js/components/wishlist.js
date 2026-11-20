@@ -9,14 +9,27 @@ import { INITIAL_PRODUCTS } from '../data/products.js';
 
 export class Wishlist {
   constructor(drawerId, options = {}) {
-    this.drawer = document.getElementById(drawerId);
+    this.drawer = typeof document !== 'undefined' ? document.getElementById(drawerId) : null;
     this.products = options.products || [];
-    this.skus = storage.get('wishlist_skus', []);
+    this.tenantSlug = options.tenantSlug || 'homehub';
+    this.skus = storage.get(this.getWishlistStorageKey(), []);
     this.onUpdate = options.onUpdate || (() => {});
     this.onAddToCart = options.onAddToCart || (() => {});
     this.onViewProduct = options.onViewProduct || (() => {});
 
     this.init();
+  }
+
+  getWishlistStorageKey() {
+    return this.tenantSlug === 'homehub' ? 'wishlist_skus' : `tenant_${this.tenantSlug}_wishlist_skus`;
+  }
+
+  switchTenant(newTenantSlug, newProducts = null) {
+    this.tenantSlug = newTenantSlug || 'homehub';
+    if (newProducts) this.products = newProducts;
+    this.skus = storage.get(this.getWishlistStorageKey(), []);
+    this.onUpdate(this.skus.length);
+    this.render();
   }
 
   init() {
@@ -44,7 +57,7 @@ export class Wishlist {
   }
 
   save() {
-    storage.set('wishlist_skus', this.skus);
+    storage.set(this.getWishlistStorageKey(), this.skus);
     this.onUpdate(this.skus.length);
   }
 

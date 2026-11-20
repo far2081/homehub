@@ -14,14 +14,36 @@ import { INITIAL_PRODUCTS } from '../data/products.js';
 
 export class Cart {
   constructor(drawerId, options = {}) {
-    this.drawer = document.getElementById(drawerId);
+    this.drawer = typeof document !== 'undefined' ? document.getElementById(drawerId) : null;
     this.products = options.products || [];
-    this.items = storage.get('cart_items', []); // Array of { sku, quantity, variantId, addedAt }
-    this.appliedCoupon = storage.get('homehub_applied_coupon', null);
+    this.tenantSlug = options.tenantSlug || 'homehub';
+    this.items = storage.get(this.getCartStorageKey(), []); // Array of { sku, quantity, variantId, addedAt }
+    this.appliedCoupon = storage.get(this.getCouponStorageKey(), null);
     this.onUpdate = options.onUpdate || (() => {});
     this.onViewProduct = options.onViewProduct || (() => {});
 
     this.init();
+  }
+
+  getCartStorageKey() {
+    return this.tenantSlug === 'homehub' ? 'cart_items' : `tenant_${this.tenantSlug}_cart_items`;
+  }
+
+  getCouponStorageKey() {
+    return this.tenantSlug === 'homehub' ? 'homehub_applied_coupon' : `tenant_${this.tenantSlug}_applied_coupon`;
+  }
+
+  getOrdersStorageKey() {
+    return this.tenantSlug === 'homehub' ? 'homehub_orders' : `tenant_${this.tenantSlug}_orders`;
+  }
+
+  switchTenant(newTenantSlug, newProducts = null) {
+    this.tenantSlug = newTenantSlug || 'homehub';
+    if (newProducts) this.products = newProducts;
+    this.items = storage.get(this.getCartStorageKey(), []);
+    this.appliedCoupon = storage.get(this.getCouponStorageKey(), null);
+    this.onUpdate(this.getCount());
+    this.render();
   }
 
   init() {
@@ -53,7 +75,7 @@ export class Cart {
   }
 
   save() {
-    storage.set('cart_items', this.items);
+    storage.set(this.getCartStorageKey(), this.items);
     this.onUpdate(this.getCount());
   }
 
@@ -139,7 +161,7 @@ export class Cart {
     const result = couponService.validateCoupon(this.appliedCoupon.code, subtotal);
     if (!result.valid) {
       this.appliedCoupon = null;
-      storage.remove('homehub_applied_coupon');
+      storage.remove(this.getCouponStorageKey());
       return 0;
     }
     return result.discount;
@@ -161,7 +183,7 @@ export class Cart {
       return false;
     }
     this.appliedCoupon = result.coupon;
-    storage.set('homehub_applied_coupon', this.appliedCoupon);
+    storage.set(this.getCouponStorageKey(), this.appliedCoupon);
     showToast(result.message, 'success');
     this.render();
     return true;
@@ -169,7 +191,7 @@ export class Cart {
 
   removeCoupon() {
     this.appliedCoupon = null;
-    storage.remove('homehub_applied_coupon');
+    storage.remove(this.getCouponStorageKey());
     showToast('Promotional voucher removed.', 'info');
     this.render();
   }
@@ -610,9 +632,11 @@ export class Cart {
 
         // Always save order to persistent storage so SaaS Admin Portal can manage it immediately
         try {
-          const storedOrders = storage.get('homehub_orders', []);
+          orderData.tenant_slug = this.tenantSlug;
+          const ordersKey = this.getOrdersStorageKey();
+          const storedOrders = storage.get(ordersKey, []);
           storedOrders.unshift(orderData);
-          storage.set('homehub_orders', storedOrders);
+          storage.set(ordersKey, storedOrders);
         } catch (_) {}
 
         // Record customer in CRM
@@ -631,7 +655,7 @@ export class Cart {
         const orderNum = orderData.order_number;
         this.clear();
         this.appliedCoupon = null;
-        storage.remove('homehub_applied_coupon');
+        storage.remove(this.getCouponStorageKey());
         this.close();
 
         // Success confirmation screen

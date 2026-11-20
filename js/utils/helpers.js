@@ -2,11 +2,36 @@
  * General helper utilities for HomeHub
  */
 
+let _currencyFormatter = null;
+
+export function setCurrencyFormatter(fn) {
+  _currencyFormatter = fn;
+}
+
+export function getCurrencyFormatter() {
+  return _currencyFormatter;
+}
+
 /**
- * Format currency in Pakistani Rupees (PKR)
- * e.g. 345000 -> "₨ 345,000"
+ * Format currency in Pakistani Rupees (PKR) or active tenant currency
+ * e.g. 345000 -> "₨ 345,000" or "$ 1,850" depending on active tenant
  */
 export function formatPKR(amount) {
+  if (_currencyFormatter) {
+    return _currencyFormatter(amount);
+  }
+  if (typeof amount !== 'number' || isNaN(amount)) {
+    return '₨ 0';
+  }
+  return '₨ ' + amount.toLocaleString('en-PK', {
+    maximumFractionDigits: 0
+  });
+}
+
+/**
+ * Format specifically in PKR regardless of active tenant
+ */
+export function formatPKRRaw(amount) {
   if (typeof amount !== 'number' || isNaN(amount)) {
     return '₨ 0';
   }
@@ -81,6 +106,7 @@ export function scrollToTarget(target) {
  * Quick toast notification
  */
 export function showToast(message, type = 'info', duration = 3000) {
+  if (typeof document === 'undefined') return;
   let container = document.getElementById('toast-container');
   if (!container) {
     container = document.createElement('div');

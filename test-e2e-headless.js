@@ -325,6 +325,114 @@ console.log('\n[9] Testing Client Directory & CRM Service:');
   assert(createdClient.tier.includes('Platinum'), `Tier elevated to Platinum based on spend volume (got ${createdClient.tier})`);
 }
 
+// --- 10. MULTI-TENANT SAAS ARCHITECTURE & TENANT ISOLATION TESTS ---
+console.log('\n[10] Testing Multi-Tenant SaaS Architecture & Tenant Isolation:');
+{
+  const { tenantService, PRESEEDED_TENANTS } = await import('./js/services/tenantService.js');
+  const { Cart } = await import('./js/components/cart.js');
+
+  // 1. Verify pre-seeded tenants
+  assert(Boolean(PRESEEDED_TENANTS['homehub']), 'Pre-seeded tenant homehub exists');
+  assert(Boolean(PRESEEDED_TENANTS['studio-noor']), 'Pre-seeded tenant studio-noor exists');
+  assert(Boolean(PRESEEDED_TENANTS['aurelia-living']), 'Pre-seeded tenant aurelia-living exists');
+
+  const allTenants = tenantService.getAllTenants();
+  assert(allTenants.length >= 3, `At least 3 distinct tenants registered (got ${allTenants.length})`);
+
+  // 2. Verify brand metadata & themes
+  const hh = tenantService.getTenant('homehub');
+  const sn = tenantService.getTenant('studio-noor');
+  const al = tenantService.getTenant('aurelia-living');
+
+  assert(hh.name === 'HomeHub Luxury Living', 'HomeHub brand name verified');
+  assert(sn.name === 'Studio Noor Minimalist', 'Studio Noor brand name verified');
+  assert(al.name === 'Aurelia Coastal Decor', 'Aurelia Coastal Decor brand name verified');
+
+  assert(hh.currency.code === 'PKR' && hh.currency.symbol === '₨', 'HomeHub uses PKR currency');
+  assert(sn.currency.code === 'USD' && sn.currency.symbol === '$', 'Studio Noor uses USD currency');
+  assert(al.currency.code === 'EUR' && al.currency.symbol === '€', 'Aurelia Living uses EUR currency');
+
+  // 3. Verify curated catalogs
+  const hhProducts = tenantService.getProductsForTenant('homehub');
+  const snProducts = tenantService.getProductsForTenant('studio-noor');
+  const alProducts = tenantService.getProductsForTenant('aurelia-living');
+
+  assert(hhProducts.length >= 14, `HomeHub catalog has at least 14 pieces (got ${hhProducts.length})`);
+  assert(snProducts.length >= 6, `Studio Noor catalog has at least 6 curated pieces (got ${snProducts.length})`);
+  assert(alProducts.length >= 6, `Aurelia Living catalog has at least 6 curated pieces (got ${alProducts.length})`);
+
+  // Verify distinct SKU prefixes
+  assert(snProducts.every(p => p.sku.startsWith('SN-')), 'Studio Noor pieces use SN- SKU namespace');
+  assert(alProducts.every(p => p.sku.startsWith('AL-')), 'Aurelia pieces use AL- SKU namespace');
+
+  // 4. Verify currency formatting per tenant
+  const pkrFormatted = tenantService.formatPrice(345000, hh);
+  const usdFormatted = tenantService.formatPrice(1850, sn);
+  const eurFormatted = tenantService.formatPrice(2150, al);
+
+  assert(pkrFormatted.includes('₨') && pkrFormatted.includes('345,000'), 'HomeHub price formatted in PKR');
+  assert(usdFormatted.includes('$') && usdFormatted.includes('1,850'), 'Studio Noor price formatted in USD');
+  assert(eurFormatted.includes('€') && eurFormatted.includes('2'), 'Aurelia price formatted in EUR');
+
+  // 5. Verify isolated Cart state across tenants
+  storage.remove('cart_items');
+  storage.remove('tenant_studio-noor_cart_items');
+  storage.remove('tenant_aurelia-living_cart_items');
+
+  const testCart = new Cart('cart-drawer-container', {
+    products: hhProducts,
+    tenantSlug: 'homehub'
+  });
+
+  // Add piece in HomeHub
+  testCart.addItem('HH-FUR-001', 1);
+  assert(testCart.getCount() === 1, 'HomeHub cart has 1 item');
+
+  // Switch to Studio Noor
+  testCart.switchTenant('studio-noor', snProducts);
+  assert(testCart.getCount() === 0, 'Studio Noor cart starts completely empty (isolated)');
+
+  // Add piece in Studio Noor
+  testCart.addItem('SN-FUR-001', 2);
+  assert(testCart.getCount() === 2, 'Studio Noor cart now has 2 items');
+
+  // Switch to Aurelia Living
+  testCart.switchTenant('aurelia-living', alProducts);
+  assert(testCart.getCount() === 0, 'Aurelia Living cart is isolated and empty');
+
+  // Switch back to HomeHub
+  testCart.switchTenant('homehub', hhProducts);
+  assert(testCart.getCount() === 1, 'HomeHub cart retained its original 1 item without corruption');
+  assert(testCart.items[0].sku === 'HH-FUR-001', 'HomeHub item SKU matches');
+
+  // Switch back to Studio Noor
+  testCart.switchTenant('studio-noor', snProducts);
+  assert(testCart.getCount() === 2, 'Studio Noor cart retained its original 2 items');
+
+  // 6. Verify "Launch Your Store" SaaS onboarding
+  const launchedStore = tenantService.createTenant({
+    name: 'Nordic Loft Design',
+    slug: 'nordic-loft',
+    tagline: 'Quiet Scandinavian Wood & Architecture',
+    currencyCode: 'GBP',
+    themeColor: '#7D6352',
+    badge: '🌲'
+  });
+
+  assert(launchedStore.slug === 'nordic-loft', 'New tenant created with slug nordic-loft');
+  assert(launchedStore.currency.code === 'GBP' && launchedStore.currency.symbol === '£', 'New tenant uses GBP currency');
+  assert(Boolean(tenantService.getTenant('nordic-loft')), 'New tenant retrieved from registry');
+  assert(launchedStore.products.length >= 4, 'New tenant seeded with starter products');
+
+  // Switch into newly created tenant
+  tenantService.setActiveTenant('nordic-loft');
+  assert(tenantService.getActiveSlug() === 'nordic-loft', 'Active tenant successfully switched to nordic-loft');
+
+  // Clean up
+  tenantService.setActiveTenant('homehub');
+  assert(tenantService.getActiveSlug() === 'homehub', 'Active tenant successfully restored to homehub');
+}
+
 console.log('\n======================================================');
 console.log(`  E2E TEST SUMMARY: ${passed} PASSED, ${failed} FAILED`);
 console.log('======================================================\n');

@@ -6,7 +6,8 @@
 
 import { INITIAL_PRODUCTS, CATEGORIES } from './data/products.js';
 import { storage } from './utils/storage.js';
-import { formatPKR } from './utils/helpers.js';
+import { formatPKR, setCurrencyFormatter, showToast } from './utils/helpers.js';
+import { tenantService } from './services/tenantService.js';
 import { Flipbook } from './components/flipbook.js';
 import { Catalogue } from './components/catalogue.js';
 import { ProductDetail } from './components/productDetail.js';
@@ -141,22 +142,22 @@ class HomeHubApp {
     this.openPrintInvoiceDirect = openPrintInvoice;
     this.couponServiceDirect = couponService;
     this.pluginRegistryDirect = pluginRegistry;
+    this.tenantService = tenantService;
+
+    // Multi-tenant active store resolution
+    this.currentTenant = tenantService.init();
+    this.currentTenantSlug = this.currentTenant.slug;
+
+    // Currency formatting bound to active tenant
+    setCurrencyFormatter((amt) => tenantService.formatPrice(amt, this.currentTenant));
+
     if (typeof window !== 'undefined') {
       window.homehub = this;
       window.homeHub = this;
     }
 
-    // Load products from storage if modified via Admin, else initial concept catalogue
-    let storedProducts = storage.get('custom_products', null);
-    if (!storedProducts || !Array.isArray(storedProducts) || storedProducts.length === 0) {
-      if (typeof window !== 'undefined' && window.localStorage) {
-        try {
-          const raw = window.localStorage.getItem('homehub_custom_products') || window.localStorage.getItem('homehub_products') || window.localStorage.getItem('custom_products');
-          if (raw) storedProducts = JSON.parse(raw);
-        } catch (_) {}
-      }
-    }
-    this.products = (Array.isArray(storedProducts) && storedProducts.length > 0) ? storedProducts : INITIAL_PRODUCTS;
+    // Load products tailored to active tenant
+    this.products = tenantService.getProductsForTenant(this.currentTenantSlug);
     this.categories = CATEGORIES;
 
     this.flipbook = null;
@@ -173,6 +174,9 @@ class HomeHubApp {
 
   init() {
     this.initServiceWorker();
+    this.tenantService.applyTenantTheme(this.currentTenant);
+    this.initTenantSwitcher();
+    this.initLaunchStoreModal();
     this.initCart();
     this.initWishlist();
     this.initProductDetail();
@@ -202,6 +206,7 @@ class HomeHubApp {
   }
 
   async loadSupabaseProducts() {
+    if (this.currentTenantSlug !== 'homehub') return;
     try {
       const res = await fetchStorefrontProducts();
       if (res && res.data && res.data.length > 0 && !res.isFallback) {
@@ -245,6 +250,7 @@ class HomeHubApp {
   initCart() {
     this.cart = new Cart('cart-drawer-container', {
       products: this.products,
+      tenantSlug: this.currentTenantSlug,
       onUpdate: (count) => this.updateHeaderBadges(),
       onViewProduct: (sku) => this.openProduct(sku)
     });
@@ -253,6 +259,7 @@ class HomeHubApp {
   initWishlist() {
     this.wishlist = new Wishlist('wishlist-drawer-container', {
       products: this.products,
+      tenantSlug: this.currentTenantSlug,
       onUpdate: (count) => {
         this.updateHeaderBadges();
         if (this.catalogue) this.catalogue.renderGrid();
@@ -308,6 +315,7 @@ class HomeHubApp {
     this.adminPortal = new AdminPortal('admin-portal-container', {
       products: this.products,
       categories: this.categories,
+      tenantSlug: this.currentTenantSlug,
       onProductsUpdated: (updatedProducts) => {
         this.products = updatedProducts;
         if (this.catalogue) this.catalogue.setProducts(updatedProducts);
@@ -323,6 +331,235 @@ class HomeHubApp {
       onHome: () => this.showHomepage(),
       onNavigate: (target) => this.handleBookNavigationTarget(target)
     });
+  }
+
+  /* ==========================================================================
+     Multi-Tenant SaaS Storefront Management
+     ========================================================================== */
+  initTenantSwitcher() {
+    this.renderTenantSwitcherList();
+
+    const switcherWrap = document.getElementById('tenant-switcher-wrap');
+    const switcherBtn = document.getElementById('tenant-switcher-btn');
+
+    if (switcherBtn && switcherWrap) {
+      switcherBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = switcherWrap.classList.toggle('is-open');
+        switcherBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!switcherWrap.contains(e.target)) {
+          switcherWrap.classList.remove('is-open');
+          switcherBtn.setAttribute('aria-expanded', 'false');
+        }
+      });
+    }
+
+    // Header and Mobile Launch Store Buttons
+    const headerLaunchBtn = document.getElementById('header-launch-store-btn');
+    const mobileLaunchBtn = document.getElementById('mobile-launch-store-btn');
+
+    const openLaunchModal = (e) => {
+      if (e) e.stopPropagation();
+      if (switcherWrap) switcherWrap.classList.remove('is-open');
+      this.openLaunchStoreModal();
+    };
+
+    if (headerLaunchBtn) headerLaunchBtn.addEventListener('click', openLaunchModal);
+    if (mobileLaunchBtn) mobileLaunchBtn.addEventListener('click', openLaunchModal);
+  }
+
+  renderTenantSwitcherList() {
+    const listEl = document.getElementById('tenant-dropdown-list');
+    const mobileListEl = document.getElementById('mobile-tenant-list');
+    const allTenants = this.tenantService.getAllTenants();
+    const activeSlug = this.currentTenantSlug;
+
+    // Desktop Dropdown List
+    if (listEl) {
+      listEl.innerHTML = allTenants.map(t => {
+        const isActive = t.slug === activeSlug;
+        return `
+          <button type="button" class="tenant-dropdown-item ${isActive ? 'active' : ''}" data-switch-tenant="${t.slug}" role="menuitem">
+            <div class="tenant-item-main">
+              <span class="tenant-item-badge">${t.badge || '🏛️'}</span>
+              <div class="tenant-item-info">
+                <span class="tenant-item-name">${t.name}</span>
+                <span class="tenant-item-meta">${t.currency.code} (${t.currency.symbol}) • ${t.shortName}</span>
+              </div>
+            </div>
+            ${isActive ? '<span class="tenant-item-check">✓</span>' : ''}
+          </button>
+        `;
+      }).join('');
+
+      listEl.querySelectorAll('[data-switch-tenant]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const slug = btn.dataset.switchTenant;
+          this.switchStore(slug);
+        });
+      });
+    }
+
+    // Mobile Drawer List
+    if (mobileListEl) {
+      mobileListEl.innerHTML = allTenants.map(t => {
+        const isActive = t.slug === activeSlug;
+        return `
+          <button type="button" class="mobile-tenant-btn ${isActive ? 'active' : ''}" data-switch-tenant="${t.slug}">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 1.15rem;">${t.badge || '🏛️'}</span>
+              <div>
+                <div style="font-size: 0.86rem; font-weight: 600; color: var(--color-charcoal);">${t.name}</div>
+                <div style="font-size: 0.72rem; color: var(--color-muted-earth);">${t.currency.code} (${t.currency.symbol}) • ${t.tagline}</div>
+              </div>
+            </div>
+            ${isActive ? '<span style="color: var(--color-terracotta); font-weight: bold; font-size: 0.9rem;">✓</span>' : ''}
+          </button>
+        `;
+      }).join('');
+
+      mobileListEl.querySelectorAll('[data-switch-tenant]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const slug = btn.dataset.switchTenant;
+          this.switchStore(slug);
+        });
+      });
+    }
+  }
+
+  switchStore(newSlug) {
+    if (!newSlug) return;
+    const tenant = this.tenantService.setActiveTenant(newSlug);
+    this.currentTenant = tenant;
+    this.currentTenantSlug = tenant.slug;
+
+    // 1. Theme and branding variables
+    this.tenantService.applyTenantTheme(tenant);
+    setCurrencyFormatter((amt) => this.tenantService.formatPrice(amt, tenant));
+
+    // 2. Load isolated products for active tenant
+    this.products = this.tenantService.getProductsForTenant(tenant.slug);
+
+    // 3. Update Catalogue & ProductDetail
+    if (this.catalogue) this.catalogue.setProducts(this.products);
+    if (this.productDetail) this.productDetail.products = this.products;
+
+    // 4. Switch Cart and Wishlist storage & isolated state
+    if (this.cart) this.cart.switchTenant(tenant.slug, this.products);
+    if (this.wishlist) this.wishlist.switchTenant(tenant.slug, this.products);
+    this.updateHeaderBadges();
+
+    // 5. Switch Admin portal tenant
+    if (this.adminPortal) this.adminPortal.switchTenant(tenant.slug, this.products);
+
+    // 6. Refresh Switcher UI
+    this.renderTenantSwitcherList();
+
+    // Close dropdown
+    const switcherWrap = document.getElementById('tenant-switcher-wrap');
+    if (switcherWrap) switcherWrap.classList.remove('is-open');
+
+    // Close mobile drawer if open
+    const drawer = document.getElementById('mobile-nav-drawer');
+    if (drawer && drawer.classList.contains('is-open')) {
+      drawer.classList.remove('is-open');
+    }
+
+    showToast(`Switched storefront to ${tenant.name}`, 'info');
+  }
+
+  initLaunchStoreModal() {
+    const modal = document.getElementById('launch-store-modal');
+    if (!modal) return;
+
+    const closeBtn = document.getElementById('launch-store-close');
+    const cancelBtn = document.getElementById('launch-store-cancel-btn');
+    const backdrop = document.getElementById('launch-store-backdrop');
+    const form = document.getElementById('launch-store-form');
+    const nameInput = document.getElementById('tenant-input-name');
+    const slugInput = document.getElementById('tenant-input-slug');
+    const colorInput = document.getElementById('tenant-input-color');
+
+    const closeModal = () => {
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    };
+
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+    if (backdrop) backdrop.addEventListener('click', closeModal);
+
+    // Auto slug generate from name
+    if (nameInput && slugInput) {
+      nameInput.addEventListener('input', () => {
+        if (!slugInput.dataset.manuallyEdited) {
+          slugInput.value = nameInput.value.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+        }
+      });
+      slugInput.addEventListener('input', () => {
+        slugInput.dataset.manuallyEdited = 'true';
+      });
+    }
+
+    // Color preset chips
+    const colorChips = modal.querySelectorAll('.color-chip');
+    colorChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        const color = chip.dataset.color;
+        if (colorInput && color) colorInput.value = color;
+      });
+    });
+
+    // Form submit
+    if (form) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        try {
+          const name = (nameInput.value || '').trim();
+          const slug = (slugInput.value || '').trim();
+          const tagline = (document.getElementById('tenant-input-tagline')?.value || '').trim();
+          const currencyCode = document.getElementById('tenant-input-currency')?.value || 'USD';
+          const themeColor = colorInput ? colorInput.value : '#5C6B5E';
+          const badge = (document.getElementById('tenant-input-badge')?.value || '').trim() || '✨';
+
+          const newTenant = this.tenantService.createTenant({
+            name,
+            slug,
+            tagline,
+            currencyCode,
+            themeColor,
+            badge
+          });
+
+          closeModal();
+          form.reset();
+          if (slugInput) delete slugInput.dataset.manuallyEdited;
+
+          this.switchStore(newTenant.slug);
+          showToast(`✨ Store "${newTenant.name}" launched successfully!`, 'success');
+        } catch (err) {
+          showToast(`Could not launch store: ${err.message}`, 'error');
+        }
+      });
+    }
+  }
+
+  openLaunchStoreModal() {
+    const modal = document.getElementById('launch-store-modal');
+    if (modal) {
+      modal.style.display = 'flex';
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      const nameInput = document.getElementById('tenant-input-name');
+      if (nameInput) setTimeout(() => nameInput.focus(), 50);
+    }
   }
 
   updateHeaderBadges() {
@@ -729,6 +966,15 @@ class HomeHubApp {
 
     // Listen to hash and state changes (back / forward navigation & URL hash routes)
     window.addEventListener('popstate', () => {
+      if (typeof window !== 'undefined' && window.location && window.location.search) {
+        try {
+          const params = new URLSearchParams(window.location.search);
+          const storeSlug = params.get('store');
+          if (storeSlug && storeSlug !== this.currentTenantSlug) {
+            this.switchStore(storeSlug);
+          }
+        } catch (_) {}
+      }
       this.handleInitialRouting();
     });
     window.addEventListener('hashchange', () => {

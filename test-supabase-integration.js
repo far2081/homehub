@@ -48,6 +48,7 @@ import {
 import { AdminPortal } from './js/components/admin.js';
 import { Cart } from './js/components/cart.js';
 import { INITIAL_PRODUCTS, CATEGORIES } from './js/data/products.js';
+import { server } from './server.js';
 
 console.log('======================================================');
 console.log('  HOMEHUB — SUPABASE INTEGRATION TEST SUITE');
@@ -56,6 +57,25 @@ console.log('======================================================\n');
 async function runTests() {
   let passed = 0;
   let total = 0;
+
+  let serverStartedLocally = false;
+  if (!server.listening) {
+    try {
+      await new Promise((resolve, reject) => {
+        server.listen(3000, () => {
+          serverStartedLocally = true;
+          resolve();
+        });
+        server.on('error', (err) => {
+          if (err.code === 'EADDRINUSE') {
+            resolve();
+          } else {
+            reject(err);
+          }
+        });
+      });
+    } catch (_) {}
+  }
 
   function test(name, fn) {
     total++;
@@ -181,6 +201,12 @@ async function runTests() {
   console.log('\n======================================================');
   console.log(`  SUPABASE TEST SUMMARY: ${passed} PASSED out of ${total}`);
   console.log('======================================================\n');
+
+  if (serverStartedLocally) {
+    try {
+      server.close();
+    } catch (_) {}
+  }
 
   if (passed !== total) {
     process.exit(1);
