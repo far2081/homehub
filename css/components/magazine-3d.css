@@ -2517,39 +2517,317 @@
   .flipbook-viewport.mode-single {
     width: min(92vw, 380px) !important;
     max-width: 380px !important;
+    height: clamp(520px, 72vh, 600px) !important;
     min-height: 520px !important;
-    height: auto !important;
+    max-height: 600px !important;
     margin: 0 auto !important;
     border-radius: 6px;
     box-shadow: 0 14px 34px -8px rgba(24, 21, 18, 0.28), 0 0 0 1px rgba(0, 0, 0, 0.08) !important;
     overflow: hidden !important;
     box-sizing: border-box;
+    position: relative;
   }
 
+  .flipbook-viewport .magazine-pages-container,
   .flipbook-viewport.mode-single .magazine-pages-container {
     width: 100% !important;
-    min-height: 520px !important;
-    height: auto !important;
+    height: 100% !important;
+    min-height: 100% !important;
+    max-height: 100% !important;
+    position: relative !important;
   }
 
-  .mode-single .magazine-page {
+  .mode-single .magazine-page,
+  .magazine-page.page-single {
     width: 100% !important;
-    min-height: 520px !important;
-    height: auto !important;
+    height: 100% !important;
+    min-height: 100% !important;
+    max-height: 100% !important;
     border-radius: 6px;
     box-sizing: border-box;
+    display: flex !important;
+    flex-direction: column !important;
     overflow-y: auto !important;
     overflow-x: hidden !important;
+    position: relative !important;
+  }
+
+  /* Turning Leaf in Mobile Single-Page Mode */
+  .flipbook-curved-leaf.mode-single-leaf {
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+  }
+
+  .mode-single-leaf .strip-content-wrap {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 100% !important;
+  }
+
+  .mode-single-leaf .strip-face {
+    height: 100% !important;
+  }
+
+  /* Layout A: Continuous / Full-Bleed Panoramic Mobile Page */
+  .page-layout-a,
+  .page-layout-a.spread-single,
+  .page-layout-a.spread-left,
+  .page-layout-a.spread-right {
+    position: relative !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-end !important;
+    overflow: hidden !important;
+    background-size: cover !important;
+    background-position: center !important;
+  }
+
+  .spread-panoramic-layer,
+  .spread-single .spread-panoramic-layer,
+  .spread-left .spread-panoramic-layer,
+  .spread-right .spread-panoramic-layer {
+    position: absolute !important;
+    inset: 0 !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    pointer-events: none !important;
+  }
+
+  .spread-panoramic-img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    display: block !important;
+  }
+
+  .spread-overlay-meta,
+  .page-left .spread-overlay-meta,
+  .page-right .spread-overlay-meta {
+    position: relative !important;
+    z-index: 15 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 2.2rem 1.3rem 1.3rem !important;
+    background: linear-gradient(0deg, rgba(20, 18, 16, 0.92) 0%, rgba(20, 18, 16, 0.55) 60%, transparent 100%) !important;
+    color: #FAF8F5 !important;
+  }
+
+  .spread-title {
+    font-size: 1.45rem !important;
+    line-height: 1.25 !important;
+    margin-bottom: 0.35rem !important;
+  }
+
+  .spread-deck {
+    font-size: 0.82rem !important;
+    line-height: 1.45 !important;
+    color: rgba(248, 245, 239, 0.9) !important;
+  }
+
+  /* Layout B: Vignette Study */
+  .page-layout-b,
+  .page-left .page-layout-b,
+  .page-right .page-layout-b {
+    position: relative !important;
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    min-height: 100% !important;
+    padding: 1.2rem 1.2rem 1rem !important;
+    box-sizing: border-box !important;
+    overflow-y: auto !important;
+  }
+
+  .layout-b-photo-frame {
+    flex: 1 1 auto !important;
+    width: 100% !important;
+    min-height: 250px !important;
+    max-height: 320px !important;
+    margin-bottom: 0.75rem !important;
+    border-radius: 4px !important;
+    overflow: hidden !important;
+    background-color: #EDE8DF !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08) !important;
+  }
+
+  .layout-b-photo {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    display: block !important;
+  }
+
+  .layout-b-caption-wrap {
+    flex-shrink: 0 !important;
+    padding-top: 0 !important;
+  }
+
+  .layout-b-title {
+    font-size: 1.22rem !important;
+    margin: 0.2rem 0 !important;
+    line-height: 1.25 !important;
+  }
+
+  .layout-b-deck {
+    font-size: 0.82rem !important;
+    line-height: 1.42 !important;
+  }
+
+  .layout-b-note {
+    font-size: 0.74rem !important;
+    margin-top: 0.35rem !important;
+  }
+
+  /* Layout C: Full-Page Photography */
+  .page-layout-c {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 100% !important;
+    background-size: cover !important;
+    background-position: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    padding: 1.3rem !important;
+    box-sizing: border-box !important;
+  }
+
+  .layout-c-bottom-meta {
+    margin: -1.3rem !important;
+    padding: 2.5rem 1.3rem 1.3rem !important;
+  }
+
+  .layout-c-title {
+    font-size: 1.4rem !important;
+  }
+
+  .layout-c-specs {
+    font-size: 0.8rem !important;
+  }
+
+  /* Layout D: Editorial Story */
+  .page-layout-d,
+  .page-left .page-layout-d,
+  .page-right .page-layout-d {
+    position: relative !important;
+    height: 100% !important;
+    min-height: 100% !important;
+    padding: 1.3rem 1.2rem 1rem !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow-y: auto !important;
+  }
+
+  .layout-d-headline {
+    font-size: 1.45rem !important;
+    margin: 0.25rem 0 0.5rem !important;
+  }
+
+  .layout-d-deck {
+    font-size: 0.82rem !important;
+    margin-bottom: 0.75rem !important;
+  }
+
+  .layout-d-body p {
+    font-size: 0.82rem !important;
+    line-height: 1.55 !important;
+    margin-bottom: 0.7rem !important;
+  }
+
+  .layout-d-body p:first-of-type::first-letter {
+    font-size: 2.6rem !important;
+    margin-right: 0.45rem !important;
+  }
+
+  .layout-d-material-box {
+    margin: 0.75rem 0 !important;
+    padding: 0.7rem 0.85rem !important;
+  }
+
+  .layout-d-provenance {
+    margin-top: 0.5rem !important;
+    padding-top: 0.5rem !important;
+  }
+
+  /* Layout E: Curated Collection Edit */
+  .page-layout-e,
+  .page-left .page-layout-e,
+  .page-right .page-layout-e {
+    position: relative !important;
+    height: 100% !important;
+    min-height: 100% !important;
+    padding: 1.3rem 1.2rem 1rem !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow-y: auto !important;
+  }
+
+  .layout-e-title {
+    font-size: 1.35rem !important;
+  }
+
+  .layout-e-deck {
+    font-size: 0.78rem !important;
+  }
+
+  .layout-e-gallery {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+    margin-top: 0.5rem !important;
+  }
+
+  .layout-e-piece {
+    gap: 0.85rem !important;
+    padding: 0.35rem 0.4rem !important;
+  }
+
+  .layout-e-piece-media {
+    width: 105px !important;
+    height: 85px !important;
+  }
+
+  .layout-e-piece-title {
+    font-size: 0.88rem !important;
+  }
+
+  .layout-e-piece-specs {
+    font-size: 0.72rem !important;
+  }
+
+  .page-folio-corner {
+    bottom: 0.6rem !important;
+    right: 0.8rem !important;
+    left: auto !important;
+    font-size: 0.65rem !important;
   }
 
   /* Cover Page on Mobile */
   .page-cover {
     width: 100% !important;
-    min-height: 520px !important;
+    height: 100% !important;
+    min-height: 100% !important;
     padding: 2.2rem 1.4rem 1.6rem !important;
     box-sizing: border-box;
     cursor: pointer !important;
     touch-action: manipulation !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
   }
 
   .cover-title {

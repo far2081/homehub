@@ -359,7 +359,7 @@ export class Flipbook {
     }
 
     const turningLeaf = document.createElement('div');
-    turningLeaf.className = `flipbook-curved-leaf flip-${direction}`;
+    turningLeaf.className = `flipbook-curved-leaf flip-${direction}${!this.isDesktopSpread ? ' mode-single-leaf' : ''}`;
 
     // Dynamic curved under-leaf drop shadow (pre-blurred in CSS, zero layout recalculation)
     const underShadow = document.createElement('div');
@@ -371,17 +371,19 @@ export class Flipbook {
     stripsTrack.className = 'flip-curved-strips-track';
     turningLeaf.appendChild(stripsTrack);
 
-    const frontHTML = this.buildPageHTML(frontPage, 'right');
-    const backHTML = this.buildPageHTML(backPage, 'left');
+    const posFront = this.isDesktopSpread ? 'right' : 'single';
+    const posBack = this.isDesktopSpread ? 'left' : 'single';
+    const frontHTML = this.buildPageHTML(frontPage, posFront);
+    const backHTML = this.buildPageHTML(backPage, posBack);
 
     // Create template DOM nodes once and clone them for strips (avoiding 16x innerHTML HTML parsing)
     const frontTemplate = document.createElement('div');
-    frontTemplate.className = 'strip-content-wrap';
+    frontTemplate.className = 'strip-content-wrap' + (!this.isDesktopSpread ? ' magazine-page page-single' : '');
     frontTemplate.style.width = `${pageWidth}px`;
     frontTemplate.innerHTML = frontHTML;
 
     const backTemplate = document.createElement('div');
-    backTemplate.className = 'strip-content-wrap';
+    backTemplate.className = 'strip-content-wrap' + (!this.isDesktopSpread ? ' magazine-page page-single' : '');
     backTemplate.style.width = `${pageWidth}px`;
     backTemplate.innerHTML = backHTML;
 
@@ -1534,8 +1536,9 @@ export class Flipbook {
     // Spans smoothly across left and right pages at the central spine.
     // =========================================================================
     if (page.type === 'layout-a') {
-      const isLeft = (position === 'left' || page.spreadRole === 'left') && position !== 'single';
-      const roleClass = isLeft ? 'spread-left' : 'spread-right';
+      const isSingle = position === 'single' || !this.isDesktopSpread;
+      const isLeft = (position === 'left' || page.spreadRole === 'left') && !isSingle;
+      const roleClass = isSingle ? 'spread-single' : (isLeft ? 'spread-left' : 'spread-right');
       return `
         <div class="page-layout-a ${roleClass}">
           <div class="spread-panoramic-layer">
