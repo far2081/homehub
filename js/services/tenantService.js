@@ -813,7 +813,9 @@ export class TenantService {
     const headerTenantBadge = document.getElementById('header-tenant-badge');
     const headerTenantName = document.getElementById('header-tenant-name');
     if (headerTenantBadge) headerTenantBadge.textContent = t.badge || '🏛️';
-    if (headerTenantName) headerTenantName.textContent = t.shortName || t.name;
+    if (headerTenantName) {
+      headerTenantName.textContent = (t.slug === 'homehub') ? 'Stores' : (t.shortName || t.name);
+    }
 
     // Update Document Title
     document.title = `${t.name} — ${t.tagline}`;

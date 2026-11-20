@@ -378,13 +378,13 @@
   width: 100%;
 }
 
-/* Unified styling for #header-nav-home - matches standard nav-item-link without bulky pill box */
+/* Clean unified styling for #header-nav-home - matches standard nav-item-link typography & appearance without bulky pill box or persistent underline */
 #header-nav-home {
   font-family: var(--font-sans);
   font-size: 0.86rem;
   font-weight: 500;
   letter-spacing: 0.04em;
-  color: var(--color-deep-charcoal);
+  color: var(--color-deep-charcoal) !important;
   text-decoration: none;
   padding: 6px 12px;
   position: relative;
@@ -401,29 +401,20 @@
   white-space: nowrap;
 }
 
-#header-nav-home:hover,
-#header-nav-home.active {
+#header-nav-home:hover {
   color: var(--color-terracotta) !important;
-  font-weight: 600;
+}
+
+#header-nav-home.active {
+  color: var(--color-deep-charcoal) !important;
+  font-weight: 500 !important;
   background: transparent !important;
   border: none !important;
 }
 
 #header-nav-home::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0%;
-  height: 2px;
-  background-color: var(--color-terracotta);
-  transition: width 0.2s ease;
-  display: block !important;
-}
-
-#header-nav-home:hover::after,
-#header-nav-home.active::after {
-  width: 100% !important;
+  display: none !important;
+  content: none !important;
 }
 
 .nav-dropdown-chevron {
